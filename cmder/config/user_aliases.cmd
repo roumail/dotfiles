@@ -1,0 +1,31 @@
+;= @echo off
+;= rem Call DOSKEY and use this file as the macrofile
+;= %SystemRoot%\system32\doskey /listsize=1000 /macrofile=%0%
+;= rem In batch mode, jump to the end of the file
+;= goto:eof
+;= Add aliases below here
+e.=explorer .
+home=cd /d "%USERPROFILE%"
+gl=git log --oneline --all --graph --decorate  $*
+psql_geco=docker compose exec app_postgres psql -U postgres geco
+psql_restore=call psql_restore.bat $*
+db_migrate=call db_migrate.bat $*
+drop_connections=docker compose exec app_postgres psql -U postgres geco -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid();"
+drop_geco=docker compose exec app_postgres dropdb -U postgres geco
+create_geco=docker compose exec app_postgres createdb -U postgres geco
+db_upgrade=docker compose exec b2e2 python -m flask db upgrade
+db_current=docker compose exec b2e2 python -m flask db current
+db_heads=docker compose exec b2e2 python -m flask db heads
+jq=call jq.bat $*
+geco=docker compose exec -it b2e2 bash
+geco_run=call geco_run.bat $*
+flask_shell=docker compose exec b2e2 python -m flask shell
+db_downgrade=docker compose exec b2e2 python -m flask db downgrade
+l=ls --show-control-chars -CFGNhp --color --ignore={"NTUSER.DAT*","ntuser.dat*"} $*
+ls=ls --show-control-chars -F --color $*
+pwd=cd
+clear=cls
+unalias=alias /d $1
+vi=vim $*
+cmderr=cd /d "%CMDER_ROOT%"
+pwsh=%SystemRoot%/System32/WindowsPowerShell/v1.0/powershell.exe -ExecutionPolicy Bypass -NoLogo -NoProfile -NoExit -Command "Invoke-Expression '. ''%CMDER_ROOT%/vendor/profile.ps1'''"
