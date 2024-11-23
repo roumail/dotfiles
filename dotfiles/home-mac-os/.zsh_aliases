@@ -1,0 +1,22 @@
+# Useful Aliases
+## Enable a session where you are running intel architecture - check via uname -m
+alias intel="env /usr/bin/arch -x86_64 /bin/zsh --login"
+alias ll='ls -al'
+alias la='ls -A'
+alias l='ls -C'
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias cls='clear'
+alias reload='source ~/.zshrc'
+alias c='clear'
+alias h='history'
+# alias j='jobs -l'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias mkdir='mkdir -p'
+alias path='echo -e ${PATH//:/\\n}'
