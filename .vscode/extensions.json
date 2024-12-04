@@ -22,6 +22,8 @@
         "redhat.vscode-yaml",
         "ms-vscode-remote.remote-containers",
         "ms-vscode-remote.vscode-remote-extensionpack",
+        "spacian.vim-marks",
+        "ms-python.debugpy",
         "SirTori.indenticator"
     ]
 }
