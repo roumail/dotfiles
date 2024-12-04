@@ -1,0 +1,23 @@
+{
+    // Goes in .vscode folder
+    "recommendations": [
+        "ms-python.python",
+        "eamodio.gitlens",
+        "tamasfe.even-better-toml",
+        "streetsidesoftware.code-spell-checker",
+        "charliermarsh.ruff",
+        "ms-vscode-remote.remote-containers",
+        "mhutchie.git-graph",
+        "HTMLHint.vscode-htmlhint",
+        "SirTori.indenticator",
+        "yzhang.markdown-all-in-one",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "Gruntfuggly.todo-tree",
+        "redhat.vscode-yaml",
+        "ms-vscode-remote.remote-containers",
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "SirTori.indenticator"
+    ]
+}
