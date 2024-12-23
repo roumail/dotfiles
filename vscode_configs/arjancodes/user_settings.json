@@ -1,0 +1,91 @@
+{
+  // Goes in user home directory .vscode
+  "workbench.startupEditor": "none",
+  "editor.rulers": [80, 120],
+  "workbench.colorCustomizations": {
+    "editorRuler.foreground": "#ff4081"
+  },
+  "terminal.integrated.inheritEnv": false,
+  "terminal.integrated.fontFamily": "'Hack Nerd Font Mono'",
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "python.terminal.activateEnvironment": false,
+  "editor.wordWrap": "on",
+  "security.workspace.trust.untrustedFiles": "newWindow",
+  "window.zoomLevel": 4,
+  "window.commandCenter": false,
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "files.exclude": {
+    ".git": true,
+    "**/.git": false
+  },
+  "extensions.autoUpdate": "onlyEnabledExtensions",
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "git.enableSmartCommit": true,
+  "git.showActionButton": {
+    "publish": false,
+    "sync": false
+  },
+  "explorer.excludeGitIgnore": true,
+  "cSpell.customDictionaries": {
+    "custom-dictionary-user": {
+      "name": "custom-dictionary-user",
+      "path": "~/.cspell/custom-dictionary-user.txt",
+      "addWords": true,
+      "scope": "user"
+    }
+  },
+
+  "explorer.autoReveal": true,
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.tabSizing": "shrink",
+  "workbench.sidebar.location": "right",
+  "workbench.settings.editor": "json",
+  "ruff.importStrategy": "useBundled",
+  "editor.defaultFormatter": "charliermarsh.ruff",
+  //       "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always",
+    "source.fixAll": "always"
+  },
+  "files.autoSave": "onFocusChange",
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.tabSize": 2,
+    "editor.autoIndent": "full",
+    "editor.autoClosingQuotes": "always",
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    //     "[json]": {
+    //       "editor.defaultFormatter": "esbenp.prettier-vscode"
+    //     },
+    "[dockerfile]": {
+      "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+    },
+
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "debug.toolBarLocation": "docked",
+    "terminal.integrated.tabs.enabled": true,
+    "terminal.integrated.tabs.hideCondition": "never",
+    "terminal.integrated.tabs.location": "right",
+    "markdown.preview.scrollEditorWithPreview": true,
+    "markdown.preview.scrollPreviewWithEditor": true
+  }
+}
