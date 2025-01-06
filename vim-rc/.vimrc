@@ -8,6 +8,6 @@ source ~/.vim/config/plugins/init.vim
 
 " Load general settings and mappings
 source ~/.vim/config/settings.vim
+source ~/.vim/config/keymaps.vim
+source ~/.vim/config/ui.vim
 " source ~/.vim/config/clipboard.vim
-"source ~/.vim/config/keymaps.vim
-"source ~/.vim/config/ui.vim
