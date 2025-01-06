@@ -1,11 +1,7 @@
 # Dot files
 
-This is an attempt to keep track of important configuration in a repository for easy 
-setup and installation on a fresh machine. 
-
-Some configuration relates to cmder, some to wsl for work.
-
-There is a separate folder for the setup I have on my mac.
-
-TODO: vim rc is currently in a separate repository while I experiment with it in a 
-containerized manner. Eventually, I'd like to have that part of the same dotfiles repo
+TODO: 
+- app-2-configs is outdated and I should do a symlink approach to make sure 
+any changes in these files are always caught here for easy commit back up to remote
+* Make sure to sync changes from work laptop too for vscode, cmder, app-2-configs
+* Test dev-env-setup to use both bash and vim setup
