@@ -1,0 +1,33 @@
+[user]
+	name = Rohail Taimour
+	email = rohail.taimour@external.engie.com
+[core]
+	autocrlf = input
+	editor = vim
+	pager = delta
+	excludesfile = ~/.gitignore
+[alias]
+	check-master = "!git fetch origin master:master && git log --oneline HEAD..master"
+	fpush = push
+
+[rerere]
+	enabled = true
+	autoUpdate = true
+[branch]
+	sort = -committerdate
+[credential]
+	helper = store
+
+[interactive]
+		diffFilter = delta --color-only
+
+[delta]
+		navigate = true    # use n and N to move between diff sections
+
+		# delta detects terminal colors automatically; set one of these to disable auto-detection
+		# dark = true
+		#light = true
+[merge]
+		conflictstyle = diff3
+[diff]
+		colorMoved = default
