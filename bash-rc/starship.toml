@@ -1,0 +1,4 @@
+format = """$hostname $directory $git_branch $character"""
+
+[container]
+disabled = true
