@@ -1,6 +1,7 @@
 call plug#begin('~/.vim/plugged')
 " Plugin list
-Plug 'tomasiser/vim-code-dark'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'arzg/vim-colors-xcode'
 " Plug 'vim-airline/vim-airline'
 " Plug 'vim-airline/vim-airline-themes'
 " Plug 'lambdalisue/fern.vim'
