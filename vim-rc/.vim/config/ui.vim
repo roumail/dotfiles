@@ -1,6 +1,9 @@
 " UI and appearance
 syntax on
 set termguicolors
+set background=dark
+" xcode, xcodedark, xcodedarkhc, xcodehc, 
+colorscheme xcodewwdc
 " colorscheme codedark
 
 " Can't work with codedark - Override the CursorLine and CursorColumn highlight settings 
