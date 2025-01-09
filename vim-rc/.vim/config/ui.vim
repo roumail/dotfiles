@@ -3,18 +3,14 @@ syntax on
 set termguicolors
 set background=dark
 " xcode, xcodedark, xcodedarkhc, xcodehc, 
-colorscheme xcodewwdc
-" colorscheme codedark
-
-" Can't work with codedark - Override the CursorLine and CursorColumn highlight settings 
-" after the codedark colorscheme is loaded
-" highlight CursorLine ctermbg=LightGrey cterm=bold guibg=#505050
-" highlight CursorColumn ctermbg=LightGrey cterm=bold guibg=#505050
-" set cursorline
-" set cursorcolumn
+if filereadable(glob("~/.vim/plugged/vim-colors-xcode/colors/xcode.vim"))
+  colorscheme xcode
+else
+  echo "Color scheme 'xcode' not found. PlugInstall might help."
+endif
 
 " Vertically center document when entering insert mode
-" autocmd InsertEnter * norm zz
+autocmd InsertEnter * norm zz
 
 
 " Cursor settings
@@ -23,5 +19,3 @@ set cursorcolumn
 " highlight CursorLine ctermbg=LightGrey cterm=bold guibg=#505050
 " highlight CursorColumn ctermbg=LightGrey cterm=bold guibg=#505050
 
-" Center document on insert
-" autocmd InsertEnter * norm zz
