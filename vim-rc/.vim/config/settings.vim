@@ -1,4 +1,5 @@
 " General settings
+set nocompatible
 set shell=/bin/bash
 set number relativenumber
 " set mouse=a
