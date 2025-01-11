@@ -2,11 +2,9 @@
 syntax on
 set termguicolors
 set background=dark
-" xcode, xcodedark, xcodedarkhc, xcodehc, 
+" xcodedarkhc, xcodehc 
 if filereadable(glob("~/.vim/plugged/vim-colors-xcode/colors/xcode.vim"))
-  colorscheme xcode
-else
-  echo "Color scheme 'xcode' not found. PlugInstall might help."
+  colorscheme xcodedarkhc
 endif
 
 " Vertically center document when entering insert mode
