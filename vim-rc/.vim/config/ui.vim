@@ -14,7 +14,8 @@ autocmd InsertEnter * norm zz
 " Cursor settings
 set cursorline
 set cursorcolumn
-set colorcolumn=88,120
 highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold 
 highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold 
 
+" Setting the line length to 80
+match ErrorMsg '\%>80v.\+'
