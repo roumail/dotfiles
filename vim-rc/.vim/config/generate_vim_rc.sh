@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Path to your main .vimrc file
-MAIN_VIMRC="$HOME/.vimrc"
-
-# Output file
-DEBUG_VIMRC="$HOME/.vimrc.debug"
+# Define the base directory of your vim-rc setup
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+BASE_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"  # Go two levels up to vim-rc/
+MAIN_VIMRC="$BASE_DIR/.vimrc"
+DEBUG_VIMRC="$BASE_DIR/.vimrc.debug"
 
 # Function to process a vimrc file
 process_vimrc() {
@@ -16,7 +16,7 @@ process_vimrc() {
         return
     fi
 
-    echo "\" \n\" ===== Inlining '$file' =====" >> "$DEBUG_VIMRC"
+    echo "\" ===== Inlining '$file' =====" >> "$DEBUG_VIMRC"
 
     # Read the file line by line
     while IFS= read -r line || [[ -n "$line" ]]; do
@@ -28,21 +28,19 @@ process_vimrc() {
         # Check if the line is a source command
         if [[ "$line" =~ ^source\ ([^[:space:]]+) ]]; then
             sourced_file="${BASH_REMATCH[1]}"
-            # Handle relative paths or tilde expansion
-            sourced_file="${sourced_file/#\~/$HOME}"
             # Recursively process the sourced file
             process_vimrc "$sourced_file"
         else
+            # Add the line to the debug file
             echo "$line" >> "$DEBUG_VIMRC"
         fi
     done < "$file"
 
-    echo "\" ===== End of '$file' ===== \n" >> "$DEBUG_VIMRC"
+    echo "\" ===== End of '$file' =====" >> "$DEBUG_VIMRC"
 }
 
 # Start processing
-# Empty the debug vimrc file
-> "$DEBUG_VIMRC"
+> "$DEBUG_VIMRC"  # Truncate the debug vimrc file
 
 echo "\" ===== Generated Debug VimRC =====" >> "$DEBUG_VIMRC"
 echo "\" This file is auto-generated for debugging purposes." >> "$DEBUG_VIMRC"
@@ -51,4 +49,4 @@ process_vimrc "$MAIN_VIMRC"
 
 echo "\" ===== End of Generated Debug VimRC =====" >> "$DEBUG_VIMRC"
 
-echo "Debug `.vimrc` has been generated at '$DEBUG_VIMRC'."
+echo "Debug \`.vimrc\` has been generated at '$DEBUG_VIMRC'."
