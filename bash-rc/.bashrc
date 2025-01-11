@@ -4,8 +4,8 @@
 # need this unless you want different defaults for root.
 # PS1='${debian_chroot:+($debian_chroot)}\h:\w\$ '
 # umask 022
-
-export TERM=xterm-256color
+# https://marioyepes.com/blog/vim-setup-for-modern-web-development/#themes
+export TERM=xterm-256color-italic
 export LS_OPTIONS='--color=auto'
 # Set SHELL environment variable
 export SHELL=/bin/bash
