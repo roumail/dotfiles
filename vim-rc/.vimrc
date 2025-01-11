@@ -8,7 +8,7 @@ source ~/.vim/config/plugins/palenight.vim
 "source ~/.vim/config/plugins/fzf.vim
 
 " Load general settings and mappings
-source ~/.vim/config/settings.vim
+source ~/.vim/config/general.vim
 source ~/.vim/config/keymaps.vim
 source ~/.vim/config/ui.vim
 " source ~/.vim/config/clipboard.vim
