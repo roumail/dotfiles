@@ -1,19 +1,20 @@
 " UI and appearance
 syntax on
-set termguicolors
+if (has("termguicolors"))
+  set termguicolors
+endif
 set background=dark
 " xcodedarkhc, xcodehc 
-if filereadable(glob("~/.vim/plugged/vim-colors-xcode/colors/xcode.vim"))
-  colorscheme xcodedarkhc
-endif
+"colorscheme xcodedarkhc
+colorscheme palenight
 
 " Vertically center document when entering insert mode
 autocmd InsertEnter * norm zz
 
-
 " Cursor settings
 set cursorline
 set cursorcolumn
-" highlight CursorLine ctermbg=LightGrey cterm=bold guibg=#505050
-" highlight CursorColumn ctermbg=LightGrey cterm=bold guibg=#505050
+set colorcolumn=88,120
+highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold 
+highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold 
 

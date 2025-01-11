@@ -5,6 +5,7 @@
 # PS1='${debian_chroot:+($debian_chroot)}\h:\w\$ '
 # umask 022
 
+export TERM=xterm-256color
 export LS_OPTIONS='--color=auto'
 # Set SHELL environment variable
 export SHELL=/bin/bash
