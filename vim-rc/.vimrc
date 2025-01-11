@@ -12,3 +12,6 @@ source ~/.vim/config/general.vim
 source ~/.vim/config/keymaps.vim
 source ~/.vim/config/ui.vim
 " source ~/.vim/config/clipboard.vim
+
+" Add autocommands
+source ~/.vim/config/autocmds.vim
