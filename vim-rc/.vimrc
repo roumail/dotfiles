@@ -1,17 +1,17 @@
 " Load plugin initialization
-source ~/.vim/config/plugins/init.vim
+source ~/.vim/custom/plug.vim
 
 " Load plugin configurations
-source ~/.vim/config/plugins/palenight.vim
-"source ~/.vim/config/plugins/airline.vim
-"source ~/.vim/config/plugins/fern.vim
-"source ~/.vim/config/plugins/fzf.vim
+source ~/.vim/custom/plugins/palenight.vim
+"source ~/.vim/custom/plugins/airline.vim
+"source ~/.vim/custom/plugins/fern.vim
+"source ~/.vim/custom/plugins/fzf.vim
 
 " Load general settings and mappings
-source ~/.vim/config/general.vim
-source ~/.vim/config/keymaps.vim
-source ~/.vim/config/ui.vim
-" source ~/.vim/config/clipboard.vim
+source ~/.vim/custom/options.vim
+source ~/.vim/custom/keymaps.vim
+source ~/.vim/custom/ui.vim
+" source ~/.vim/custom/clipboard.vim
 
 " Add autocommands
-source ~/.vim/config/autocmds.vim
+source ~/.vim/custom/autocmds.vim
