@@ -3,6 +3,8 @@ source ~/.vim/custom/plug.vim
 
 " Load plugin configurations
 source ~/.vim/custom/plugins/palenight.vim
+source ~/.vim/custom/plugins/coc.vim
+" source ~/.vim/custom/plugins/ale.vim
 "source ~/.vim/custom/plugins/airline.vim
 "source ~/.vim/custom/plugins/fern.vim
 "source ~/.vim/custom/plugins/fzf.vim

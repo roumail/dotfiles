@@ -1,6 +1,8 @@
 call plug#begin('~/.vim/plugged')
 " Plugin list
 Plug 'tpope/vim-sensible'
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intelisense
+" Plug 'dense-analysis/ale'
 " Plug 'arzg/vim-colors-xcode'
 Plug 'drewtempelmeyer/palenight.vim' 
 " Plug 'vim-airline/vim-airline'
