@@ -1,3 +1,6 @@
+let g:go_def_mode='gopls'
+let g:go_info_mode='gopls'
+
 " Bad response https://registry.npmjs.org/coc-ruff: 404
 " \ 'coc-ruff',
 " \ 'coc-black-formatter'
