@@ -1,4 +1,5 @@
-" Autocommands for various behaviors
+" Understand jsconc
+ autocmd FileType json syntax match Comment +\/\/.\+$+
 
 " Remember cursor position when reopening a file
 augroup vimrc-remember-cursor-position
