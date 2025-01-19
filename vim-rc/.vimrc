@@ -29,3 +29,6 @@ source ~/.vim/custom/ui.vim
 
 " Add autocommands
 source ~/.vim/custom/autocmds.vim
+
+" Misc
+source ~/.vim/custom/misc.vim
