@@ -1,6 +1,3 @@
-" Leader key
-let mapleader = " "
-
 " Split navigation
 "map <C-h> <C-w>h
 "map <C-j> <C-w>j
