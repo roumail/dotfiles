@@ -3,6 +3,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-commentary'
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intelisense
+Plug 'sheerun/vim-polyglot'
 " Plug 'dense-analysis/ale'
 " Plug 'arzg/vim-colors-xcode'
 Plug 'drewtempelmeyer/palenight.vim' 
