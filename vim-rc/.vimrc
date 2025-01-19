@@ -9,6 +9,7 @@ source ~/.vim/custom/plugins/coc/autocmds.vim
 source ~/.vim/custom/plugins/coc/commands.vim
 source ~/.vim/custom/plugins/coc/ui.vim
 source ~/.vim/custom/plugins/coc/options.vim
+source ~/.vim/custom/plugins/go.vim
 
 " Load coc key maps ---
 source ~/.vim/custom/plugins/coc/keymaps/completions.vim
