@@ -3,8 +3,20 @@ source ~/.vim/custom/plug.vim
 
 " Load plugin configurations
 source ~/.vim/custom/plugins/palenight.vim
-source ~/.vim/custom/plugins/coc.vim
-" source ~/.vim/custom/plugins/ale.vim
+
+" Load coc configurations ---
+source ~/.vim/custom/plugins/coc/autocmds.vim
+source ~/.vim/custom/plugins/coc/commands.vim
+source ~/.vim/custom/plugins/coc/ui.vim
+source ~/.vim/custom/plugins/coc/options.vim
+
+" Load coc key maps ---
+source ~/.vim/custom/plugins/coc/keymaps/completions.vim
+source ~/.vim/custom/plugins/coc/keymaps/navigation.vim
+source ~/.vim/custom/plugins/coc/keymaps/codeactions.vim
+source ~/.vim/custom/plugins/coc/keymaps/lists.vim
+source ~/.vim/custom/plugins/coc/keymaps/misc.vim
+
 "source ~/.vim/custom/plugins/airline.vim
 "source ~/.vim/custom/plugins/fern.vim
 "source ~/.vim/custom/plugins/fzf.vim
