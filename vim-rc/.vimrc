@@ -4,6 +4,9 @@ source ~/.vim/custom/plug.vim
 " Load plugin configurations
 source ~/.vim/custom/plugins/palenight.vim
 
+" Leader key
+let mapleader = " "
+
 " Load coc configurations ---
 source ~/.vim/custom/plugins/coc/autocmds.vim
 source ~/.vim/custom/plugins/coc/commands.vim
