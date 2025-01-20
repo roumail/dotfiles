@@ -1,5 +1,6 @@
 let g:go_def_mode='gopls'
 let g:go_info_mode='gopls'
+let g:coc_data_home = $XDG_CONFIG_HOME
 
 " Bad response https://registry.npmjs.org/coc-ruff: 404
 " \ 'coc-ruff',
