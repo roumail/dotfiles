@@ -2,7 +2,7 @@
 set nocompatible
 set shell=/bin/bash
 set number relativenumber
-" set mouse=a
+set mouse=a
 set ignorecase            " Search ignoring case
 set smartcase             " Do not ignore case if the search patter is uppercase
 set hlsearch              " Highlight search results
