@@ -21,3 +21,4 @@ alias cp='cp -i'
 alias mv='mv -i'
 # eval "$(gh copilot alias -- bash)"
 eval "$(starship init bash)"
+eval "$(fzf --bash)"
