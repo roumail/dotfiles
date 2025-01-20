@@ -20,9 +20,16 @@ source ~/.vim/custom/plugins/coc/keymaps/codeactions.vim
 source ~/.vim/custom/plugins/coc/keymaps/lists.vim
 source ~/.vim/custom/plugins/coc/keymaps/misc.vim
 
+" Load fzf key maps ---
+source ~/.vim/custom/plugins/fzf/options.vim
+source ~/.vim/custom/plugins/fzf/keymaps.vim
+source ~/.vim/custom/plugins/fzf/commands.vim
+
+" Load coc-fzf key maps ---
+" source ~/.vim/custom/plugins/coc-fzf/keymaps.vim
+
 "source ~/.vim/custom/plugins/airline.vim
 "source ~/.vim/custom/plugins/fern.vim
-"source ~/.vim/custom/plugins/fzf.vim
 
 " Load general settings and mappings
 source ~/.vim/custom/options.vim
