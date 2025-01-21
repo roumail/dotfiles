@@ -6,7 +6,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intelisense
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-" Plug 'antoinemadec/coc-fzf'
 " Plug 'dense-analysis/ale'
 " Plug 'arzg/vim-colors-xcode'
 Plug 'drewtempelmeyer/palenight.vim' 

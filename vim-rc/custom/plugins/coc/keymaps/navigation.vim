@@ -4,12 +4,6 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Symbol Search
-" Find symbol of current document
-nnoremap <silent><nowait> <leader>gs  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent><nowait> <leader>gS  :<C-u>CocList -I symbols<cr>
-
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
 nmap <silent> [g <Plug>(coc-diagnostic-prev)

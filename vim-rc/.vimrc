@@ -25,9 +25,6 @@ source ~/.vim/custom/plugins/fzf/options.vim
 source ~/.vim/custom/plugins/fzf/keymaps.vim
 source ~/.vim/custom/plugins/fzf/commands.vim
 
-" Load coc-fzf key maps ---
-" source ~/.vim/custom/plugins/coc-fzf/keymaps.vim
-
 "source ~/.vim/custom/plugins/airline.vim
 "source ~/.vim/custom/plugins/fern.vim
 
