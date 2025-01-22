@@ -8,6 +8,7 @@
 	excludesfile = ~/.gitignore
 [alias]
 	check-master = "!git fetch origin master:master && git log --oneline HEAD..master"
+	ll="!git log --graph --format='%C(yellow)%h%C(red)%d%C(reset) - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)'"
 	fpush = push
 
 [rerere]

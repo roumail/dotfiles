@@ -7,6 +7,7 @@
 # https://marioyepes.com/blog/vim-setup-for-modern-web-development/#themes
 export TERM=xterm-256color-italic
 export LS_OPTIONS='--color=auto'
+export EDITOR="vim"
 # Set SHELL environment variable
 export SHELL=/bin/bash
 
@@ -19,6 +20,8 @@ alias l='ls $LS_OPTIONS -lA'
 alias rm='rm -i'
 alias cp='cp -i'
 alias mv='mv -i'
+source .fzf-config
+
 # eval "$(gh copilot alias -- bash)"
 eval "$(starship init bash)"
 eval "$(fzf --bash)"
