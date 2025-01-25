@@ -1,11 +1,14 @@
 " Load plugin initialization
 source ~/.vim/custom/plug.vim
 
-" Load plugin configurations
-source ~/.vim/custom/plugins/palenight.vim
-
 " Leader key
 let mapleader = " "
+
+""""""""""""""""""""""""""""""""
+" Load plugin configurations """
+""""""""""""""""""""""""""""""""
+
+source ~/.vim/custom/plugins/palenight.vim
 
 " Load coc configurations ---
 source ~/.vim/custom/plugins/coc/autocmds.vim
@@ -28,7 +31,10 @@ source ~/.vim/custom/plugins/fzf/commands.vim
 "source ~/.vim/custom/plugins/airline.vim
 "source ~/.vim/custom/plugins/fern.vim
 
-" Load general settings and mappings
+"""""""""""""""""""""""""""""""""
+" Load general configurations """
+"""""""""""""""""""""""""""""""""
+
 source ~/.vim/custom/options.vim
 source ~/.vim/custom/keymaps.vim
 source ~/.vim/custom/ui.vim
