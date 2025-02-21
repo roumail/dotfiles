@@ -6,6 +6,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'} " Intelisense
 Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-vinegar'
 " Plug 'christoomey/vim-tmux-navigator'
 " Plug 'arzg/vim-colors-xcode'
 Plug 'drewtempelmeyer/palenight.vim' 
