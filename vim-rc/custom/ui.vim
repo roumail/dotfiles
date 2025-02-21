@@ -1,7 +1,5 @@
 " UI and appearance
 syntax on
-" https://github.com/vim-python/python-syntax?tab=readme-ov-file
-let g:python_highlight_all = 1
 
 if (has("termguicolors"))
   set termguicolors

@@ -1,38 +1,8 @@
 " Load plugin initialization
-"set shell=cmd.exe
-"set shellcmdflag=-c
-"set shellslash
-"set guioptions+=!     " don't open cmd.exe-window on windows in case of :!
-
-"command! MyPlugUpdate   :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noautocmd PlugUpdate
-" PlugInstall
-"command! MyPlugInstall  :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noautocmd PlugInstall
-" PlugClean
-"command! MyPlugClean    :set shell=cmd.exe shellcmdflag=/c noshellslash guioptions-=! <bar> noaucmd PlugClean
-
-call plug#begin("~/vimfiles/plugged")
-" Plugin list
-Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-commentary'
-"Plug 'sheerun/vim-polyglot'
-"Plug 'junegunn/fzf'
-"Plug 'junegunn/fzf.vim'
-Plug 'drewtempelmeyer/palenight.vim' 
-call plug#end()
-
+source ~/vimfiles/custom/plug.vim
 " Leader key
 let mapleader = " "
-
-""""""""""""""""""""""""""""""""
-" Load plugin configurations """
-""""""""""""""""""""""""""""""""
-
-source ~/vimfiles/custom/plugins/palenight.vim
-
-" Load fzf key maps ---
-"source ~/vimfiles/custom/plugins/fzf/options.vim
-"source ~/vimfiles/custom/plugins/fzf/keymaps.vim
-"source ~/vimfiles/custom/plugins/fzf/commands.vim
+" set shell=/bin/bash
 
 """""""""""""""""""""""""""""""""
 " Load general configurations """
@@ -44,7 +14,41 @@ source ~/vimfiles/custom/ui.vim
 " source ~/vimfiles/custom/clipboard.vim
 
 " Add autocommands
-source ~/vimfiles/custom/autocmds.vim
+
+" Understand jsconc
+autocmd FileType json syntax match Comment +\/\/.\+$+
+
+" Remember cursor position when reopening a file
+augroup vimrc-remember-cursor-position
+  autocmd!
+  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+augroup END
 
 " Misc
-source ~/vimfiles/custom/misc.vim
+filetype plugin indent on
+
+" Enable system clipboard access
+set clipboard+=unnamedplus
+
+" WSL clipboard support (adjust path as needed)
+" let s:clip = '/mnt/c/Windows/System32/clip.exe'
+" if executable(s:clip)
+"   augroup WSLYank
+"     autocmd!
+"     autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
+"   augroup END
+" endif
+
+""""""""""""""""""""""""""""""""
+" Load plugin configurations """
+""""""""""""""""""""""""""""""""
+
+source ~/vimfiles/custom/plugins/palenight.vim
+
+" https://github.com/vim-python/python-syntax?tab=readme-ov-file
+" let g:python_highlight_all = 1
+
+" Load fzf key maps ---
+"source ~/vimfiles/custom/plugins/fzf/options.vim
+"source ~/vimfiles/custom/plugins/fzf/keymaps.vim
+"source ~/vimfiles/custom/plugins/fzf/commands.vim

@@ -1,6 +1,5 @@
 " General settings
 set nocompatible
-set shell=/bin/bash
 set number relativenumber
 set mouse=a
 set ignorecase            " Search ignoring case
