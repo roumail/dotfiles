@@ -21,6 +21,7 @@ call plug#begin("~/vimfiles/plugged")
 " Plugin list
 "Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-commentary'
 " Use rg integration with fzf
 Plug 'junegunn/fzf'
