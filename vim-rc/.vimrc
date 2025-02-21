@@ -48,6 +48,7 @@ source ~/.vim/custom/plugins/palenight.vim
 " let g:python_highlight_all = 1
 
 " Load fzf key maps ---
+set rtp+=/opt/homebrew/opt/fzf
 "source ~/.vim/custom/plugins/fzf/options.vim
 "source ~/.vim/custom/plugins/fzf/keymaps.vim
 "source ~/.vim/custom/plugins/fzf/commands.vim
