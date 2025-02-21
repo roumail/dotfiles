@@ -28,3 +28,16 @@ endfunction
 " - When set, CTRL-N and CTRL-P will be bound to 'next-history' and
 "   'previous-history' instead of 'down' and 'up'.
 let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+" Initialize configuration dictionary
+let g:fzf_vim = {}
+
+" fzf.vim needs bash to display the preview window.
+" On Windows, fzf.vim will first see if bash is in $PATH, then if
+" Git bash (C:\Program Files\Git\bin\bash.exe) is available.
+" If you want it to use a different bash, set this variable.
+"   let g:fzf_vim = {}
+"   let g:fzf_vim.preview_bash = 'C:\Git\bin\bash.exe'   
+ 
+" [Tags] Command to generate tags file
+let g:fzf_vim.tags_command = 'ctags -R'
