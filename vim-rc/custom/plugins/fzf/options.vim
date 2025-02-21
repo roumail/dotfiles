@@ -22,6 +22,18 @@ endfunction
 "   \ '<leader>x': 'split',
 "   \ '<leader>v': 'vsplit' }
 
+" Initialize configuration dictionary
+let g:fzf_vim = {}
+
+" fzf.vim needs bash to display the preview window.
+" On Windows, fzf.vim will first see if bash is in $PATH, then if
+" Git bash (C:\Program Files\Git\bin\bash.exe) is available.
+" If you want it to use a different bash, set this variable.
+"   let g:fzf_vim = {}
+"   let g:fzf_vim.preview_bash = 'C:\Git\bin\bash.exe'   
+ 
+" [Tags] Command to generate tags file
+let g:fzf_vim.tags_command = 'ctags -R'
 
 " Enable per-command history
 " - History files will be stored in the specified directory
