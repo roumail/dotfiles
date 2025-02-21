@@ -1,17 +1,16 @@
 " Load plugin initialization
-source ~/vimfiles/custom/plug.vim
+source ~/.vim/custom/plug.vim
 " Leader key
 let mapleader = " "
-" set shell=/bin/bash
+set shell=/bin/bash
 
 """""""""""""""""""""""""""""""""
 " Load general configurations """
 """""""""""""""""""""""""""""""""
 
-source ~/vimfiles/custom/options.vim
-source ~/vimfiles/custom/keymaps.vim
-source ~/vimfiles/custom/ui.vim
-" source ~/vimfiles/custom/clipboard.vim
+source ~/.vim/custom/options.vim
+source ~/.vim/custom/keymaps.vim
+source ~/.vim/custom/ui.vim
 
 " Add autocommands
 
@@ -43,12 +42,12 @@ set clipboard+=unnamedplus
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
 
-source ~/vimfiles/custom/plugins/palenight.vim
+source ~/.vim/custom/plugins/palenight.vim
 
 " https://github.com/vim-python/python-syntax?tab=readme-ov-file
 " let g:python_highlight_all = 1
 
 " Load fzf key maps ---
-"source ~/vimfiles/custom/plugins/fzf/options.vim
-"source ~/vimfiles/custom/plugins/fzf/keymaps.vim
-"source ~/vimfiles/custom/plugins/fzf/commands.vim
+"source ~/.vim/custom/plugins/fzf/options.vim
+"source ~/.vim/custom/plugins/fzf/keymaps.vim
+"source ~/.vim/custom/plugins/fzf/commands.vim
