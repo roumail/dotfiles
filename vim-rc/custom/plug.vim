@@ -1,4 +1,4 @@
-call plug#begin("~/.vim/plugged")
+call plug#begin(g:vimdir . '/plugged')
 " Plugin list
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-sensible'
