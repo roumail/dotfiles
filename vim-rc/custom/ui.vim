@@ -12,6 +12,7 @@ set background=dark
 " xcodedarkhc, xcodehc 
 "colorscheme xcodedarkhc
 colorscheme palenight
+let g:palenight_terminal_italics=1
 
 " Vertically center document when entering insert mode
 autocmd InsertEnter * norm zz

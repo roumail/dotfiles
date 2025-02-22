@@ -64,10 +64,9 @@ set clipboard+=unnamedplus
 """"""""""""""""""""""""""""""""
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
-call MySource('custom/plugins/palenight.vim')
 
 " https://github.com/vim-python/python-syntax?tab=readme-ov-file
-" let g:python_highlight_all = 1
+let g:python_highlight_all = 1
 
 " Load fzf key maps ---
 if isdirectory('/opt/homebrew/opt/fzf')
