@@ -36,3 +36,6 @@ match ErrorMsg '\%>80v.\+'
 " Change based on mode
 let &t_SI = "\e[6 q"      " Vertical bar cursor in Insert mode
 let &t_EI = "\e[2 q"      " Block cursor in Normal mode
+
+" Show matching files when we tab complete
+set wildmenu
