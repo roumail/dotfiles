@@ -2,8 +2,13 @@
 if !exists("g:os")
     if has("win64") || has("win32") || has("win16")
         let g:os = "Windows"
-    else
-        let g:os = substitute(system('uname'), '\n', '', '')
+    elseif executable('uname')
+        let uname_output = system('uname')
+        if uname_output =~? 'MINGW' || uname_output =~? 'CYGWIN' || uname_output =~? 'MSYS'
+            let g:os = "Windows"
+        else
+            let g:os = substitute(system('uname'), '\n', '', '')
+        endif
     endif
 endif
 
@@ -11,6 +16,9 @@ endif
 if g:os ==# 'Windows'
     " On Windows, the default user runtime directory is ~/vimfiles
     let g:vimdir = expand('~/vimfiles')
+    " set shellcmdflag=/c
+    " set noshellslash
+    " set shell = 'C:\Windows\System32\cmd.exe'
 else
     " On Unix-like systems, it's typically ~/.vim
     let g:vimdir = expand('~/.vim')
