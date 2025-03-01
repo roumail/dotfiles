@@ -1,6 +1,7 @@
 " General settings
 set nocompatible
-
+" Allow customization via ~/.vim/ftplugin/
+filetype plugin on
 " Autocomplete for files in subdirectories
 path+=**
 set mouse=a

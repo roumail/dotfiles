@@ -54,9 +54,6 @@ augroup vimrc-remember-cursor-position
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
 
-" Misc
-filetype plugin indent on
-
 " Enable system clipboard access
 set clipboard+=unnamedplus
 
