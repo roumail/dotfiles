@@ -1,4 +1,7 @@
 " UI and appearance
+set number relativenumber
+set hlsearch              " Highlight search results
+set showmatch             " Highlight matching parentheses, brackets, and braces
 syntax on
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
@@ -10,9 +13,13 @@ if (has("termguicolors"))
 endif
 set background=dark
 " xcodedarkhc, xcodehc 
-"colorscheme xcodedarkhc
+"colorscheme xcodedarkhr
 colorscheme palenight
 let g:palenight_terminal_italics=1
+set splitbelow splitright " Open splits below and to the right
+
+autocmd BufRead,BufNewFile *.md,*.txt setlocal wrap " DO wrap on markdown files
+set nowrap                " except on markdown
 
 " Vertically center document when entering insert mode
 autocmd InsertEnter * norm zz
