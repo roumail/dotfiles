@@ -3,11 +3,17 @@ set number relativenumber
 set hlsearch              " Highlight search results
 set showmatch             " Highlight matching parentheses, brackets, and braces
 syntax on
+filetype plugin indent on
+" Set netrw config
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
+" open in prior window
 let g:netrw_browse_split = 4
-let g:netrw_altv = 1
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
+let g:netrw_altv = 1 . " Open splits to the right
 let g:netrw_winsize = 25
+
 if (has("termguicolors"))
   set termguicolors
 endif
