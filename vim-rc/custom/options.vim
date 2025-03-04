@@ -3,7 +3,7 @@ set nocompatible
 " Allow customization via ~/.vim/ftplugin/
 filetype plugin on
 " Autocomplete for files in subdirectories
-path+=**
+set path+=**
 set mouse=a
 set ignorecase            " Search ignoring case
 set smartcase             " Do not ignore case if the search patter is uppercase
