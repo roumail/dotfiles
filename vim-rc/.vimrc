@@ -6,6 +6,8 @@ if !exists("g:os")
         let uname_output = system('uname')
         if uname_output =~? 'MINGW' || uname_output =~? 'CYGWIN' || uname_output =~? 'MSYS'
             let g:os = "Windows"
+        elseif uname_output =~? 'Darwin'
+            let g:os = "MacOS"
         else
             let g:os = substitute(system('uname'), '\n', '', '')
         endif
@@ -22,8 +24,11 @@ if g:os ==# 'Windows'
 else
     " On Unix-like systems, it's typically ~/.vim
     let g:vimdir = expand('~/.vim')
-    " On non-Windows, set shell to bash
-    set shell=/bin/bash
+    if g:os ==# 'MacOS'
+        set shell=/bin/zsh
+    else
+        set shell=/bin/bash
+    endif
 endif
 
 function! MySource(file) abort

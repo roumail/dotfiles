@@ -3,6 +3,7 @@ call plug#begin(g:vimdir . '/plugged')
 Plug 'sheerun/vim-polyglot'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 " Use rg integration with fzf
 Plug 'junegunn/fzf'

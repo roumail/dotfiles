@@ -37,7 +37,8 @@ highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold
 highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold 
 
 " Setting the line length to 80
-match ErrorMsg '\%>80v.\+'
+" match ErrorMsg '\%>80v.\+'
+autocmd FileType * if &filetype !=# 'markdown' | match ErrorMsg '\%>80v.\+' | endif
 
 " Change based on mode
 let &t_SI = "\e[6 q"      " Vertical bar cursor in Insert mode
