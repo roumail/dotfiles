@@ -20,3 +20,9 @@ vmap > >gv
 " Move Visual blocks with J and K
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
+
+" delete without changing buffer 
+nnoremap <leader>d "_dd
+vnoremap <leader>d "_d
+noremap <leader>x "_x
+
