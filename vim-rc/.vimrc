@@ -66,6 +66,12 @@ set clipboard+=unnamedplus
 "   augroup END
 " endif
 
+" Make sure all types of requirements.txt files get syntax highlighting.
+autocmd BufNewFile,BufRead requirements*.txt set ft=python
+
+" Make sure .aliases, .bash_aliases and similar files get syntax highlighting.
+autocmd BufNewFile,BufRead .*aliases* set ft=sh
+
 """"""""""""""""""""""""""""""""
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
