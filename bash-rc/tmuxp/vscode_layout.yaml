@@ -1,0 +1,8 @@
+# tmuxp load vscode_layout.yaml
+windows:
+  - window_name: editor
+    layout: main-horizontal
+    panes:
+      - height: 60  # Top pane is 60% of the window
+      - height: 40  # Bottom pane is 40% of the window
+session_name: vscode_layout

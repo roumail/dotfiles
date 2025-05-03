@@ -1,0 +1,34 @@
+[user]
+	name = Rohail Taimour
+	email = rohail.taimour@gmail.com
+[core]
+	autocrlf = input
+	editor = vim
+	pager = delta
+	excludesfile = ~/.gitignore
+[alias]
+	check-master = "!git fetch origin master:master && git log --oneline HEAD..master"
+	ll="!git log --graph --format='%C(yellow)%h%C(red)%d%C(reset) - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)'"
+	fpush = push
+
+[rerere]
+	enabled = true
+	autoUpdate = true
+[branch]
+	sort = -committerdate
+[credential]
+	helper = store
+
+[interactive]
+		diffFilter = delta --color-only
+
+[delta]
+		navigate = true    # use n and N to move between diff sections
+
+		# delta detects terminal colors automatically; set one of these to disable auto-detection
+		# dark = true
+		#light = true
+[merge]
+		conflictstyle = diff3
+[diff]
+		colorMoved = default
