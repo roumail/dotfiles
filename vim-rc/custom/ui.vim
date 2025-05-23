@@ -15,7 +15,11 @@ let g:netrw_altv = 1  " Open splits to the right
 let g:netrw_winsize = 25
 
 if (has("termguicolors"))
-  set termguicolors
+  if &term !=# 'win32'
+    set termguicolors
+  else
+    set notermguicolors
+  endif
 endif
 set background=dark
 " xcodedarkhc, xcodehc 
@@ -36,10 +40,10 @@ set nowrap                " except on markdown
 autocmd InsertEnter * norm zz
 
 " Cursor settings
-set cursorline
-set cursorcolumn
-highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold 
-highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold 
+" set cursorline
+" set cursorcolumn
+" highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold 
+" highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold 
 
 " Setting the line length to 80
 " match ErrorMsg '\%>80v.\+'

@@ -18,9 +18,20 @@ endif
 if g:os ==# 'Windows'
     " On Windows, the default user runtime directory is ~/vimfiles
     let g:vimdir = expand('~/vimfiles')
-    " set shellcmdflag=/c
-    " set noshellslash
-    " set shell = 'C:\Windows\System32\cmd.exe'
+    if empty($CMDER_ROOT) && isdirectory("C:\cmder")
+        let $CMDER_ROOT= "C:\cmder"
+    endif
+
+    if !empty($CMDER_ROOT) 
+        set shell=$CMDER_ROOT\\cmder_wrapper.cmd
+        " set shell=$CMDER_ROOT\vendor\bin\vscode_init.cmd
+        set shellcmdflag=/c  " Ensures :!commands work properly
+        set shellxquote=     " Avoids wrapping commands in quotes
+        set shellquote=      " Disables quote escaping
+        set noshellslash
+    else
+        set shell = 'C:\Windows\System32\cmd.exe'
+    endif
 else
     " On Unix-like systems, it's typically ~/.vim
     let g:vimdir = expand('~/.vim')
@@ -60,7 +71,12 @@ augroup vimrc-remember-cursor-position
 augroup END
 
 " Enable system clipboard access
-set clipboard+=unnamedplus
+if g:os ==# 'Windows'
+    " On Windows, this was breaking yy
+    set clipboard=
+else
+    set clipboard+=unnamedplus
+endif
 
 " WSL clipboard support (adjust path as needed)
 " let s:clip = '/mnt/c/Windows/System32/clip.exe'
