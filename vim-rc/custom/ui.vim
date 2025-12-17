@@ -33,8 +33,6 @@ let g:palenight_color_overrides = {
 
 set splitbelow splitright " Open splits below and to the right
 
-autocmd BufRead,BufNewFile *.md,*.txt setlocal wrap " DO wrap on markdown files
-set nowrap                " except on markdown
 
 " Vertically center document when entering insert mode
 autocmd InsertEnter * norm zz
@@ -45,9 +43,6 @@ autocmd InsertEnter * norm zz
 " highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold 
 " highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold 
 
-" Setting the line length to 80
-" match ErrorMsg '\%>80v.\+'
-autocmd FileType * if &filetype !=# 'markdown' | match ErrorMsg '\%>80v.\+' | endif
 
 " Change based on mode
 let &t_SI = "\e[6 q"      " Vertical bar cursor in Insert mode

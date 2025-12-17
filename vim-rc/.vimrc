@@ -70,6 +70,15 @@ augroup vimrc-remember-cursor-position
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
 
+" group for your Markdown settings 
+set nowrap                " globally disable wrapping
+"autocmd BufRead,BufNewFile *.md,*.txt setlocal wrap " DO wrap on markdown files
+augroup MarkdownSettings
+    autocmd!
+    " Apply these settings ONLY to markdown files
+    autocmd FileType markdown setlocal wrap linebreak textwidth=0
+augroup END
+
 " Enable system clipboard access
 if g:os ==# 'Windows'
     " On Windows, this was breaking yy
