@@ -1,6 +1,6 @@
 " UI and appearance
 set number relativenumber
-set hlsearch              " Highlight search results
+set nohlsearch              " Highlight search results
 set showmatch             " Highlight matching parentheses, brackets, and braces
 syntax on
 filetype plugin indent on
