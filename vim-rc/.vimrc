@@ -80,12 +80,13 @@ augroup MarkdownSettings
 augroup END
 
 " Enable system clipboard access
-if g:os ==# 'Windows'
-    " On Windows, this was breaking yy
-    set clipboard=
-else
-    set clipboard+=unnamedplus
-endif
+set clipboard=
+"if g:os ==# 'Windows'
+    "" On Windows, this was breaking yy
+    "set clipboard=
+"else
+    "set clipboard+=unnamedplus
+"endif
 
 " WSL clipboard support (adjust path as needed)
 " let s:clip = '/mnt/c/Windows/System32/clip.exe'
