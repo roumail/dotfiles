@@ -49,6 +49,11 @@ endfunction
 " Load plugin initialization
 call MySource('custom/plug.vim')
 
+" Add netrw via packadd
+if exists(':packadd')
+  silent! packadd netrw
+endif
+
 " Leader key
 let mapleader = " "
 
