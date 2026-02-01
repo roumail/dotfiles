@@ -4,3 +4,7 @@
 --glob=!.git/*
 # Case-insensitive unless there is an uppercase letter
 --smart-case
+--column
+--line-number
+--no-heading
+--color=auto
