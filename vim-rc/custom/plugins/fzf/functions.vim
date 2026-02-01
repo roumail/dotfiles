@@ -24,7 +24,6 @@ function! LiveProjectSearch()
     \   'options': [
     \     '--delimiter=:',
     \     '--nth=4..',
-    \     '--with-nth=4..',
     \   ]
     \ }),
     \ 0
