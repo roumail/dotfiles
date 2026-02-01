@@ -8,9 +8,11 @@ nnoremap <leader>b :Buffers<CR>
 " nnoremap <silent> <leader>c :BCommits<CR>
 
 " line search from directory of current buffer down
-nnoremap <Space>/ :Rg<Space>
+" nnoremap <Space>/ :Rg<Space>
+nnoremap <silent> <leader>. :call LiveSiblingSearch()<CR>
+" RgRegex
 " Line search from project root
-nnoremap <Space>f :RgIn<Space>
+nnoremap <silent> <Space>/ :call LiveProjectSearch()<CR>
 " Search files only from the CURRENT buffer's directory
 nnoremap <silent> <leader>. :Files <C-r>=expand("%:h")<CR>/<CR>
 
