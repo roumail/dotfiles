@@ -1,0 +1,6 @@
+# Always search hidden files
+--hidden
+# Never search the .git directory
+--glob=!.git/*
+# Case-insensitive unless there is an uppercase letter
+--smart-case

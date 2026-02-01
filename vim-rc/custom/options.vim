@@ -15,5 +15,5 @@ set softtabstop=4   " Insert/remove 2 spaces when pressing Tab/Backspace
 set wildmode=longest,list,full " enhanced command-line completion
 
 " set timeoutlen=300    " Mapped key sequence duration (1000 ms default)
-set grepprg=rg\ --vimgrep\ --smart-case
+set grepprg=rg\ --vimgrep
 set grepformat=%f:%l:%c:%m,%f:%l:%m

@@ -12,7 +12,7 @@ export LS_OPTIONS='--color=auto'
 export EDITOR="vim"
 # Set SHELL environment variable
 export SHELL=/bin/bash
-
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 eval "$(dircolors)"
 alias ls='ls $LS_OPTIONS'
 alias ll='ls $LS_OPTIONS -al'

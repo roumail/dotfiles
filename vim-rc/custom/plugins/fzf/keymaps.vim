@@ -1,21 +1,27 @@
 " Switch to open buffer
 nnoremap <leader>b :Buffers<CR>
-nnoremap <leader>h :History<CR>
-nnoremap <silent> <leader>C :Commits<CR>
-" line search
-nnoremap <Space>/ :Rg<Space>
-
+" :History:, :History/ for command, and search history
+"nnoremap <leader>h :History<CR>
+" History of commits to current file, BCommits
+"nnoremap <silent> <leader>C :Commits<CR>
 " Bcommits --> current buffer
-nnoremap <silent> <leader>c :BCommits<CR>
+" nnoremap <silent> <leader>c :BCommits<CR>
+
+" line search from directory of current buffer down
+nnoremap <Space>/ :Rg<Space>
+" Line search from project root
+nnoremap <Space>f :RgIn<Space>
+" Search files only from the CURRENT buffer's directory
+nnoremap <silent> <leader>. :Files <C-r>=expand("%:h")<CR>/<CR>
+
 
 nnoremap <silent> <leader><leader> :Files<CR>
-" Sibling file - Same directory
-nnoremap <silent> <leader>. :Files <C-r>=expand("%:h")<CR>/<CR>
+
 " edit a test file
 nnoremap <silent> <leader>et :Files tests<CR>
 
 " status of current Git repository whilst also allowing easy navigation to modified files.
-nnoremap <silent> <leader>g :GFiles?
+nnoremap <silent> <leader>g :GFiles?<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)

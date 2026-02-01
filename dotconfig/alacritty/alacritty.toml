@@ -25,6 +25,6 @@ bindings = [
   	{ key = "ArrowRight", mods = "Command", chars = "\u001bOF" }, # End of line 
   	{ key = "Backspace", mods = "Command", chars = "\u0015" },    # Delete line
 	{ key="ArrowUp", mods="Control|Shift", action="ScrollLineUp" },
-        { key="ArrowDown", mods="Control|Shift", action="ScrollLineDown" }
+    { key="ArrowDown", mods="Control|Shift", action="ScrollLineDown" }
 ]
 
