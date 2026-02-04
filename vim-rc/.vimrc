@@ -102,6 +102,23 @@ set clipboard=
 "   augroup END
 " endif
 
+" WSL specific magic since we get extra lines due to \r\n being
+" misinterpretted
+if has('unix') && executable('win32yank.exe')
+  let g:clipboard = {
+        \ 'name': 'win32yank-wsl',
+        \ 'copy': {
+        \   '+': 'win32yank.exe -i --crlf',
+        \   '*': 'win32yank.exe -i --crlf',
+        \ },
+        \ 'paste': {
+        \   '+': 'win32yank.exe -o --lf',
+        \   '*': 'win32yank.exe -o --lf',
+        \ },
+        \ 'cache_enabled': 0,
+        \ }
+endif
+
 " Make sure all types of requirements.txt files get syntax highlighting.
 autocmd BufNewFile,BufRead requirements*.txt set ft=python
 
