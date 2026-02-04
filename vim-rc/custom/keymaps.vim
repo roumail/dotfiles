@@ -9,28 +9,6 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 
-" :tabn 3 → Goes to the 3rd tab
-" gt / :tabnext → Next tab
-" gT / :tabprevious → Previous tab
-" You can also prefix gt with a count:
-" 3gt → Go to tab 3
-" 1gt → Go to tab 1
-" :tabnew         → Open a new tab page with an empty window
-" :tabedit <file> → Open <file> in a new tab page
-" :tabs           → List all open tab pages
-" :tabnext / :tabn    → Go to next tab page
-" :tabprevious / :tabp → Go to previous tab page
-" :tabfirst       → Go to the first tab page
-" :tablast        → Go to the last tab page
-" :tabclose       → Close the current tab page
-" :tabonly        → Close all other tab pages
-"
-" Further mapping options
-" nnoremap <leader>tn :tabnew<CR>
-" nnoremap <leader>to :tabonly<CR>
-" nnoremap <leader>tc :tabclose<CR>
-" nnoremap <S-Tab>    :tabprevious<CR>
-" nnoremap <Tab>      :tabnext<CR>
 " buffer switching
 nnoremap H :bprevious<CR>
 nnoremap L :bnext<CR>
