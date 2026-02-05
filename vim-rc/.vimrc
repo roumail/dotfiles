@@ -62,7 +62,6 @@ let mapleader = " "
 """""""""""""""""""""""""""""""""
 call MySource('custom/options.vim')
 call MySource('custom/keymaps.vim')
-call MySource('custom/ui.vim')
 
 " Add autocommands
 

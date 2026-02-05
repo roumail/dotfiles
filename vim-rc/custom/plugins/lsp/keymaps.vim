@@ -1,6 +1,3 @@
-" --- General Vim Settings ---
-set signcolumn=yes
-set completeopt=menuone,noselect
 
 " --- Keybindings  ---
 nnoremap K <cmd>LspHover<CR>
