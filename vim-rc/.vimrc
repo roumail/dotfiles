@@ -86,12 +86,12 @@ augroup END
 
 " Enable system clipboard access
 set clipboard=
-"if g:os ==# 'Windows'
-    "" On Windows, this was breaking yy
-    "set clipboard=
-"else
-    "set clipboard+=unnamedplus
-"endif
+" if g:os ==# 'Windows'
+"     " On Windows, this was breaking yy
+"     set clipboard=
+" else
+"     set clipboard+=unnamedplus
+" endif
 
 " WSL clipboard support (adjust path as needed)
 " let s:clip = '/mnt/c/Windows/System32/clip.exe'
@@ -101,6 +101,17 @@ set clipboard=
 "     autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
 "   augroup END
 " endif
+
+augroup StripTrailingCR
+  autocmd!
+  " Trigger on: Read Post, Write Pre (before saving), and exiting a window
+  autocmd BufReadPost,BufWritePre,BufWinLeave *
+        \ if !&readonly && &modifiable && search('\r$', 'nw') |
+        \   let save_cursor = getpos(".") |
+        \   silent! %s/\r$//e |
+        \   call setpos('.', save_cursor) |
+        \ endif
+augroup END
 
 " WSL specific magic since we get extra lines due to \r\n being
 " misinterpretted
