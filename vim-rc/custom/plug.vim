@@ -7,7 +7,11 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-fugitive'
-Plug 'yegappan/lsp'
+" Couldn't get it to work
+" Plug 'yegappan/lsp'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'tpope/vim-unimpaired'
+Plug 'mattn/vim-lsp-settings'
 "Plug 'airblade/vim-gitgutter'
 " Use rg integration with fzf
 Plug 'junegunn/fzf'

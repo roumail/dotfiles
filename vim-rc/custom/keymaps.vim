@@ -15,8 +15,9 @@ nnoremap <Tab> za
 " buffer switching
 nnoremap H :bprevious<CR>
 nnoremap L :bnext<CR>
+" clashes with fzf searches
 nnoremap <leader>bc :bd<CR>
-nnoremap <leader>bc :bufdo bd<CR>
+nnoremap <leader>bC :bufdo bd<CR>
 
 " Split opening
 nnoremap <leader>s :split<CR>
