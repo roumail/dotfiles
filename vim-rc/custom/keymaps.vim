@@ -8,6 +8,9 @@ inoremap jj <Esc>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
+" zm, zr to increase/decrease folding
+nnoremap <Tab> za
+
 
 " buffer switching
 nnoremap H :bprevious<CR>
@@ -45,3 +48,4 @@ vnoremap <leader>d "_d
 vnoremap p "0p gv"
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
+vnoremap <Tab> zf
