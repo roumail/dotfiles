@@ -1,5 +1,5 @@
 " Switch to open buffer
-nnoremap <leader>b :Buffers<CR>
+nnoremap <leader>ob :Buffers<CR>
 " :History:, :History/ for command, and search history
 "nnoremap <leader>h :History<CR>
 " History of commits to current file, BCommits
@@ -23,7 +23,7 @@ nnoremap <silent> <leader><leader> :Files<CR>
 nnoremap <silent> <leader>et :Files tests<CR>
 
 " status of current Git repository whilst also allowing easy navigation to modified files.
-nnoremap <silent> <leader>g :GFiles?<CR>
+nnoremap <silent> <leader>og :GFiles?<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
