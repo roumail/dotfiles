@@ -85,13 +85,13 @@ augroup MarkdownSettings
 augroup END
 
 " Enable system clipboard access
-set clipboard=
-" if g:os ==# 'Windows'
-"     " On Windows, this was breaking yy
-"     set clipboard=
-" else
-"     set clipboard+=unnamedplus
-" endif
+" set clipboard=
+if g:os ==# 'Windows'
+    " On Windows, this was breaking yy
+    set clipboard=
+else
+    set clipboard=unnamed,unnamedplus
+endif
 
 " WSL clipboard support (adjust path as needed)
 " let s:clip = '/mnt/c/Windows/System32/clip.exe'
@@ -102,16 +102,6 @@ set clipboard=
 "   augroup END
 " endif
 
-augroup StripTrailingCR
-  autocmd!
-  " Trigger on: Read Post, Write Pre (before saving), and exiting a window
-  autocmd BufReadPost,BufWritePre,BufWinLeave *
-        \ if !&readonly && &modifiable && search('\r$', 'nw') |
-        \   let save_cursor = getpos(".") |
-        \   silent! %s/\r$//e |
-        \   call setpos('.', save_cursor) |
-        \ endif
-augroup END
 
 " WSL specific magic since we get extra lines due to \r\n being
 " misinterpretted
@@ -129,6 +119,17 @@ if has('unix') && executable('win32yank.exe')
         \ 'cache_enabled': 0,
         \ }
 endif
+
+augroup StripTrailingCR
+  autocmd!
+  " Trigger on: Read Post, Write Pre (before saving), and exiting a window
+  autocmd BufReadPost,BufWritePre,BufWinLeave *
+        \ if !&readonly && &modifiable && search('\r$', 'nw') |
+        \   let save_cursor = getpos(".") |
+        \   silent! %s/\r$//e |
+        \   call setpos('.', save_cursor) |
+        \ endif
+augroup END
 
 " Make sure all types of requirements.txt files get syntax highlighting.
 autocmd BufNewFile,BufRead requirements*.txt set ft=python
