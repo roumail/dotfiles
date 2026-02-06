@@ -1,6 +1,7 @@
 " --- Global LSP Settings ---
 
-" let g:lsp_use_native_client = 1
+let g:lsp_diagnostics_enabled = 0 
+let g:lsp_use_native_client = 1
 let g:lsp_log_verbose = 1
 let g:lsp_log_file = expand('~/vim-lsp.log')
 
