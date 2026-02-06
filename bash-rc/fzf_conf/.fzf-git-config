@@ -34,11 +34,4 @@ fzf_git_log_pickaxe() {
 
 alias glS='fzf_git_log_pickaxe'
 
-# CTRL-G CTRL-B for Branches
-# CTRL-G CTRL-T for Tags
-# CTRL-G CTRL-R for Remotes
-# CTRL-G CTRL-H for commit Hashes
-# CTRL-G CTRL-S for Stashes
-# CTRL-G CTRL-L for reflogs
-# CTRL-G CTRL-W for Worktrees
-
+# https://github.com/junegunn/fzf/wiki/examples#git for more specific inspiration
