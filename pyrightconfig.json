@@ -1,0 +1,11 @@
+{
+  "include": ["."],
+  "exclude": [
+    "**/__pycache__",
+    ".venv"
+  ],
+  "pythonVersion": "3.13",
+  "typeCheckingMode": "off",
+  "venvPath" : "/home/rohail/projects/gopacs",
+  "venv" : ".venv"
+}
