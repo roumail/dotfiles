@@ -1,0 +1,44 @@
+# https://github.com/junegunn/fzf-git.sh
+# Log view
+fzf_git_log() {
+    local selection=$(
+      git log --oneline  --color=always "$@" | \
+        fzf --no-multi --ansi --no-sort --no-height \
+            --preview "echo {} | grep -o '[a-f0-9]\{7\}' | head -1 |
+                       xargs -I@ sh -c 'git show --color=always @'"
+    )
+    if [[ -n $selection ]]; then
+        local commit=$(echo "$selection" | sed 's/^[* |]*//' | awk '{print $1}' | tr -d '\n')
+        git show $commit
+    fi
+}
+
+alias gll='fzf_git_log'
+
+# pick axe
+fzf_git_log_pickaxe() {
+     if [[ $# == 0 ]]; then
+         echo 'Error: search term was not provided.'
+         return
+     fi
+     local selection=$(
+       git log --oneline --color=always -S "$@" |
+         fzf --no-multi --ansi --no-sort --no-height \
+             --preview "git show --color=always {1}"
+     )
+     if [[ -n $selection ]]; then
+         local commit=$(echo "$selection" | awk '{print $1}' | tr -d '\n')
+         git show $commit
+     fi
+ }
+
+alias glS='fzf_git_log_pickaxe'
+
+# CTRL-G CTRL-B for Branches
+# CTRL-G CTRL-T for Tags
+# CTRL-G CTRL-R for Remotes
+# CTRL-G CTRL-H for commit Hashes
+# CTRL-G CTRL-S for Stashes
+# CTRL-G CTRL-L for reflogs
+# CTRL-G CTRL-W for Worktrees
+
