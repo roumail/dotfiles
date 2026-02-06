@@ -1,6 +1,3 @@
-        " \  debug: v:true,
-        " \      autoSearchPaths: true,
-        " \      diagnosticMode: 'workspace',
 " This tells the plugin how to start pyright using lsp plugin
 " if executable('pyright-langserver')
 "     au User LspSetup call LspAddServer([#{
@@ -15,6 +12,20 @@
 "         \ }])
 " endif
 
+" In case you want to enable diagnosticMode, and specify specific overrides
+" \             'diagnosticSeverityOverrides': {
+" \                 'reportGeneralTypeIssues': 'warning',
+" \                 'analyzeUnannotatedFunctions': 'warning',
+" \                 'strictParameterNoneValue': 'warning',
+" \                 'reportOptionalSubscript': 'warning',
+" \                 'reportOptionalMemberAccess': 'warning',
+" \                 'reportOptionalCall': 'warning',
+" \                 'reportOptionalIterable': 'warning',
+" \                 'reportOptionalContextManager': 'warning',
+" \                 'reportOptionalOperand': 'warning',
+" \                 'reportDeprecated': 'warning',
+" \             },
+
 if executable('pyright-langserver')
     au User lsp_setup call lsp#register_server({
         \ 'name': 'pyright',
@@ -28,20 +39,8 @@ if executable('pyright-langserver')
         \ 'config': {
         \     'python': {
         \         'analysis': {
-        \             'typeCheckingMode': 'basic',
-        \             'diagnosticsMode': 'openFilesOnly',
-        " \             'diagnosticSeverityOverrides': {
-        " \                 'reportGeneralTypeIssues': 'warning',
-        " \                 'analyzeUnannotatedFunctions': 'warning',
-        " \                 'strictParameterNoneValue': 'warning',
-        " \                 'reportOptionalSubscript': 'warning',
-        " \                 'reportOptionalMemberAccess': 'warning',
-        " \                 'reportOptionalCall': 'warning',
-        " \                 'reportOptionalIterable': 'warning',
-        " \                 'reportOptionalContextManager': 'warning',
-        " \                 'reportOptionalOperand': 'warning',
-        " \                 'reportDeprecated': 'warning',
-        " \             },
+        \             'typeCheckingMode': 'off',
+        \             'diagnosticsMode': 'off'
         \         }
         \     }
         \ },
