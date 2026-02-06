@@ -11,6 +11,12 @@ set shiftwidth=4                " Set the number of spaces for auto-indents
 set expandtab                   " Use spaces instead of tab characters
 set softtabstop=4               " Insert/remove 2 spaces when pressing Tab/Backspace
 set fileformats=unix,dos
+set tabline=%!MyTabLine()
+set showtabline=2
+
+" Session sane defaults
+set sessionoptions+=globals,tabpages,winpos,terminal
+set sessionoptions-=options
 
 " Autocomplete for files in subdirectories
 set path+=**

@@ -136,6 +136,28 @@ autocmd BufNewFile,BufRead requirements*.txt set ft=python
 " Make sure .aliases, .bash_aliases and similar files get syntax highlighting.
 autocmd BufNewFile,BufRead .*aliases* set ft=sh
 
+" tab rename utility
+command! -nargs=1 TabRename let t:tabname = <q-args>
+
+function! MyTabLine()
+  let s = ''
+  for i in range(tabpagenr('$'))
+    let tab = i + 1
+    let name = gettabvar(tab, 'tabname', tab)
+    " Highlight active tab differently
+    " let s .= '%' . tab . 'T ' . name . ' '
+    if tab == tabpagenr()
+        let s .= '%#TabLineSel#'
+    else
+        let s .= '%#TabLine#'
+    endif
+    let s .= ' ' . name . ' '
+  endfor
+  " Fill the rest of the line
+  let s .= '%#TabLineFill#'
+  return s
+endfunction
+
 """"""""""""""""""""""""""""""""
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
@@ -148,6 +170,7 @@ let g:instant_markdown_autostart = 0
 if isdirectory('/opt/homebrew/opt/fzf')
     set rtp+=/opt/homebrew/opt/fzf
 endif
+
 call MySource('custom/plugins/fzf/functions.vim')
 call MySource('custom/plugins/fzf/options.vim')
 call MySource('custom/plugins/fzf/keymaps.vim')
