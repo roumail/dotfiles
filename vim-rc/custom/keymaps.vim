@@ -11,6 +11,9 @@ nnoremap <leader>d "_dd
 " zm, zr to increase/decrease folding
 nnoremap <Tab> za
 
+" Save session - load session
+nnoremap <leader>ss :mksession! Session.vim<CR>
+nnoremap <leader>sl :source Session.vim<CR>
 
 " buffer switching
 nnoremap H :bprevious<CR>

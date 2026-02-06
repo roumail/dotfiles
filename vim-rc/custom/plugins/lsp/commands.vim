@@ -23,25 +23,25 @@ if executable('pyright-langserver')
         \ 'root_uri':{server_info->lsp#utils#path_to_uri(
         \  lsp#utils#find_nearest_parent_file_directory(
         \    lsp#utils#get_buffer_path(),
-        \    ['setup.py', 'pyrightconfig.json', '.git/']
+        \    ['pyrightconfig.json', '.git/']
         \  ))},
         \ 'config': {
         \     'python': {
         \         'analysis': {
         \             'typeCheckingMode': 'basic',
         \             'diagnosticsMode': 'openFilesOnly',
-        \             'diagnosticSeverityOverrides': {
-        \                 'reportGeneralTypeIssues': 'warning',
-        \                 'analyzeUnannotatedFunctions': 'warning',
-        \                 'strictParameterNoneValue': 'warning',
-        \                 'reportOptionalSubscript': 'warning',
-        \                 'reportOptionalMemberAccess': 'warning',
-        \                 'reportOptionalCall': 'warning',
-        \                 'reportOptionalIterable': 'warning',
-        \                 'reportOptionalContextManager': 'warning',
-        \                 'reportOptionalOperand': 'warning',
-        \                 'reportDeprecated': 'warning',
-        \             },
+        " \             'diagnosticSeverityOverrides': {
+        " \                 'reportGeneralTypeIssues': 'warning',
+        " \                 'analyzeUnannotatedFunctions': 'warning',
+        " \                 'strictParameterNoneValue': 'warning',
+        " \                 'reportOptionalSubscript': 'warning',
+        " \                 'reportOptionalMemberAccess': 'warning',
+        " \                 'reportOptionalCall': 'warning',
+        " \                 'reportOptionalIterable': 'warning',
+        " \                 'reportOptionalContextManager': 'warning',
+        " \                 'reportOptionalOperand': 'warning',
+        " \                 'reportDeprecated': 'warning',
+        " \             },
         \         }
         \     }
         \ },
@@ -60,7 +60,8 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
     nmap <buffer> gr <plug>(lsp-references)
     nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
+    " clashes with go to tab
+    " nmap <buffer> gt <plug>(lsp-type-definition)
     nmap <buffer> <leader>rn <plug>(lsp-rename)
     nmap <buffer> <leader>ca <plug>(lsp-code-action)
     " nmap <buffer> [g <plug>(lsp-previous-diagnostic)
