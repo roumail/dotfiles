@@ -171,7 +171,7 @@ if isdirectory('/opt/homebrew/opt/fzf')
     set rtp+=/opt/homebrew/opt/fzf
 endif
 
-call MySource('custom/plugins/fzf/functions.vim')
+" call MySource('custom/plugins/fzf/functions.vim')
 call MySource('custom/plugins/fzf/options.vim')
 call MySource('custom/plugins/fzf/keymaps.vim')
 call MySource('custom/plugins/fzf/commands.vim')

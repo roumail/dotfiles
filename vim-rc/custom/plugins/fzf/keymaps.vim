@@ -18,10 +18,10 @@ nnoremap <leader>ob :Buffers<CR>
 
 " RgRegex
 " Line search from current directory (often project root directory)
-nnoremap <silent> <leader>. :RgRegex<Space>
-" Fuzzy search in given directory
-nnoremap <silent> <leader>/ :FzGrep<Space>
+nnoremap <silent> <leader>. :Rg<Space>
 
+" Insert word under cursor
+nnoremap <silent> <Leader>rg :Rg <C-R><C-W><CR> 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
@@ -39,3 +39,4 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " Bcommits --> current buffer
 " nnoremap <silent> <leader>c :BCommits<CR>
 
+xnoremap <silent> <Leader>rg y:Rg <C-R>"<CR>
