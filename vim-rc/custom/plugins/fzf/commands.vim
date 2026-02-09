@@ -13,6 +13,7 @@ command! -bang -nargs=* Buffers
       \ call fzf#vim#buffers(fzf#vim#with_preview(), <bang>0)
 
 function! s:rg_regex(args, bang) abort
+  " let l:argv = split(a:args, '\s\+', 1)
   let l:argv = split(a:args)
   let l:pattern = remove(l:argv, 0)
   let l:paths = join(map(l:argv, 'shellescape(v:val)'), ' ')
