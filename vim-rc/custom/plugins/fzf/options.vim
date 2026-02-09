@@ -10,11 +10,11 @@ let g:fzf_commits_log_options = '--graph --color=always
   \ - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)"'
 
 " An action can be a reference to a function that processes selected lines
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
-  copen
-  cc
-endfunction
+" function! s:build_quickfix_list(lines)
+"   call setqflist(map(copy(a:lines), '{ "filename": v:val, "lnum": 1 }'))
+"   copen
+"   cc
+" endfunction
 
 " let g:fzf_action = {
 "   \ '<leader>q': function('s:build_quickfix_list'),
