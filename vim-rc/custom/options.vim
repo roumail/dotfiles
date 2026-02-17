@@ -78,7 +78,7 @@ set splitbelow splitright " Open splits below and to the right
 
 
 " Vertically center document when entering insert mode
-autocmd InsertEnter * norm zz
+" autocmd InsertEnter * norm zz
 
 " Cursor settings
 " set cursorline
