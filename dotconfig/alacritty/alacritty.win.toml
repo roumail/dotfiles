@@ -1,0 +1,51 @@
+[window]
+title = "Alacritty"
+dynamic_title = false
+
+[scrolling]
+  # How many lines of scrollback to keep,
+  # '0' will disable scrolling.
+  history= 10000
+
+  # Number of lines the viewport will move for every line
+  # scrolled when scrollback is enabled (history > 0).
+  multiplier= 3
+
+# [terminal.shell]
+# program = "C:\\Windows\\System32\\wsl.exe -d Debian -u rohail"
+# args = ["--cd ~"]
+        
+[env]
+TERM = "xterm-256color"
+
+[selection]
+save_to_clipboard = true
+
+[mouse]
+hide_when_typing = true
+bindings = [
+  { mouse = "Right", mods = "Control", action = "Paste" },
+  ]
+
+[font.normal]
+# family = "MesloLGS Nerd Font Mono"
+family = "MesloLGS NF"
+
+
+[keyboard]
+bindings = [
+      # { key = "C", mods = "Control", action = "Copy" },
+      { key = "C", mods = "Control|Shift", action = "Copy" },
+      # { key = "V", mods = "Control", action = "Paste" },
+      { key = "V", mods = "Control|Shift", action = "Paste" },
+      { key = "c", mods = "Alt", chars="\u001Bc" },
+      { key = "Left", mods = "Alt", chars="\u001Bb" },
+      { key = "Right", mods = "Alt", chars="\u001Bf" },
+      { key = "ArrowLeft", mods = "Command", chars = "\u001bOH" },
+      { key = "ArrowRight", mods = "Command", chars = "\u001bOF" },
+      { key = "Backspace", mods = "Command", chars = "\u0015" },
+      { key = "Backspace", mods = "Control", chars = "\u001b\u007f" },
+      { key="ArrowUp", mods="Control|Shift", action="ScrollLineUp" },
+      { key="ArrowDown", mods="Control|Shift", action="ScrollLineDown" } 
+    ]
+
