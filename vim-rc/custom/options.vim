@@ -11,9 +11,9 @@ set shiftwidth=4                " Set the number of spaces for auto-indents
 set expandtab                   " Use spaces instead of tab characters
 set softtabstop=4               " Insert/remove 2 spaces when pressing Tab/Backspace
 set fileformats=unix,dos
-set tabline=%!MyTabLine()
-set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
-set showtabline=2
+" set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
+" set tabline=%!MyTabLine()
+" set showtabline=2
 
 " Session sane defaults
 set sessionoptions+=globals,tabpages,winpos,terminal

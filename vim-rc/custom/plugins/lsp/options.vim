@@ -1,10 +1,27 @@
 " --- Global LSP Settings ---
 
-let g:lsp_diagnostics_enabled = 0 
 let g:lsp_use_native_client = 1
 let g:lsp_log_verbose = 1
 let g:lsp_log_file = expand('~/vim-lsp.log')
-
+let g:lsp_diagnostics_enabled = 0 
+let g:lsp_diagnostics_highlights_enabled = 0
+let g:lsp_document_code_action_signs_enabled = 1
+let g:lsp_inlay_hints_enabled = 1
+let g:lsp_completion_documentation_enabled = 0
+let g:lsp_document_highlight_enabled = 0
+let g:lsp_signature_help_enabled = 0
+let g:lsp_fold_enabled = 0
+" Preview remains open and expects an explicit close call| None = Non
+" <Plug>(lsp-peek-implementation)e
+let g:lsp_preview_autoclose = 0
+" Opens preview windows as normal windows
+let g:lsp_preview_float = 0
+" Do not keep the focus in current window.
+" Move the focus to |preview-window|.
+let g:lsp_preview_keep_focus= 0
+" '', 'float', 'preview'
+" let g:lsp_hover_ui = 'preview'
+let g:lsp_semantic_enabled = 0
 " lsp config
 " let lspOpts = #{
 "         \   aleSupport: v:false,

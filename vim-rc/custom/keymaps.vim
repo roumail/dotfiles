@@ -9,7 +9,7 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 " zm, zr to increase/decrease folding
-nnoremap <Tab> za
+nnoremap <leader>f za
 
 " Save session - load session
 nnoremap <leader>ss :mksession! Session.vim<CR>
@@ -33,10 +33,10 @@ nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
 
 " Location navigation
-nnoremap <leader>nb <C-o>
-nnoremap <leader>nf <C-i>
+" nnoremap <leader>nb <C-o>
+" nnoremap <leader>nf <C-i>
 " last edit location
-nnoremap <leader>el `.
+" nnoremap <leader>el `.
 
 " Open netrw
 nnoremap <leader>se :Explore<CR>
@@ -52,4 +52,4 @@ vnoremap <leader>d "_d
 vnoremap p "0p gv"
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
-vnoremap <Tab> zf
+vnoremap <leader>f zf
