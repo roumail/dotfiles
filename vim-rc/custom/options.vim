@@ -11,9 +11,6 @@ set shiftwidth=4                " Set the number of spaces for auto-indents
 set expandtab                   " Use spaces instead of tab characters
 set softtabstop=4               " Insert/remove 2 spaces when pressing Tab/Backspace
 set fileformats=unix,dos
-" set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
-" set tabline=%!MyTabLine()
-" set showtabline=2
 
 " Session sane defaults
 set sessionoptions+=globals,tabpages,winpos,terminal
@@ -26,7 +23,6 @@ set wildmenu
 set wildmode=longest,list,full  " enhanced command-line completion
 set completeopt=menuone,noselect
 
-set signcolumn=yes
 
 " set timeoutlen=300    " Mapped key sequence duration (1000 ms default)
 set grepprg=rg\ --vimgrep
@@ -35,9 +31,18 @@ set grepformat=%f:%l:%c:%m,%f:%l:%m
 """"""""""""""""""""""""""""""""""""
 " UI and appearance
 """"""""""""""""""""""""""""""""""""
+" set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
+" set tabline=%!MyTabLine()
+" set showtabline=2
+set signcolumn=yes
 set number relativenumber
-set nohlsearch              " Highlight search results
+set hlsearch              " Highlight search results
+set incsearch             " Incremental search (highlight as you type)
+" set nohlsearch              
 set foldmethod=indent              
+set ruler
+set shortmess-=S           " allow search count messages
+set nowrapscan             " Don't wrap search at end of file
 set foldnestmax=3
 set foldlevel=99
 set showmatch             " Highlight matching parentheses, brackets, and braces
