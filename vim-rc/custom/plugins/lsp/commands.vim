@@ -12,25 +12,11 @@
 "         \  }}
 "         \ }])
 " endif
-
-if executable('pyright-langserver')
+if executable('ty')
     au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyright',
-        \ 'cmd': {server_info->['pyright-langserver', '--stdio']},
+        \ 'name': 'ty',
+        \ 'cmd': {server_info->['ty', 'server']},
         \ 'allowlist': ['python'],
-        \ 'root_uri':{server_info->lsp#utils#path_to_uri(
-        \  lsp#utils#find_nearest_parent_file_directory(
-        \    lsp#utils#get_buffer_path(),
-        \    ['pyrightconfig.json', 'pyproject.toml', '.git/']
-        \  ))},
-        \ 'config': {
-        \     'python': {
-        \         'analysis': {
-        \             'typeCheckingMode': 'off',
-        \             'diagnosticsMode': 'off'
-        \         }
-        \     }
-        \ },
   \ })
 endif
 
