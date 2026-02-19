@@ -25,6 +25,8 @@ let g:lsp_semantic_enabled = 0
 
 
 " -- Vim lsp settings config ---
+let g:lsp_settings_filetype_json = 'json-languageserver'
+let g:lsp_settings_filetype_yaml = 'yaml-language-server'
 let g:lsp_settings_filetype_python = 'ty'
 " These settings seem to be ignored
 let g:lsp_settings = {
