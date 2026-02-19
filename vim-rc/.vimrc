@@ -136,7 +136,7 @@ autocmd BufNewFile,BufRead requirements*.txt set ft=python
 " Make sure .aliases, .bash_aliases and similar files get syntax highlighting.
 autocmd BufNewFile,BufRead .*aliases* set ft=sh
 
-
+autocmd BufReadPost fugitive://* set bufhidden=delete
 """"""""""""""""""""""""""""""""
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
