@@ -32,6 +32,8 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> <leader>ch <plug>(lsp-hover)
   " nnoremap <plug>(lsp-hover)
   " nnoremap <plug>(lsp-hover-float)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
   " nnoremap <plug>(lsp-hover-preview)
     nmap <buffer> <leader>cd  <plug>(lsp-hover)
   " nnoremap <plug>(lsp-document-range-format)
@@ -41,6 +43,7 @@ function! s:on_lsp_buffer_enabled() abort
     " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
     
     " refer to doc to add more commands
+    nnoremap <buffer> <leader>md :MyToggleLSPDiagnostics<CR>zz
 endfunction
 
 augroup lsp_install

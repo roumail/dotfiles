@@ -4,6 +4,7 @@ let g:lsp_use_native_client = 1
 let g:lsp_log_verbose = 1
 let g:lsp_log_file = expand('~/vim-lsp.log')
 let g:lsp_diagnostics_enabled = 1 
+" highlight link lspReference Search
 let g:lsp_diagnostics_highlights_enabled = 1
 let g:lsp_document_code_action_signs_enabled = 1
 let g:lsp_inlay_hints_enabled = 0
