@@ -9,11 +9,12 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 " zm, zr to increase/decrease folding
-nnoremap <leader>f za
+" nnoremap <leader>f za
+" nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied to clipboard!"<CR>
 
 " Save session - load session
-nnoremap <leader>ss :mksession! Session.vim<CR>
-nnoremap <leader>sl :source Session.vim<CR>
+" nnoremap <leader>ss :mksession! Session.vim<CR>
+" nnoremap <leader>sl :source Session.vim<CR>
 
 " buffer switching
 nnoremap H :bprevious<CR>
