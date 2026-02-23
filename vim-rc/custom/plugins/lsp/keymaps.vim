@@ -18,7 +18,7 @@ function! s:on_lsp_buffer_enabled() abort
   " not available
   " nnoremap <plug>(lsp-code-lens) 
     " Map 'Leader + f' to focus the LSP popup
-    nmap <buffer> <leader>f <plug>(lsp-preview-focus)
+    nmap <buffer> <leader>pf <plug>(lsp-preview-focus)
     " nnoremap <plug>(lsp-document-symbol)
     nmap <buffer> gs <plug>(lsp-document-symbol-search)
     nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
