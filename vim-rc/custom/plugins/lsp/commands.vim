@@ -28,22 +28,29 @@ endif
 " augroup END
 
 " Toggling diagnostics and virtual text {{{
-autocmd BufEnter * let b:my_lsp_diagnostics_enabled = 1
-function! s:MyToggleLSPDiagnostics()
-	" source: https://github.com/prabirshrestha/vim-lsp/issues/1312
-    if !exists('b:my_lsp_diagnostics_enabled')
-		" Ensure the buffer variable is defined
-        let b:my_lsp_diagnostics_enabled = 1
-    endif
-    if b:my_lsp_diagnostics_enabled == 1
-        call lsp#disable_diagnostics_for_buffer()
-        let b:my_lsp_diagnostics_enabled = 0
-        echo "LSP Diagnostics : OFF"
-    else
+let g:lsp_diagnostics_default_on = 0  " Set to 1 for ON, 0 for OFF
+" ----------------------------------------
+
+function! s:ApplyLSPState(enable, silent)
+    if a:enable
         call lsp#enable_diagnostics_for_buffer()
         let b:my_lsp_diagnostics_enabled = 1
-        echo "LSP Diagnostics : ON"
+        if !a:silent | echo "LSP Diagnostics : ON" | endif
+    else
+        call lsp#disable_diagnostics_for_buffer()
+        let b:my_lsp_diagnostics_enabled = 0
+        if !a:silent | echo "LSP Diagnostics : OFF" | endif
     endif
 endfunction
+
+" Initialize buffer based on global default
+autocmd BufEnter * if !exists('b:my_lsp_diagnostics_enabled') | call s:ApplyLSPState(g:lsp_diagnostics_default_on, 1) | endif
+
+" Toggle function flips the current buffer state
+function! s:MyToggleLSPDiagnostics()
+    let l:current = get(b:, 'my_lsp_diagnostics_enabled', g:lsp_diagnostics_default_on)
+    call s:ApplyLSPState(!l:current, 0)
+endfunction
+
 command MyToggleLSPDiagnostics call s:MyToggleLSPDiagnostics()
 " Toggling diagnostic and virtual text }}}
