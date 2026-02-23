@@ -9,7 +9,6 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 " zm, zr to increase/decrease folding
-" nnoremap <leader>f za
 nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied to clipboard!"<CR>
 
 " Save session - load session
@@ -33,12 +32,6 @@ nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
 
-" Location navigation
-" nnoremap <leader>nb <C-o>
-" nnoremap <leader>nf <C-i>
-" last edit location
-" nnoremap <leader>el `.
-
 " Open netrw
 nnoremap <leader>se :Explore<CR>
 
@@ -53,4 +46,5 @@ vnoremap <leader>d "_d
 vnoremap p "0p gv"
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
-vnoremap <leader>f zf
+" Clashes with 
+" vnoremap <leader>f zf

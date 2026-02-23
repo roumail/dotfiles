@@ -6,10 +6,10 @@ set menu-complete-display-prefix on
 
 # Make TAB cycle through options
 TAB: menu-complete
-"\e[Z": menu-complete-backward   # Shift+Tab
+# Shift+Tab
+"\e[Z": menu-complete-backward
 
 # History improvements
-set history-search-ignore-case on
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 
