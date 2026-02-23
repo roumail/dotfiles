@@ -1,1 +1,31 @@
+# Better completion UX
+set show-all-if-ambiguous on
+set completion-ignore-case on
+set completion-map-case on
+set menu-complete-display-prefix on
+
+# Make TAB cycle through options
+TAB: menu-complete
+"\e[Z": menu-complete-backward   # Shift+Tab
+
+# History improvements
+set history-search-ignore-case on
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# Better Ctrl+R (still readline-native)
+set keyseq-timeout 0
+
+# Don’t overwrite text when completing
+set skip-completed-text on
+
+# Show more context
+set completion-prefix-display-length 2
+
+# Enable colored completion (if supported)
+set colored-stats on
+set visible-stats on
+
+# Bell → off 
+set bell-style none
 "\e\C-?": unix-filename-rubout
