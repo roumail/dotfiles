@@ -11,7 +11,7 @@ set shiftwidth=4                " Set the number of spaces for auto-indents
 set expandtab                   " Use spaces instead of tab characters
 set softtabstop=4               " Insert/remove 2 spaces when pressing Tab/Backspace
 set fileformats=unix,dos
-
+set updatetime=100              " As recommended by vim-gitgutter
 " Session sane defaults
 set sessionoptions+=globals,tabpages,winpos,terminal
 set sessionoptions-=options
