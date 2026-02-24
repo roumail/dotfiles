@@ -15,7 +15,8 @@ set updatetime=100              " As recommended by vim-gitgutter
 " Session sane defaults
 set sessionoptions+=globals,tabpages,winpos,terminal
 set sessionoptions-=options
-
+# Enable auto - save
+set autowrite
 " Autocomplete for files in subdirectories
 set path+=**
 " Show matching files when we tab complete
