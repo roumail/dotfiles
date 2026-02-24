@@ -157,3 +157,15 @@ call MySource('custom/plugins/fzf/commands.vim')
 call MySource('custom/plugins/lsp/options.vim')
 call MySource('custom/plugins/lsp/commands.vim')
 call MySource('custom/plugins/lsp/keymaps.vim')
+
+""""""""""""""""""""""""""""""""""""""
+" Load project local configuration """
+""""""""""""""""""""""""""""""""""""""
+
+if exists('b:project_config_loaded')
+    finish
+endif
+let b:project_config_loaded = 1
+if filereadable(".vim.custom")
+    so .vim.custom
+endif
