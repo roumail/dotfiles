@@ -24,6 +24,8 @@ let g:fzf_action = {
 
 " Initialize configuration dictionary
 let g:fzf_vim = {}
+" Avoid matching on file name
+let g:fzf_vim.rg_options = '--nth 4..'
 
 " fzf.vim needs bash to display the preview window.
 " On Windows, fzf.vim will first see if bash is in $PATH, then if
