@@ -64,6 +64,8 @@ call MySource('custom/options.vim')
 call MySource('custom/keymaps.vim')
 
 " Add autocommands
+command! QuickFixToLocList call setloclist(0, getqflist())
+command! LocListToQuickFix call setqflist(getloclist(0))
 
 " Understand jsconc
 autocmd FileType json syntax match Comment +\/\/.\+$+
