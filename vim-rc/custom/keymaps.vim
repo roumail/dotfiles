@@ -10,6 +10,7 @@ nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 " zm, zr to increase/decrease folding
 nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied to clipboard!"<CR>
+nnoremap <leader>rl :source $MYVIMRC<CR>
 
 " Save session - load session
 " nnoremap <leader>ss :mksession! Session.vim<CR>
