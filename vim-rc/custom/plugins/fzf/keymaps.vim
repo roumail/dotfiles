@@ -17,11 +17,11 @@ nnoremap <leader>ob :Buffers<CR>
 " nnoremap <silent> <leader>. :call LiveSiblingSearch()<CR>
 
 " RgRegex
-" Line search from current directory (often project root directory)
-nnoremap <silent> <leader>. :Rg<Space>
+" Line search from project root directory
+nnoremap <silent> <leader>. :MyRG!<Space>
 
-" Insert word under cursor
-nnoremap <silent> <Leader>rg :Rg <C-R><C-W><CR> 
+" Search for word under cursor
+nnoremap <silent> <Leader>rg :Rg!<C-R><C-W><CR> 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
