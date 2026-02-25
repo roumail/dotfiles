@@ -16,7 +16,7 @@ nnoremap <leader>ob :Buffers<CR>
 " nnoremap <Space>/ :Rg<Space>
 " nnoremap <silent> <leader>. :call LiveSiblingSearch()<CR>
 
-" RgRegex
+" TODO: RgRegex, fixed string words?
 " Line search from project root directory
 nnoremap <silent> <leader>. :MyRG!<CR>
 
