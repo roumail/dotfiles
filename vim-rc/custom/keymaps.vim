@@ -49,3 +49,6 @@ vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 " Clashes with saving file to system registry
 " vnoremap <leader>f zf
+
+" terminal input mode mapping
+tnoremap <Esc><Esc> <C-w>N
