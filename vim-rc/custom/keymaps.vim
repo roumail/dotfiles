@@ -3,6 +3,7 @@
 
 " Insert mode mappings
 inoremap jj <Esc>
+inoremap jk <Esc>:w<CR>
 
 " Normal mode mappings
 nnoremap <leader>w :w<CR>
