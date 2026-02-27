@@ -52,3 +52,7 @@ vnoremap K :m '<-2<CR>gv=gv
 
 " terminal input mode mapping
 tnoremap <Esc><Esc> <C-w>N
+tnoremap <Esc>h <C-w>h
+tnoremap <Esc>j <C-w>j
+tnoremap <Esc>k <C-w>k
+tnoremap <Esc>l <C-w>l
