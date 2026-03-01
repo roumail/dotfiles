@@ -1,3 +1,7 @@
+$include /etc/inputrc
+
+set editing-mode vi
+set show-mode-in-prompt on
 # Better completion UX
 set show-all-if-ambiguous on
 set completion-ignore-case on
