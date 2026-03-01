@@ -9,6 +9,7 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 " zm, zr to increase/decrease folding
+" zM, zR for unfolfing/collapsing all
 nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied to clipboard!"<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
 
@@ -44,8 +45,17 @@ vmap > >gv
 
 " Move Visual blocks with J and K
 vnoremap <leader>d "_d
-vnoremap p "0p gv"
+" vnoremap p "0p gv"
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 " Clashes with saving file to system registry
 " vnoremap <leader>f zf
+" Don't overwrite register with selection, losing previous yank
+" xnoremap p p<Esc>
+xnoremap p "_dP<Esc>
+" terminal input mode mapping
+tnoremap <Esc><Esc> <C-w>N
+tnoremap <Esc>h <C-w>h
+tnoremap <Esc>j <C-w>j
+tnoremap <Esc>k <C-w>k
+tnoremap <Esc>l <C-w>l
