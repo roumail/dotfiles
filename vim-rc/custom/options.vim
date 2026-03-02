@@ -6,6 +6,14 @@ set mouse=a
 set ignorecase                  " Search ignoring case
 set smartcase                   " Do not ignore case if the search patter is uppercase
 set noswapfile                  " Do not leave any backup files
+" set noswapfile                  " Do not leave any backup files
+" https://itsfoss.gitlab.io/blog/vim-doesnt-terminate-when-terminal-is-forcefully-closed/
+" the // tells vim to create subdirectories for each file under these
+" subdirectories
+" Note: directories must exist!
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
+set noswapfile                  " Do not leave any backup files
 set tabstop=4                   " Set the width of a tab character
 set shiftwidth=4                " Set the number of spaces for auto-indents
 set expandtab                   " Use spaces instead of tab characters
