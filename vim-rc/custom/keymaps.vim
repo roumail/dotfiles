@@ -13,6 +13,8 @@ nnoremap <leader>d "_dd
 " zM, zR for unfolfing/collapsing all
 nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied to clipboard!"<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
+" open tab in terminal
+nnoremap <leader>ot :tab term ++kill=term<CR>
 
 " Save session - load session
 " nnoremap <leader>ss :mksession! Session.vim<CR>
