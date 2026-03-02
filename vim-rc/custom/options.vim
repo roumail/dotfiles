@@ -71,6 +71,13 @@ if (has("termguicolors"))
 endif
 set background=dark
 " xcodedarkhc, xcodehc 
+" Load any scheme-specific after/colors files
+" https://vi.stackexchange.com/questions/24846/how-to-customize-colorschemes-without-editing-their-source-files
+" Lighter diff colors
+augroup ColorOverrides
+    autocmd!
+    autocmd ColorScheme * runtime! after/colors/<amatch>.vim
+augroup END
 "colorscheme xcodedarkhr
 colorscheme palenight
 let g:palenight_terminal_italics=1
@@ -79,14 +86,6 @@ let g:palenight_color_overrides = {
     \ 'comment_grey': { 'gui': '#FF8800', 'cterm': '214', 'cterm16': '3' }
       \ }
 
-" Lighter diff colors
-augroup MyDiffColors
-  autocmd!
-  autocmd ColorScheme * highlight DiffAdd    guibg=#273849 guifg=#C3E88D gui=NONE
-  autocmd ColorScheme * highlight DiffDelete guibg=#3a1f2b guifg=#ff5370 gui=NONE
-  autocmd ColorScheme * highlight DiffChange guibg=#2f2a44 guifg=#82AAFF gui=NONE
-  autocmd ColorScheme * highlight DiffText   guibg=#3e3560 guifg=#ffffff gui=NONE
-augroup END
 set splitbelow splitright " Open splits below and to the right
 
 
