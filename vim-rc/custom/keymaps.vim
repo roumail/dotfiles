@@ -19,8 +19,10 @@ nnoremap <leader>rl :source $MYVIMRC<CR>
 " nnoremap <leader>sl :source Session.vim<CR>
 
 " buffer switching
-nnoremap H :bprevious<CR>
-nnoremap L :bnext<CR>
+" Switch to the alternate (last used) buffer
+nnoremap gb :b#<CR>
+" nnoremap H :bprevious<CR>
+" nnoremap L :bnext<CR>
 " clashes with fzf searches
 nnoremap <leader>bc :bd<CR>
 nnoremap <leader>bC :bufdo bd<CR>
