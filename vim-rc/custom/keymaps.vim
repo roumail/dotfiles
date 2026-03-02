@@ -58,6 +58,7 @@ vnoremap K :m '<-2<CR>gv=gv
 xnoremap p "_dP<Esc>
 " terminal input mode mapping
 tnoremap <Esc><Esc> <C-w>N
+tnoremap <S-Tab> <C-w>:tabprevious<CR>
 tnoremap <Esc>h <C-w>h
 tnoremap <Esc>j <C-w>j
 tnoremap <Esc>k <C-w>k
