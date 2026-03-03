@@ -5,6 +5,8 @@
 inoremap jj <Esc>
 inoremap jk <Esc>:w<CR>
 inoremap jq <Esc>:wq<CR>
+" Open current buffer in new tab (stays in insert mode)
+inoremap <silent> <leader>tt <C-O>:tab split<CR>
 
 " Normal mode mappings
 nnoremap <leader>w :w<CR>
@@ -25,12 +27,16 @@ nnoremap <leader>q :wq<CR>
 " buffer switching
 " Switch to the alternate (last used) buffer
 nnoremap gb :b#<CR>
-" nnoremap H :bprevious<CR>
-" nnoremap L :bnext<CR>
-nnoremap <silent> <leader>bc :bp\| bd #<CR>
+
 " bd ends up closing the current window too
 " nnoremap <leader>bc :bd<CR>
+" nnoremap <silent> <leader>bc :bp\| bd #<CR>
+" This function skips terminal windows and netrw
+nnoremap <silent> <leader>bc :call SmartFilterClose()<CR>
 nnoremap <leader>bC :bufdo bd<CR>
+nnoremap <leader>gf :GFiles?<CR>
+" Open current buffer in new tab
+nnoremap <silent> <leader>tt :tab split<CR>
 
 " Split opening
 nnoremap <leader>s :split<CR>
