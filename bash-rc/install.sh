@@ -99,4 +99,4 @@ echo ""
 
 # 8. bin/ directory (ensure it's in path)
 
-echo "Installation complete! Run 'source ~/.$RC_FILE' or restart your shell."
+echo "Installation complete! Run 'source $RC_FILE' or restart your shell."
