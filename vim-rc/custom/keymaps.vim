@@ -4,6 +4,7 @@
 " Insert mode mappings
 inoremap jj <Esc>
 inoremap jk <Esc>:w<CR>
+inoremap jq <Esc>:wq<CR>
 
 " Normal mode mappings
 nnoremap <leader>w :w<CR>
@@ -20,13 +21,15 @@ nnoremap <leader>ot :tab term ++kill=term<CR>
 " nnoremap <leader>ss :mksession! Session.vim<CR>
 " nnoremap <leader>sl :source Session.vim<CR>
 
+nnoremap <leader>q :wq<CR>
 " buffer switching
 " Switch to the alternate (last used) buffer
 nnoremap gb :b#<CR>
 " nnoremap H :bprevious<CR>
 " nnoremap L :bnext<CR>
-" clashes with fzf searches
-nnoremap <leader>bc :bd<CR>
+nnoremap <silent> <leader>bc :bp\| bd #<CR>
+" bd ends up closing the current window too
+" nnoremap <leader>bc :bd<CR>
 nnoremap <leader>bC :bufdo bd<CR>
 
 " Split opening
