@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Local aliases (NOT in git)
+# Copy to aliases.sh and add personal/work overrides
+
+# Example: experiment with aliases before committing to dotfiles
+# alias gs="git status -sb"
+
+alias psql_geco='docker compose exec app_postgres psql -U postgres geco'
+alias psql_restore='docker compose exec app_postgres psql -d geco -f /db-backup/backup.sql -U postgres'
+alias drop_connections='docker compose exec app_postgres psql -U postgres geco -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid();"'
+alias drop_geco='docker compose exec app_postgres dropdb -U postgres geco'
+alias create_geco='docker compose exec app_postgres createdb -U postgres geco'
+alias db_upgrade='docker compose exec b2e2 python -m flask db upgrade'
+# To check that heads match
+alias db_current='docker compose exec b2e2 python -m flask db current'
+alias db_heads='docker compose exec b2e2 python -m flask db heads'
+alias flask_shell='docker compose exec b2e2 python -m flask shell'
+alias db_downgrade='docker compose exec b2e2 python -m flask db downgrade'

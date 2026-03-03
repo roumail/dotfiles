@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+function db_migrate { docker compose exec b2e2 python -m flask db migrate -m "$1" ; }
