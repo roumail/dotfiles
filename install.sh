@@ -5,6 +5,7 @@ set -e
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SHELL_CONFIG_SRC="$DOTFILES_DIR/.config/shell"
+VIM_CONFIG_SRC="$DOTFILES_DIR/vim-rc"
 SHELL_CONFIG_DEST="$HOME/.config/shell"
 
 link_file() {
@@ -26,27 +27,51 @@ link_file() {
         echo "  ✓ Linked: $(basename "$target")"
     fi
 }
+
+link_dir() {
+    local src="$1"
+    local target="$2"
+
+    mkdir -p "$(dirname "$target")"
+
+    if [ -L "$target" ]; then
+        current_src="$(readlink -f "$target")"
+        expected_src="$(readlink -f "$src")"
+
+        if [ "$current_src" = "$expected_src" ]; then
+            echo "  ✓ Already correct dir link: $(basename "$target")"
+        else
+            ln -sf "$src" "$target"
+            echo "  ↻ Updated dir symlink: $(basename "$target")"
+        fi
+
+    elif [ -e "$target" ]; then
+        echo "  ⚠ Directory exists: $target"
+        read -p "    Replace with symlink? (y/N) " -n 1 -r
+        echo
+
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
+            mv "$target" "$backup"
+            ln -sf "$src" "$target"
+            echo "  ✓ Backed up and linked dir: $(basename "$target")"
+        else
+            echo "  → Skipped: $(basename "$target")"
+        fi
+
+    else
+        ln -sf "$src" "$target"
+        echo "  ✓ Linked dir: $(basename "$target")"
+    fi
+}
+
 echo "Installing shell configuration..."
 
 # Create ~/.config if it doesn't exist
 mkdir -p "$HOME/.config"
 
 # Symlink the shell config directory
-if [ -L "$SHELL_CONFIG_DEST" ]; then
-    echo "✓ Symlink already exists: $SHELL_CONFIG_DEST"
-elif [ -e "$SHELL_CONFIG_DEST" ]; then
-    echo "⚠ Warning: $SHELL_CONFIG_DEST exists but is not a symlink"
-    read -p "Remove and replace with symlink? (y/N) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        rm -rf "$SHELL_CONFIG_DEST"
-        ln -sf "$SHELL_CONFIG_SRC" "$SHELL_CONFIG_DEST"
-        echo "✓ Created symlink: $SHELL_CONFIG_DEST -> $SHELL_CONFIG_SRC"
-    fi
-else
-    ln -sf "$SHELL_CONFIG_SRC" "$SHELL_CONFIG_DEST"
-    echo "✓ Created symlink: $SHELL_CONFIG_DEST -> $SHELL_CONFIG_SRC"
-fi
+link_dir "$SHELL_CONFIG_SRC" "$SHELL_CONFIG_DEST"
 
 # Create local directory if it doesn't exist
 mkdir -p "$SHELL_CONFIG_DEST/local"
@@ -93,7 +118,7 @@ for config in "$SHELL_CONFIG_SRC/dotconfig/"*; do
     [ -f "$config" ] || continue
     filename=$(basename "$config")
     case "$filename" in
-        alacritty.toml|alacritty.win.toml)
+        alacritty.unix.toml|alacritty.win.toml)
             continue
             ;;
     esac
@@ -101,11 +126,10 @@ for config in "$SHELL_CONFIG_SRC/dotconfig/"*; do
     link_file "$config" "$HOME/.config/$filename"
 done
 
-# TODO: handle OS switch for dotconfig alacritty
 case "$(uname)" in
     Darwin)
         link_file \
-            "$SHELL_CONFIG_SRC/dotconfig/alacritty.toml" \
+            "$SHELL_CONFIG_SRC/dotconfig/alacritty.unix.toml" \
             "$HOME/.config/alacritty.toml"
         ;;
     MINGW*|MSYS*|CYGWIN*)
@@ -116,4 +140,28 @@ case "$(uname)" in
 esac
 
 echo ""
+
+echo "Setting up Vim..."
+
+mkdir -p "$HOME/.vim"
+
+# Runtime dirs
+mkdir -p "$HOME/.vim/backup"
+mkdir -p "$HOME/.vim/swap"
+ 
+# Owned config
+link_dir \
+  "$VIM_CONFIG_SRC/vim-rc/custom" \
+  "$HOME/.vim/custom"
+
+# Structured files
+link_file \
+  "$VIM_CONFIG_SRC/after/ftplugin/qf.vim" \
+  "$HOME/.vim/after/ftplugin/qf.vim"
+
+link_file \
+  "$VIM_CONFIG_SRC/vim-rc/autoload/lsp/ui/vim.vim" \
+  "$HOME/.vim/autoload/lsp/ui/vim.vim"
+ 
+
 echo "Installation complete! Run 'source $RC_FILE' or restart your shell."

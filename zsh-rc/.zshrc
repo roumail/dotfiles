@@ -1,1 +1,0 @@
-/Users/rohailtaimour/.zshrc
