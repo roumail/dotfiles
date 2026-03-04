@@ -2,11 +2,14 @@
 # Bootstrap script to install shell configuration
 
 set -e
+# set -x
+# set +e
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SHELL_CONFIG_SRC="$DOTFILES_DIR/.config/shell"
 VIM_CONFIG_SRC="$DOTFILES_DIR/vim-rc"
 SHELL_CONFIG_DEST="$HOME/.config/shell"
+USER_SHELL=$(basename "$SHELL")
 
 link_file() {
     local src="$1"
@@ -77,7 +80,7 @@ link_dir "$SHELL_CONFIG_SRC" "$SHELL_CONFIG_DEST"
 mkdir -p "$SHELL_CONFIG_DEST/local"
 
 # Detect which shell RC we’re installing
-if [ -n "$ZSH_VERSION" ]; then
+if [ "$USER_SHELL" = "zsh" ]; then
     RC_FILE="$HOME/.zshrc"
     SHELL_NAME="zsh"
 else

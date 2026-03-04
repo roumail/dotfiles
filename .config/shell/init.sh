@@ -4,9 +4,9 @@
 [[ $- != *i* ]] && return
 
 BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
+USER_SHELL=$(basename "$SHELL")
 
-# Detect shell once
-if [ -n "$ZSH_VERSION" ]; then
+if [ "$USER_SHELL" = "zsh" ]; then
   SHELL_NAME="zsh"
 elif [ -n "$BASH_VERSION" ]; then
   SHELL_NAME="bash"
@@ -20,9 +20,8 @@ source_if_exists() {
 
 source_dir() {
   [ -d "$1" ] || return
-  for f in "$1"/*.sh; do
-    [ -e "$f" ] || continue
-    source_if_exists "$f"
+  find "$1" -maxdepth 1 -name '*.sh' -type f | while read -r f; do
+      source_if_exists "$f"
   done
 }
 
