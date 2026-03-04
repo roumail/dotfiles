@@ -13,7 +13,7 @@ set noswapfile                  " Do not leave any backup files
 " Note: directories must exist!
 set backupdir=~/.vim/backup//
 set directory=~/.vim/swap//
-set noswapfile                  " Do not leave any backup files
+" set noswapfile                  " Do not leave any backup files
 set tabstop=4                   " Set the width of a tab character
 set shiftwidth=4                " Set the number of spaces for auto-indents
 set expandtab                   " Use spaces instead of tab characters
