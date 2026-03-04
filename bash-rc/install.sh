@@ -7,6 +7,25 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SHELL_CONFIG_SRC="$DOTFILES_DIR/.config/shell"
 SHELL_CONFIG_DEST="$HOME/.config/shell"
 
+link_file() {
+    local src="$1"
+    local target="$2"
+
+    mkdir -p "$(dirname "$target")"
+
+    if [ -L "$target" ]; then
+        ln -sf "$src" "$target"
+        echo "  ↻ Refreshed symlink: $(basename "$target")"
+    elif [ -e "$target" ]; then
+        local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
+        cp "$target" "$backup"
+        ln -sf "$src" "$target"
+        echo "  ✓ Backed up and linked: $(basename "$target")"
+    else
+        ln -sf "$src" "$target"
+        echo "  ✓ Linked: $(basename "$target")"
+    fi
+}
 echo "Installing shell configuration..."
 
 # Create ~/.config if it doesn't exist
@@ -66,37 +85,35 @@ echo "Symlinking dotfiles..."
 for dotfile in "$SHELL_CONFIG_SRC/dots/".??*; do
     [ -f "$dotfile" ] || continue
     filename=$(basename "$dotfile")
-    target="$HOME/$filename"
-    
-    if [ -L "$target" ]; then
-        echo "  ✓ Already linked: $filename"
-    elif [ -e "$target" ]; then
-        cp "$target" "$target.backup.$(date +%Y%m%d_%H%M%S)"
-        ln -sf "$dotfile" "$target"
-        echo "  ✓ Backed up and linked: $filename"
-    else
-        ln -sf "$dotfile" "$target"
-        echo "  ✓ Linked: $filename"
-    fi
+    link_file "$dotfile" "$HOME/$filename"
 done
 
-# Special case: starship.toml goes to ~/.config/starship.toml
-if [ -f "$SHELL_CONFIG_SRC/starship.toml" ]; then
-    target="$HOME/.config/starship.toml"
-    if [ -L "$target" ]; then
-        echo "  ✓ Already linked: starship.toml"
-    elif [ -e "$target" ]; then
-        cp "$target" "$target.backup.$(date +%Y%m%d_%H%M%S)"
-        ln -sf "$SHELL_CONFIG_SRC/starship.toml" "$target"
-        echo "  ✓ Backed up and linked: starship.toml"
-    else
-        ln -sf "$SHELL_CONFIG_SRC/starship.toml" "$target"
-        echo "  ✓ Linked: starship.toml"
-    fi
-fi
+echo "Symlinking .config files..."
+for config in "$SHELL_CONFIG_SRC/dotconfig/"*; do
+    [ -f "$config" ] || continue
+    filename=$(basename "$config")
+    case "$filename" in
+        alacritty.toml|alacritty.win.toml)
+            continue
+            ;;
+    esac
+
+    link_file "$config" "$HOME/.config/$filename"
+done
+
+# TODO: handle OS switch for dotconfig alacritty
+case "$(uname)" in
+    Darwin)
+        link_file \
+            "$SHELL_CONFIG_SRC/dotconfig/alacritty.toml" \
+            "$HOME/.config/alacritty.toml"
+        ;;
+    MINGW*|MSYS*|CYGWIN*)
+        link_file \
+            "$SHELL_CONFIG_SRC/dotconfig/alacritty.win.toml" \
+            "$HOME/.config/alacritty.toml"
+        ;;
+esac
 
 echo ""
-
-# 8. bin/ directory (ensure it's in path)
-
 echo "Installation complete! Run 'source $RC_FILE' or restart your shell."
