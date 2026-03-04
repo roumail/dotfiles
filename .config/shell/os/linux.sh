@@ -3,3 +3,5 @@
 
 # Setup dircolors for colored output
 eval "$(dircolors)"
+
+alias reload='source ~/.bashrc'
