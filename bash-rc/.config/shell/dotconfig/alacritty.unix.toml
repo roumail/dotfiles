@@ -11,9 +11,6 @@ dynamic_title = false
   # scrolled when scrollback is enabled (history > 0).
   multiplier= 3
 
-[terminal.shell]
-program = "C:\\Windows\\System32\\wsl.exe -d Debian -u rohail"
-args = ["--cd ~"]
         
 [env]
 TERM = "xterm-256color"
@@ -28,8 +25,7 @@ bindings = [
   ]
 
 [font.normal]
-family = "MesloLGS Nerd Font Mono"
-# family = "MesloLGS NF"
+family = "MesloLGS NF"
 
 
 [keyboard]
