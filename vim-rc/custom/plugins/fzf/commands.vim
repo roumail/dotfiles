@@ -1,7 +1,20 @@
+" g:rg_include_ignored:
+"   1 = pass -u (search in ignored files)
+"   0 = respect .gitignore
+let s:rg_base = 'rg --column --line-number --no-heading --color=always --smart-case'
+let s:rg_include_ignored = get(g:, 'rg_include_ignored', 0)
+
+function! s:rg_cmd() abort
+  return s:rg_base . (s:rg_include_ignored ? ' -u' : '')
+endfunction
 let s:rg_command = 'rg --column --line-number --no-heading --color=always --smart-case'
+
+command! RgToggleIgnored let s:rg_include_ignored = !s:rg_include_ignored
+      \ | echo 'rg include ignored: ' . (s:rg_include_ignored ? 'on' : 'off')
+
 " Live Rg (Updates search results as you type in fzf)
 command! -bang -nargs=* MyRG call fzf#vim#grep2(
-            \ s:rg_command,
+            \ s:rg_cmd(),
             \ <q-args>,
             \ fzf#vim#with_preview({
             \   'options': ['--delimiter', ':', '--nth', '4..']
@@ -12,7 +25,7 @@ command! -bang -nargs=* MyRG call fzf#vim#grep2(
 " https://github.com/junegunn/fzf.vim/issues/1592
 " Static RG Runs rg once, then fzf filters that fixed list
 command! -bang -nargs=* Rg call fzf#vim#grep(
-            \ s:rg_command . " " . <q-args>,
+            \ s:rg_cmd() . " " . <q-args>,
             \ fzf#vim#with_preview({
             \       'options': '--delimiter : --nth 4.. --preview-window +{2}-5,~3'
             \       }, 'right:50%', 'ctrl-p'),
