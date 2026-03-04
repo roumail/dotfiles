@@ -6,6 +6,7 @@
 [[ "$OSTYPE" == "darwin"* ]] && export IS_MAC=1 || export IS_MAC=0
 
 export TERM=xterm-256color
+export XDG_CONFIG_HOME="$HOME/.config/"
 # #export TERM=xterm-256color-italic 
 export EDITOR="vim"
 export SHELL=/bin/bash
