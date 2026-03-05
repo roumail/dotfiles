@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # https://github.com/junegunn/fzf-git.sh
 # Log view
 fzf_git_log() {

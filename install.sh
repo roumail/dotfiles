@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Bootstrap script to install shell configuration
 
-# set -e
+set -e
 # set -x
 # set +e
-set -ex
+# set -ex
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SHELL_CONFIG_SRC="$DOTFILES_DIR/.config/shell"

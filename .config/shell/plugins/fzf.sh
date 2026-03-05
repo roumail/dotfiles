@@ -12,10 +12,10 @@ fi
 # Load fzf customizations
 # The script defaults to CTRL-G followed by:
 # b (branches), f (files), t (tags), r (remotes), h (hashes)
-if [[ -f "$FZF_CONF/.fzf-default-config" ]]; then
-    source "$FZF_CONF/.fzf-default-config"
+if [[ -f "$FZF_CONF/.fzf-default-config.sh" ]]; then
+    source "$FZF_CONF/.fzf-default-config.sh"
 fi
 
-if [[ -f "$FZF_CONF/.fzf-git-config" ]]; then
-    source "$FZF_CONF/.fzf-git-config"
+if [[ -f "$FZF_CONF/.fzf-git-config.sh" ]]; then
+    source "$FZF_CONF/.fzf-git-config.sh"
 fi
