@@ -15,4 +15,3 @@ fi
 # Add cargo to PATH if it exists
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"

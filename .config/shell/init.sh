@@ -1,30 +1,5 @@
 #!/usr/bin/env bash
 
-# interactive guard - exit if not running interactively
-[[ $- != *i* ]] && return
-
-BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
-USER_SHELL=$(basename "$SHELL")
-
-if [ "$USER_SHELL" = "zsh" ]; then
-  SHELL_NAME="zsh"
-elif [ -n "$BASH_VERSION" ]; then
-  SHELL_NAME="bash"
-fi
-
-echo "Loading shell config for $SHELL_NAME"
-
-source_if_exists() {
-  [ -r "$1" ] && source "$1"
-}
-
-source_dir() {
-  [ -d "$1" ] || return
-  find "$1" -maxdepth 1 -name '*.sh' -type f | while read -r f; do
-      source_if_exists "$f"
-  done
-}
-
 # 1. Common (shared across shells) - Order matters
 COMMON_CORE=(
   env.sh
@@ -33,10 +8,27 @@ COMMON_CORE=(
   aliases.sh
 )
 
+source_if_exists() {
+  [ -r "$1" ] && source "$1"
+}
+
+BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
 for plugin in "${COMMON_CORE[@]}"; do
   source_if_exists "$BASE/common/$plugin" 
 done
 
+USER_SHELL=$(basename "$SHELL")
+
+# interactive guard - exit if not running interactively
+[[ $- != *i* ]] && return
+
+if [ "$USER_SHELL" = "zsh" ]; then
+  SHELL_NAME="zsh"
+elif [ -n "$BASH_VERSION" ]; then
+  SHELL_NAME="bash"
+fi
+
+echo "Loading shell config for $SHELL_NAME"
 # 2. Bash-specific
 source_dir "$BASE/$SHELL_NAME"
 
