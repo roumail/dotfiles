@@ -6,9 +6,10 @@ chkpyt() {
 
 source_dir() {
   [ -d "$1" ] || return
-  find "$1" -maxdepth 1 -name '*.sh' -type f | while read -r f; do
+  # Use process substitution instead of pipe to avoid subshell
+  while read -r f; do
       source_if_exists "$f"
-  done
+  done < <(find "$1" -maxdepth 1 -name '*.sh' -type f)
 }
 
 # Git worktree helper functions
