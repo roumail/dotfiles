@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Bootstrap script to install shell configuration
 
-set -e
+# set -e
 # set -x
 # set +e
+set -ex
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SHELL_CONFIG_SRC="$DOTFILES_DIR/.config/shell"
@@ -38,16 +39,8 @@ link_dir() {
     mkdir -p "$(dirname "$target")"
 
     if [ -L "$target" ]; then
-        current_src="$(readlink -f "$target")"
-        expected_src="$(readlink -f "$src")"
-
-        if [ "$current_src" = "$expected_src" ]; then
-            echo "  ✓ Already correct dir link: $(basename "$target")"
-        else
-            ln -sf "$src" "$target"
-            echo "  ↻ Updated dir symlink: $(basename "$target")"
-        fi
-
+        ln -sf "$src" "$target"
+        echo "  ↻ Updated dir symlink: $(basename "$target")"
     elif [ -e "$target" ]; then
         echo "  ⚠ Directory exists: $target"
         read -p "    Replace with symlink? (y/N) " -n 1 -r
