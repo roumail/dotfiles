@@ -7,9 +7,30 @@
 	pager = delta
 	excludesfile = ~/.gitignore
 [alias]
-	check-master = "!git fetch origin master:master && git log --oneline HEAD..master"
+    # Fetch origin/main and update my local main/master branch to match it
+    sync-main = fetch origin main:main
+    sync-master = fetch origin master:master
+    check-master = "!git fetch origin master:master && git log --oneline HEAD..master"
+    #push current branch to origin
+    poh = "!f() { git push origin HEAD \"$@\"; }; f"
+
+    # Fetch origin
+    f = "!git fetch origin"
+
+    # merge from origin directly
+    mom = merge origin/master
+    mon = merge origin/main
+
+    # rebase from origin directly
+    rom = rebase origin/master
+    ron = rebase origin/main
+
+    # switch to existing branch
+    sw = switch
+
+    # create and switch
+    swc = switch -c
 	ll="!git log --graph --format='%C(yellow)%h%C(red)%d%C(reset) - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)'"
-	fpush = push
 
 [rerere]
 	enabled = true
