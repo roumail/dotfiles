@@ -26,6 +26,18 @@ git_get_default_branch() {
     echo "$branch"
 }
 
+git_wt_add() {
+    local branch_name="$1"
+    local folder_name="$2"
+    if [ $# -eq 1 ]; then
+        # One arg: create branch and folder with same name
+        git worktree add "$1"
+    elif [ $# -eq 2 ]; then
+        # Two args: first is branch, second is folder
+        git worktree add -b "$1" "$2"
+    fi
+}
+
 git_get_worktree_path() {
     local bare_dir="$1"
     local branch="$2"
