@@ -35,26 +35,57 @@ command! FzfToggleIgnored
       \ call s:update_fzf_default_command() |
       \ echo 'FZF include ignored: ' . (s:fzf_include_ignored ? 'on' : 'off')
 
-function! s:parse_live_args(arg_list) abort
-  let l:pattern = get(a:arg_list, 0, '')
-  let l:extra = len(a:arg_list) > 1 ? a:arg_list[1:] : []
 
+function! s:parse_live_args(arg_list) abort
+    let sep = index(a:arg_list, '--')
+    
+    " Step 1: Split into pattern and options based on --
+    if sep == -1
+        " Scenario 3: No '--' found. Assume everything is the pattern.
+        let pattern = join(a:arg_list, ' ')
+        let options = []
+    elseif sep == 0
+        " Scenario 2: '--' is the very first token. Empty pattern, only scope.
+        let pattern = ''
+        let options = a:arg_list[1:]
+    else
+        " Scenario 1: '--' is in the middle. Pattern before, scope after.
+        let pattern = join(a:arg_list[:sep-1], ' ')
+        let options = a:arg_list[sep+1:]
+    endif
+    
+    " Step 2: Separate options into paths (trailing /) and rg flags
+    let rg_options = []
+    
+    for item in options
+        if item =~ '/$' || item =~ '^\.\{0,2\}/'  " Matches paths ending with / or starting with ./, .., or /
+            " Keep original syntax, just add it as a -g "path/**" glob
+            call add(rg_options, '-g')
+            " Remove trailing slash if present before adding /**
+            let path = substitute(item, '/$', '', '')
+            call add(rg_options, shellescape(path . '/**'))
+        else
+            " Keep regular rg flags as-is
+            call add(rg_options, item)
+        endif
+    endfor
+    
+    return [rg_options, pattern]
+endfunction
+
+
+function! s:live_grep_handler(bang, preview_options, ...) abort
+  " a:000 is the internal Vim list of all arguments after preview_options
+  let [l:options, l:pattern] = s:parse_live_args(a:000)
+  
   " Don't escape - <f-args> already gave us properly parsed arguments
   let l:base_cmd = s:rg_cmd()
-  if !empty(l:extra)
-      let l:base_cmd .= ' ' . join(l:extra, ' ')
+  if !empty(l:options)
+      let l:base_cmd .= ' ' . join(l:options, ' ')
   endif
   
   " Append -e so the live query from FZF is always the pattern
   let l:base_cmd .= ' -e'
-
-  return [l:base_cmd, l:pattern]
-endfunction
-
-function! s:live_grep_handler(bang, preview_options, ...) abort
-  " a:000 is the internal Vim list of all arguments after preview_options
-  let [l:base_cmd, l:pattern] = s:parse_live_args(a:000)
-  
   call fzf#vim#grep2(
         \ l:base_cmd,
         \ l:pattern,
