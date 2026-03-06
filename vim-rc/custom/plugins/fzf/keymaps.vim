@@ -12,8 +12,8 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 " Switch to open buffer
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
-" Fuzzy line search from directory of current buffer down
-" nnoremap <silent> <leader>r. <Cmd>MyRG! -- <C-R>=expand('%:h').'/'<CR><CR>
+" Fuzzy search scoped to the current buffer's directory
+nnoremap <silent> <leader>r. <Cmd>execute 'MyRG! -- ' . expand('%:.:h') . '/'<CR>
 " Line search from project root directory
 nnoremap <silent> <leader>r/ <Cmd>MyRG!<CR>
 
