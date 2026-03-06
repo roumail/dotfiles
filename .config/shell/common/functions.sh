@@ -71,7 +71,9 @@ git_wt_pm() {
 
 git_dmb() {
     local default_branch
-    default_branch=$(git_get_default_branch)
+    local bare_dir
+    bare_dir=$(git_get_bare_dir)
+    default_branch=$(git_get_default_branch "$bare_dir")
 
     if [ -z "$default_branch" ]; then
         echo "Error: Could not detect default branch"
