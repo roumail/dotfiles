@@ -165,6 +165,30 @@ autocmd BufNewFile,BufRead requirements*.txt set ft=python
 autocmd BufNewFile,BufRead .*aliases* set ft=sh
 
 autocmd BufReadPost fugitive://* set bufhidden=delete
+
+function! DetectProjectName() abort
+  " guard
+  if exists('g:project_name')
+    return
+  endif
+
+  let l:file = findfile('pyproject.toml', '.;')
+  if empty(l:file)
+    return
+  endif
+
+  for l:line in readfile(l:file)
+    if l:line =~ '^name\s*='
+      let g:project_name = matchstr(l:line, '"\zs[^"]\+\ze"')
+      break
+    endif
+  endfor
+endfunction
+
+augroup DetectPythonProject
+  autocmd!
+  autocmd VimEnter * call DetectProjectName()
+augroup END
 """"""""""""""""""""""""""""""""
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
