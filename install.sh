@@ -144,6 +144,8 @@ mkdir -p "$HOME/.vim"
 # Runtime dirs
 mkdir -p "$HOME/.vim/backup"
 mkdir -p "$HOME/.vim/swap"
+mkdir -p "$HOME/.vim/after/colors"
+mkdir -p "$HOME/.vim/after/ftplugin"
  
 # Owned config
 link_dir \
@@ -154,6 +156,10 @@ link_dir \
 link_file \
   "$VIM_CONFIG_SRC/after/ftplugin/qf.vim" \
   "$HOME/.vim/after/ftplugin/qf.vim"
+
+link_file \
+  "$VIM_CONFIG_SRC/after/colors/palenight.vim" \
+  "$HOME/.vim/after/colors/palenight.vim"
 
 link_file \
   "$VIM_CONFIG_SRC/vim-rc/autoload/lsp/ui/vim.vim" \
