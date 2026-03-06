@@ -204,8 +204,9 @@ endif
 
 call MySource('custom/plugins/airline/options.vim')
 call MySource('custom/plugins/fzf/options.vim')
-call MySource('custom/plugins/fzf/keymaps.vim')
 call MySource('custom/plugins/fzf/commands.vim')
+call MySource('custom/plugins/fzf/python.vim')
+call MySource('custom/plugins/fzf/keymaps.vim')
 call MySource('custom/plugins/lsp/options.vim')
 call MySource('custom/plugins/lsp/commands.vim')
 call MySource('custom/plugins/lsp/keymaps.vim')
