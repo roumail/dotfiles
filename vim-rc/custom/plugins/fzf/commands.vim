@@ -73,26 +73,54 @@ function! s:parse_live_args(arg_list) abort
     return [rg_options, pattern]
 endfunction
 
-
-function! s:live_grep_handler(bang, preview_options, ...) abort
-  " a:000 is the internal Vim list of all arguments after preview_options
-  let [l:options, l:pattern] = s:parse_live_args(a:000)
-  
+function! s:rg_command_factory(extra_opts) abort
   " Don't escape - <f-args> already gave us properly parsed arguments
-  let l:base_cmd = s:rg_cmd()
-  if !empty(l:options)
-      let l:base_cmd .= ' ' . join(l:options, ' ')
+  let l:cmd = s:rg_cmd()
+  if !empty(a:extra_opts)
+    let l:cmd .= ' ' . join(a:extra_opts, ' ')
   endif
-  
-  " Append -e so the live query from FZF is always the pattern
-  let l:base_cmd .= ' -e'
-  call fzf#vim#grep2(
-        \ l:base_cmd,
-        \ l:pattern,
-        \ a:preview_options,
-        \ a:bang)
+  return l:cmd
 endfunction
 
+function! s:rg_mode(prefix, flag) abort
+  return a:prefix . ' ' . a:flag . ' -e'
+endfunction
+
+function! s:live_grep_handler(bang, preview_options, ...) abort
+  let [l:options, l:pattern] = s:parse_live_args(a:000)
+
+  let l:prefix = s:rg_command_factory(l:options)
+
+  let l:cmd_regex = s:rg_mode(l:prefix, '')
+  let l:cmd_fixed = s:rg_mode(l:prefix, '-F')
+  let l:cmd_word  = s:rg_mode(l:prefix, '-w')
+
+" Build transform command safely
+  let l:transform = printf(
+        \ 'change:transform:if [[ $FZF_PROMPT =~ "Fixed" ]]; then echo "reload:%s {q}"; elif [[ $FZF_PROMPT =~ "Word" ]]; then echo "reload:%s {q}"; else echo "reload:%s {q}"; fi',
+        \ l:cmd_fixed,
+        \ l:cmd_word,
+        \ l:cmd_regex
+        \ )
+
+  let l:extra_opts = {
+  \ 'options': [
+  \   '--prompt', 'Regex> ',
+  \   '--header', ':: C-r (regex) | C-f (fixed) | C-w (word) ::',
+  \   '--bind', 'ctrl-f:change-prompt(Fixed> )',
+  \   '--bind', 'ctrl-w:change-prompt(Word> )',
+  \   '--bind', 'ctrl-r:change-prompt(Regex> )',
+  \   '--bind', l:transform
+  \ ]
+  \ }
+  let l:opts = extend(copy(a:preview_options), l:extra_opts)
+
+  call fzf#vim#grep2(
+        \ l:prefix,
+        \ l:pattern,
+        \ l:opts,
+        \ a:bang)
+endfunction
 " Supports Passing multiple args like directory and glob patterns 
 " Rg -u -g "!log/" pat
 command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0, 
