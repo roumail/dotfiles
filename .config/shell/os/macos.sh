@@ -15,3 +15,5 @@ setopt interactivecomments
 source <(fzf --zsh)
 eval "$(rbenv init - zsh)"
 eval "$(starship init zsh)"
+# brew install zsh-vi-mode
+source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
