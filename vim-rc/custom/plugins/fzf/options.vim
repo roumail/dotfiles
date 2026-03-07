@@ -1,10 +1,6 @@
 " https://github.com/junegunn/fzf/blob/master/README-VIM.md
-" let g:fzf_layout = { 'down': '~40%' }
-let g:fzf_layout = { 'window': {
-                \ 'width': 0.9,
-                \ 'height': 0.7,
-                \ 'highlight': 'Comment',
-                \ 'rounded': v:false } }
+" let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6, 'rounded': v:false ,'yoffset': 1.0 } }
+let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_commits_log_options = '--graph --color=always
   \ --format="%C(yellow)%h%C(red)%d%C(reset)
   \ - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)"'
