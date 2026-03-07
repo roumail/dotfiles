@@ -89,6 +89,7 @@ augroup END
 "colorscheme xcodedarkhr
 colorscheme palenight
 let g:palenight_terminal_italics=1
+let g:airline_theme = "palenight"
 let g:palenight_color_overrides = {
     \ 'black': { 'gui': '#000000', "cterm": "0", "cterm16": "0" },
     \ 'comment_grey': { 'gui': '#FF8800', 'cterm': '214', 'cterm16': '3' }
