@@ -97,8 +97,9 @@ endfunction
 " Rg -u -g "!log/" pat
 command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0, 
       \ fzf#vim#with_preview({
-      \   'options': ['--delimiter', ':', '--nth', '4..']
-      \ }, 'up,60%,border-bottom,+{2}+4/3,~4', 'ctrl-p'), 
+      \   'options': ['--delimiter', ':', '--nth', '4..'],
+      \   'window': { 'width': 1.0, 'height': 1.0 }
+      \ }, 'right,50%,border-left,+{2}+4/3,~4', 'ctrl-p'), 
       \ <f-args>)
 
 " Rg: Static grep (runs ripgrep once, then fzf filters that fixed list)
