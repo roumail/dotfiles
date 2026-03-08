@@ -18,8 +18,9 @@ _fzf_compgen_dir() {
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 
 # top-down 75%: comes from the bottom
+# --height 75% -
 export FZF_DEFAULT_OPTS='
-  --height 75% --multi --reverse
+  --multi --reverse
   --bind ctrl-f:page-down,ctrl-b:page-up
 '
 # To apply the command to CTRL-T as well

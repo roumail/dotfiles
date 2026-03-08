@@ -5,7 +5,7 @@ function! s:rg_scope_sink(choice) abort
     return
   endif
   let scope = s:rg_scopes[a:choice]
-  execute 'MyRG -- ' . scope
+  execute 'MyRG! -- ' . scope
 endfunction
 
 function! RGScopePicker() abort

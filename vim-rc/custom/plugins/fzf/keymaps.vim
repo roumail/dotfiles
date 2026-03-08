@@ -13,15 +13,15 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
 " Fuzzy search scoped to the current buffer's directory
-nnoremap <silent> <leader>r. <Cmd>execute 'MyRG -- ' . expand('%:.:h') . '/'<CR>
+nnoremap <silent> <leader>r. <Cmd>execute 'MyRG! -- ' . expand('%:.:h') . '/'<CR>
 " Line search from project root directory
-nnoremap <silent> <leader>r/ <Cmd>MyRG<CR>
+nnoremap <silent> <leader>r/ <Cmd>MyRG!<CR>
 
 " Scoped searaches
 nnoremap <leader>r <Cmd>call RGScopePicker()<CR>
 " Search for word under cursor
-nnoremap <silent> <leader>rw <Cmd>execute 'MyRG \b' . expand('<cword>') . '\b'<CR>
-nnoremap <silent> <leader>rW <Cmd>execute 'MyRG ' . expand('<cword>')<CR>
+nnoremap <silent> <leader>rw <Cmd>execute 'MyRG! \b' . expand('<cword>') . '\b'<CR>
+nnoremap <silent> <leader>rW <Cmd>execute 'MyRG! ' . expand('<cword>')<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
@@ -40,5 +40,5 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 "nnoremap <silent> <leader>C <Cmd>Commits<CR>
 " Bcommits --> current buffer
 " nnoremap <silent> <leader>c <Cmd>BCommits<CR>
-xnoremap <silent> <Leader>rw y:<C-u>execute 'MyRG \b' . getreg('"') . '\b'<CR>
-xnoremap <silent> <Leader>rW y:<C-u>execute 'MyRG ' . getreg('"')<CR>
+xnoremap <silent> <Leader>rw y:<C-u>execute 'MyRG! \b' . getreg('"') . '\b'<CR>
+xnoremap <silent> <Leader>rW y:<C-u>execute 'MyRG! ' . getreg('"')<CR>
