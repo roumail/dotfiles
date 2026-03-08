@@ -106,8 +106,10 @@ function! s:live_grep_handler(bang, preview_options, ...) abort
   \   '--bind', 'ctrl-r:change-prompt(Regex> )+reload(' . l:cmd_regex . ' {q})',
   \ ]
   \ }
-  let l:opts = extend(copy(a:preview_options), l:extra_opts)
+  let l:opts = copy(a:preview_options)
+  call extend(l:opts.options, l:extra_opts.options)
 
+  echom string(l:opts)
   call fzf#vim#grep2(
         \ l:prefix,
         \ l:pattern,
@@ -117,10 +119,10 @@ endfunction
 
 " Supports Passing multiple args like directory and glob patterns 
 " Rg -u -g "!log/" pat
+" \   'window': { 'width': 1.0, 'height': 1.0 }
 command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0, 
       \ fzf#vim#with_preview({
-      \   'options': ['--delimiter', ':', '--nth', '4..'],
-      \   'window': { 'width': 1.0, 'height': 1.0 }
+      \   'options': ['--delimiter', ':', '--nth', '4..', '--with-nth', '1,2..'],
       \ }, 'right,50%,border-left,+{2}+4/3,~4', 'ctrl-p'), 
       \ <f-args>)
 
