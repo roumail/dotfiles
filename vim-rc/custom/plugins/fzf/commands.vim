@@ -96,11 +96,12 @@ function! s:live_grep_handler(bang, preview_options, ...) abort
   let l:cmd_word  = s:rg_mode(l:prefix, '-w')
 
 
+  " \   '--header', ':: C-r (regex) | C-f (fixed) | C-w (word) :: ' . l:prefix,
   let l:extra_opts = {
   \ 'options': [
   \   '--phony', 
   \   '--prompt', 'Regex> ',
-  \   '--header', ':: C-r (regex) | C-f (fixed) | C-w (word) :: ' . l:prefix,
+  \   '--header', 'C-r (regex) | C-f (fixed) | C-w (word)',
   \   '--bind', 'ctrl-f:change-prompt(Fixed> )+reload(' . l:cmd_fixed . ' {q})',
   \   '--bind', 'ctrl-w:change-prompt(Word> )+reload(' . l:cmd_word  . ' {q})',
   \   '--bind', 'ctrl-r:change-prompt(Regex> )+reload(' . l:cmd_regex . ' {q})',
@@ -122,8 +123,8 @@ endfunction
 " \   'window': { 'width': 1.0, 'height': 1.0 }
 command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0, 
       \ fzf#vim#with_preview({
-      \   'options': ['--delimiter', ':', '--nth', '4..', '--with-nth', '1,2..'],
-      \ }, 'right,50%,border-left,+{2}+4/3,~4', 'ctrl-p'), 
+      \   'options': ['--delimiter', ':', '--nth', '4..', '--with-nth', '1,2'],
+      \ }, 'right,70%,border-left,+{2}+4/3,~4', 'ctrl-p'), 
       \ <f-args>)
 
 " Rg: Static grep (runs ripgrep once, then fzf filters that fixed list)
