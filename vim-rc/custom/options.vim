@@ -31,6 +31,7 @@ set path+=**
 set wildmenu
 set wildmode=longest,list,full  " enhanced command-line completion
 set completeopt=menuone,noselect
+" set completeopt=menuone,popuphidden,noinsert,noselect
 
 
 " set timeoutlen=300    " Mapped key sequence duration (1000 ms default)
