@@ -98,7 +98,7 @@ function! s:live_grep_handler(bang, preview_options, ...) abort
 
   let l:extra_opts = {
   \ 'options': [
-  \   '--disabled', 
+  \   '--phony', 
   \   '--prompt', 'Regex> ',
   \   '--header', ':: C-r (regex) | C-f (fixed) | C-w (word) :: ' . l:prefix,
   \   '--bind', 'ctrl-f:change-prompt(Fixed> )+reload(' . l:cmd_fixed . ' {q})',
