@@ -7,6 +7,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-fugitive'
+Plug 'junegunn/vim-peekaboo'
 " Couldn't get it to work
 " Plug 'yegappan/lsp'
 Plug 'prabirshrestha/vim-lsp'
