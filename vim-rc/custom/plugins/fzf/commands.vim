@@ -109,7 +109,7 @@ function! s:live_grep_handler(bang, preview_options, ...) abort
   let l:opts = copy(a:preview_options)
   call extend(l:opts.options, l:extra_opts.options)
 
-  echom string(l:opts)
+  " echom string(l:opts)
   call fzf#vim#grep2(
         \ l:prefix,
         \ l:pattern,

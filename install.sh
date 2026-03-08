@@ -138,7 +138,18 @@ esac
 echo ""
 
 echo "Setting up Vim..."
+# TODO: Current approach is error prone, use a link tree appraoch instead
+link_tree() {
+    local src="$1"
+    local dst="$2"
 
+    cd "$src" || return
+
+    find . -type f | while read -r file; do
+        mkdir -p "$(dirname "$dst/$file")"
+        ln -sf "$src/$file" "$dst/$file"
+    done
+}
 mkdir -p "$HOME/.vim"
 
 # Runtime dirs
