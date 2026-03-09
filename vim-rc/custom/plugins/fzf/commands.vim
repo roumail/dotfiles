@@ -7,6 +7,8 @@ let s:fzf_include_ignored = get(g:, 'fzf_include_ignored', 0)
 " Base commands (default respects .gitignore)
 let s:rg_base = 'rg --column --line-number --no-heading --color=always --smart-case'
 let s:fd_base = 'fd --type f --strip-cwd-prefix --hidden --follow --exclude .git -E "**/__pycache__/**"'
+" My FZF command prefix, see definition below
+let s:fzf_rg_cmd = 'MyRG!'
 
 function! s:rg_cmd() abort
   return s:rg_base . (s:fzf_include_ignored ? ' -u' : '')
@@ -72,6 +74,25 @@ function! s:parse_live_args(arg_list) abort
     
     return [rg_options, pattern]
 endfunction
+
+" Helper function to execute MyRG with optional pattern and scope
+function! MyRGSearch(...) abort
+  let [l:options, l:pattern] = s:parse_live_args(a:000)  
+
+  let cmd = s:fzf_rg_cmd
+
+  if !empty(l:pattern)
+    let cmd .= ' ' . l:pattern
+  endif
+  if !empty(l:options)
+     let cmd .= ' -- ' . join(l:options, ' ')
+  endif
+  execute cmd
+endfunction
+
+" Command wrapper for easier use
+command! -nargs=* RGS call MyRGSearch(<f-args>)
+command! -nargs=* RGSP call RGScopePicker(<f-args>)
 
 function! s:rg_command_factory(extra_opts) abort
   " Don't escape - <f-args> already gave us properly parsed arguments

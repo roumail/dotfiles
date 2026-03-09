@@ -13,21 +13,26 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
 " Fuzzy search scoped to the current buffer's directory
-nnoremap <silent> <leader>r. <Cmd>call MyRGSearch('--', expand('%:.:h') . '/')<CR>
+" nnoremap <silent> <leader>r. <Cmd>call MyRGSearch('--', expand('%:.:h') . '/')<CR>
+nnoremap <silent> <leader>r. <Cmd>execute 'RGS -- ' . expand('%:.:h') . '/'<CR>
 " Line search from project root directory
-nnoremap <silent> <leader>r/ <Cmd>call MyRGSearch()<CR>
+" nnoremap <silent> <leader>r/ <Cmd>call MyRGSearch()<CR>
+nnoremap <silent> <leader>r/ <Cmd>RGS<CR>
 " Prefilled to type pattern/scope
-nnoremap <leader>r: :call MyRGSearch("
+nnoremap <leader>r: :RGS 
 " Prefilled to type pattern
-nnoremap <leader>gr: :call RGScopePicker("
+nnoremap <leader>gr: :RGSP 
 
 " Scoped searaches (Standard)
-nnoremap <leader>r <Cmd>call RGScopePicker()<CR>
+" nnoremap <leader>r <Cmd>call RGScopePicker()<CR>
+nnoremap <leader>r <Cmd>RGSP<CR>
 " Search for word under cursor
 " Word with boundaries
-nnoremap <silent> <leader>rw <Cmd>call RGScopePicker('\b' . expand('<cword>') . '\b')<CR>
+" nnoremap <silent> <leader>rw <Cmd>call RGScopePicker('\b' . expand('<cword>') . '\b')<CR>
+nnoremap <silent> <leader>rw <Cmd>execute 'RGSP' '\b' . expand('<cword>') . '\b'<CR>
 " Word without boundaries
-nnoremap <silent> <leader>rW <Cmd>call RGScopePicker(expand('<cword>'))<CR>
+" nnoremap <silent> <leader>rW <Cmd>call RGScopePicker(expand('<cword>'))<CR>
+nnoremap <silent> <leader>rW <Cmd>execute 'RGSP' expand('<cword>')<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
