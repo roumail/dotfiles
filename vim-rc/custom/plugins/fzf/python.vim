@@ -17,8 +17,8 @@ function! RGScopePicker() abort
   let s:rg_scopes = {
   \ 'project': g:project_name . '/',
   \ 'tests': 'tests/',
-  \ 'project python': g:project_name . '/ -tpython',
-  \ 'tests python': 'tests/ -tpython'
+  \ 'project python': g:project_name . '/ -tpy',
+  \ 'tests python': 'tests/ -tpy'
   \ }
 
   let choice = fzf#run(fzf#wrap({
