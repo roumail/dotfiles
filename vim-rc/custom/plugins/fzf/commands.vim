@@ -118,9 +118,43 @@ function! s:live_grep_handler(bang, preview_options, ...) abort
         \ a:bang)
 endfunction
 
-" Supports Passing multiple args like directory and glob patterns 
-" Rg -u -g "!log/" pat
-" \   'window': { 'width': 1.0, 'height': 1.0 }
+" MyRG: Live grep (updates search results as you type in fzf)
+"
+" Uses '--' to separate the search pattern from ripgrep options:
+"
+"   :MyRG pattern -- -g "*.vim" -t python
+"
+" Three scenarios:
+"
+" 1. Pattern before '--', options after:
+"      :MyRG error -- -g "*.log"
+"    → Initial pattern: "error", filtered to *.log files
+"
+" 2. No pattern, only options (starts with '--'):
+"      :MyRG -- -g "*.vim"
+"    → No initial pattern, type in fzf, filtered to *.vim files
+"
+" 3. No '--' found:
+"      :MyRG error code
+"    → Entire input treated as pattern: "error code"
+"
+" Path shortcuts:
+"   Paths ending with '/' or starting with './', '../', or '/' 
+"   are automatically converted to glob patterns:
+"      :MyRG pattern -- src/
+"    → Becomes: -g "src/**"
+"
+" Mode switching (via keybinds in fzf):
+"   C-r: Regex mode (default)
+"   C-f: Fixed string mode
+"   C-w: Word boundary mode
+"
+" Examples:
+"   :MyRG pattern
+"   :MyRG pattern -- -g "*vim-rc*"
+"   :MyRG pattern -- -g "!*.log" -t python
+"   :MyRG -- -g "*.vim"
+"   :MyRG error -- src/
 command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0, 
       \ fzf#vim#with_preview({
       \   'options': ['--delimiter', ':', '--nth', '4..', '--with-nth', '1,2'],
@@ -128,14 +162,16 @@ command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0,
       \ <f-args>)
 
 " Rg: Static grep (runs ripgrep once, then fzf filters that fixed list)
-" Supports passing ripgrep flags, glob patterns, and directories
-" Examples:
+"
+" Arguments are passed directly to ripgrep as a raw string.
+" This allows natural ripgrep syntax such as:
+"
 "   :Rg pattern
 "   :Rg -g "*vim-rc*" pattern
 "   :Rg -u -g "!log/" pattern path/to/dir
-" Static RG Runs rg once, then fzf filters that fixed list
-" Supports Passing multiple args like directory and glob patterns 
-" Rg -u -g "!log/" pat
+"
+" Unlike MyRG, this command does not re-run ripgrep while typing;
+" fzf only filters the fixed result set returned by the initial rg run.
 command! -bang -nargs=* Rg call fzf#vim#grep(
             \ s:rg_cmd() . " " . <q-args>,
             \ fzf#vim#with_preview({
