@@ -14,6 +14,7 @@
     # While checked out to another branch, fetch origin/main and update my local main/master branch to match it
     # sync-main = !git fetch origin main && git branch -f main origin/main
     # sync-master = !git fetch origin master && git branch -f master origin/master
+    # these aren't working properly
     sync-main = fetch origin main:main
     sync-master = fetch origin master:master
     check-master = "!git fetch origin master:master && git log --oneline HEAD..master"
@@ -37,6 +38,7 @@
     # create and switch
     swc = switch -c
 	ll="!git log --graph --format='%C(yellow)%h%C(red)%d%C(reset) - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)'"
+    # these aren't working properly
     # sync master worktree
     wt-sm = "!bash -lc 'git_wt_pm'"
     # delete merged branches
