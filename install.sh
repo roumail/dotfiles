@@ -9,6 +9,8 @@ set -e
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SHELL_CONFIG_SRC="$DOTFILES_DIR/.config/shell"
 VIM_CONFIG_SRC="$DOTFILES_DIR/vim-rc"
+TMUX_CONFIG_SRC="$DOTFILES_DIR/tmux"
+DOT_CONFIG_SRC="$DOTFILES_DIR/config"
 SHELL_CONFIG_DEST="$HOME/.config/shell"
 USER_SHELL=$(basename "$SHELL")
 
@@ -135,47 +137,46 @@ case "$(uname)" in
         ;;
 esac
 
-echo ""
-
-echo "Setting up Vim..."
-# TODO: Current approach is error prone, use a link tree appraoch instead
 link_tree() {
     local src="$1"
     local dst="$2"
-
-    cd "$src" || return
-
-    find . -type f | while read -r file; do
-        mkdir -p "$(dirname "$dst/$file")"
-        ln -sf "$src/$file" "$dst/$file"
+    find "$src" -type f | while read -r file; do
+        rel="${file#$src/}"
+        target="$dst/$rel"
+        mkdir -p "$(dirname "$target")"
+        if [ -e "$target" ] && [ ! -L "$target" ]; then
+            continue
+        # Skip if already correct symlink
+        if [ -L "$target" ] && [ "$(readlink "$target")" = "$file" ]; then
+            continue
+        fi
+        ln -sf "$file" "$dst/$rel"
     done
 }
+
+echo ""
+
+echo "Setting up Vim..."
 mkdir -p "$HOME/.vim"
 
-# TODO: add .tmux, /plugins, /resurrect
 # Runtime dirs
 mkdir -p "$HOME/.vim/backup"
 mkdir -p "$HOME/.vim/swap"
-mkdir -p "$HOME/.vim/after/colors"
-mkdir -p "$HOME/.vim/after/ftplugin"
- 
-# Owned config
-link_dir \
-  "$VIM_CONFIG_SRC/custom" \
-  "$HOME/.vim/custom"
 
-# Structured files
-link_file \
-  "$VIM_CONFIG_SRC/after/ftplugin/qf.vim" \
-  "$HOME/.vim/after/ftplugin/qf.vim"
+link_tree "$VIM_CONFIG_SRC" "$HOME/.vim"
 
-link_file \
-  "$VIM_CONFIG_SRC/after/colors/palenight.vim" \
-  "$HOME/.vim/after/colors/palenight.vim"
+echo ""
+echo "Setting up tmux..."
 
-link_file \
-  "$VIM_CONFIG_SRC/autoload/lsp/ui/vim.vim" \
-  "$HOME/.vim/autoload/lsp/ui/vim.vim"
-# others too... 
+mkdir -p "$HOME/.tmux/plugins"
+mkdir -p "$HOME/.tmux/resurrect"
+
+# Link tmux.conf
+link_file "$TMUX_CONFIG_SRC/.tmux.conf" "$HOME/.tmux.conf"
+
+
+echo ""
+echo "Setting up .config.."
+DOT_CONFIG_SRC="$DOTFILES_DIR/config"
 
 echo "Installation complete! Run 'source $RC_FILE' or restart your shell."
