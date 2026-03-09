@@ -1,18 +1,16 @@
 " script-local sink
 function! s:rg_scope_sink(choice) abort
-  if !has_key(s:rg_scopes, a:choice)
-    echo "Invalid choice"
-    return
-  endif
   let scope = s:rg_scopes[a:choice]
-  execute 'MyRG! -- ' . scope
+  execute 'MyRG! ' . s:current_search_pattern . ' ' . scope
 endfunction
 
-function! RGScopePicker() abort
+function! RGScopePicker(pattern = '--') abort
   if !exists('g:project_name')
     echo "No project detected — RGScopePicker disabled"
     return
   endif
+
+  let s:current_search_pattern = a:pattern
 
   let s:rg_scopes = {
   \ 'project': g:project_name . '/',
