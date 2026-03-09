@@ -152,6 +152,7 @@ link_tree() {
 }
 mkdir -p "$HOME/.vim"
 
+# TODO: add .tmux, /plugins, /resurrect
 # Runtime dirs
 mkdir -p "$HOME/.vim/backup"
 mkdir -p "$HOME/.vim/swap"
