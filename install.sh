@@ -161,7 +161,7 @@ mkdir -p "$HOME/.vim/after/ftplugin"
  
 # Owned config
 link_dir \
-  "$VIM_CONFIG_SRC/vim-rc/custom" \
+  "$VIM_CONFIG_SRC/custom" \
   "$HOME/.vim/custom"
 
 # Structured files
@@ -174,8 +174,8 @@ link_file \
   "$HOME/.vim/after/colors/palenight.vim"
 
 link_file \
-  "$VIM_CONFIG_SRC/vim-rc/autoload/lsp/ui/vim.vim" \
+  "$VIM_CONFIG_SRC/autoload/lsp/ui/vim.vim" \
   "$HOME/.vim/autoload/lsp/ui/vim.vim"
- 
+# others too... 
 
 echo "Installation complete! Run 'source $RC_FILE' or restart your shell."
