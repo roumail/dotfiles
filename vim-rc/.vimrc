@@ -72,6 +72,21 @@ function! SmartFilterClose()
     execute 'silent! bdelete! ' . l:current
 endfunction
 
+" The default lsp behaviour is to open a quickfix/location list
+"https://github.com/prabirshrestha/vim-lsp/pull/1140/changes#diff-5644b29c0f34f56ca832ab251585503f273b59b2149cf29c7a38c004c2bad69c
+" These overrides attempt to prevent these from happening
+function! MyLspQuickfix() abort
+  " botright copen
+endfunction
+
+function! MyLspLocationlist() abort
+  " botright lopen
+endfunction
+
+let g:Lsp_copen_funcref = function('MyLspQuickfix')
+let g:Lsp_lopen_funcref = function('MyLspLocationlist')
+
+
 " Load plugin initialization
 call MySource('custom/plug.vim')
 
