@@ -310,8 +310,11 @@ function! s:handle_symbol(server, last_command_id, type, data) abort
         call lsp#utils#error('No ' . a:type .' found')
     else
         echo 'Retrieved ' . a:type
-        botright copen
-        wincmd p
+        if exists('g:Lsp_copen_funcref')
+            call g:Lsp_copen_funcref()
+        else
+            botright copen
+        endif
     endif
 endfunction
 
@@ -352,7 +355,11 @@ function! s:handle_location(ctx, server, type, data) abort "ctx = {counter, list
                 endif
                 call lsp#ui#vim#utils#setqflist(a:ctx['list'], a:type)
                 echo 'Retrieved ' . a:type
-                botright copen
+                if exists('g:Lsp_copen_funcref')
+                    call g:Lsp_copen_funcref()
+                else
+                    botright copen
+                endif
                 if get(a:ctx, 'add_tree', v:false)
                     " move the cursor to the newly added item
                     execute l:pos + 1
