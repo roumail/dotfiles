@@ -1,7 +1,22 @@
 " script-local sink
+" My FZF command prefix
+let s:fzf_rg_cmd = 'MyRG!'
+" Helper function to execute MyRG with optional pattern and scope
+function! MyRGSearch(pattern = '--', scope = '') abort
+  let cmd = s:fzf_rg_cmd . ' ' . a:pattern
+  if !empty(a:scope)
+  " Only add -- separator if pattern is not already '--'
+    if a:pattern !=# '--'
+      let cmd .= ' --'
+    endif
+    let cmd .= ' ' . a:scope
+  endif
+  execute cmd
+endfunction
+
 function! s:rg_scope_sink(choice) abort
   let scope = s:rg_scopes[a:choice]
-  execute 'MyRG! ' . s:current_search_pattern . ' ' . scope
+  call MyRGSearch(s:current_search_pattern, scope)
 endfunction
 
 function! RGScopePicker(pattern = '--') abort
