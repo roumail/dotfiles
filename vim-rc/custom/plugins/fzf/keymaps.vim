@@ -13,9 +13,13 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
 " Fuzzy search scoped to the current buffer's directory
-nnoremap <silent> <leader>r. <Cmd>execute 'MyRG! -- ' . expand('%:.:h') . '/'<CR>
+nnoremap <silent> <leader>r. <Cmd>call MyRGSearch('--', expand('%:.:h') . '/')<CR>
 " Line search from project root directory
-nnoremap <silent> <leader>r/ <Cmd>MyRG!<CR>
+nnoremap <silent> <leader>r/ <Cmd>call MyRGSearch()<CR>
+" Prefilled to type pattern/scope
+nnoremap <leader>r: :call MyRGSearch("
+" Prefilled to type pattern
+nnoremap <leader>gr: :call RGScopePicker("
 
 " Scoped searaches (Standard)
 nnoremap <leader>r <Cmd>call RGScopePicker()<CR>
