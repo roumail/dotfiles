@@ -11,7 +11,8 @@ SHELL_CONFIG_SRC="$DOTFILES_DIR/.config/shell"
 VIM_CONFIG_SRC="$DOTFILES_DIR/vim-rc"
 TMUX_CONFIG_SRC="$DOTFILES_DIR/tmux"
 DOT_CONFIG_SRC="$DOTFILES_DIR/config"
-SHELL_CONFIG_DEST="$HOME/.config/shell"
+DOT_CONFIG_DST="$HOME/.config"
+SHELL_CONFIG_DEST="$DOT_CONFIG_DST/shell"
 USER_SHELL=$(basename "$SHELL")
 
 link_file() {
@@ -69,7 +70,7 @@ link_dir() {
 echo "Installing shell configuration..."
 
 # Create ~/.config if it doesn't exist
-mkdir -p "$HOME/.config"
+mkdir -p "$DOT_CONFIG_DST"
 
 # Symlink the shell config directory
 link_dir "$SHELL_CONFIG_SRC" "$SHELL_CONFIG_DEST"
@@ -118,27 +119,26 @@ echo "Symlinking .config files..."
 for config in "$SHELL_CONFIG_SRC/dotconfig/"*; do
     [ -f "$config" ] || continue
     filename=$(basename "$config")
-    case "$filename" in
-        alacritty.unix.toml|alacritty.win.toml)
-            continue
-            ;;
-    esac
-
     link_file "$config" "$HOME/.config/$filename"
 done
+
+mkdir -p "$DOT_CONFIG_DST/alacritty"
+mkdir -p "$DOT_CONFIG_DST/bat"
 
 case "$(uname)" in
     Darwin)
         link_file \
-            "$SHELL_CONFIG_SRC/dotconfig/alacritty.unix.toml" \
-            "$HOME/.config/alacritty.toml"
+            "$DOT_CONFIG_SRC/alacritty/alacritty.unix.toml" \
+            "$DOT_CONFIG_DST/alacritty/alacritty.toml"
         ;;
     MINGW*|MSYS*|CYGWIN*)
         link_file \
-            "$SHELL_CONFIG_SRC/dotconfig/alacritty.win.toml" \
-            "$HOME/.config/alacritty.toml"
+            "$DOT_CONFIG_SRC/alacritty/alacritty.win.toml" \
+            "$DOT_CONFIG_DST/alacritty/alacritty.toml"
         ;;
 esac
+
+link_file "$DOT_CONFIG_SRC/bat/bat.conf" "$DOT_CONFIG_DST/bat/bat.conf"
 
 link_tree() {
     local src="$1"

@@ -23,6 +23,6 @@ export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 # Colors for ls
 export LS_OPTIONS='--color=auto'
 export BAT_THEME="Monokai Extended Origin"
-export BAT_CONFIG_PATH="$HOME/.config/bat.conf"
+export BAT_CONFIG_PATH="$HOME/.config/bat/bat.conf"
 export BAT_STYLE="numbers,changes,header,rule,snip"
 # export BAT_STYLE="full"
