@@ -31,6 +31,7 @@ set path+=**
 set wildmenu
 set wildmode=longest,list,full  " enhanced command-line completion
 set completeopt=menuone,noselect
+" set completeopt=menuone,popuphidden,noinsert,noselect
 
 
 " set timeoutlen=300    " Mapped key sequence duration (1000 ms default)
@@ -66,7 +67,7 @@ let g:netrw_bufsettings = 'noma nomod nu nowrap ro nobl'
 " reuse current window
 let g:netrw_browse_split = 0
 let g:netrw_list_hide=netrw_gitignore#Hide()
-let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
+let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+,__pycache__/**,.DS_Store'
 let g:netrw_altv = 1  " Open splits to the right
 "let g:netrw_winsize = -25
 
@@ -89,6 +90,7 @@ augroup END
 "colorscheme xcodedarkhr
 colorscheme palenight
 let g:palenight_terminal_italics=1
+let g:airline_theme = "palenight"
 let g:palenight_color_overrides = {
     \ 'black': { 'gui': '#000000', "cterm": "0", "cterm16": "0" },
     \ 'comment_grey': { 'gui': '#FF8800', 'cterm': '214', 'cterm16': '3' }
