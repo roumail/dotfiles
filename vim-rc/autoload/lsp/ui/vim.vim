@@ -311,6 +311,7 @@ function! s:handle_symbol(server, last_command_id, type, data) abort
     else
         echo 'Retrieved ' . a:type
         botright copen
+        wincmd p
     endif
 endfunction
 
