@@ -40,9 +40,12 @@ link_dir() {
 
     mkdir -p "$(dirname "$target")"
 
+    # symlink (file or dir)
     if [ -L "$target" ]; then
+        unlink "$target"
         ln -sf "$src" "$target"
         echo "  ↻ Updated dir symlink: $(basename "$target")"
+    # real file or directory
     elif [ -e "$target" ]; then
         echo "  ⚠ Directory exists: $target"
         read -p "    Replace with symlink? (y/N) " -n 1 -r
