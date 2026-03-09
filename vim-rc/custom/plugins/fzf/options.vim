@@ -40,7 +40,17 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
- 
+
+" A customized version of fzf#vim#listproc#quickfix.
+" The last two lines are commented out not to move to the first entry.
+function! g:fzf_vim.listproc(list)
+  call setqflist(a:list)
+  copen
+  wincmd p
+  " cfirst
+  " normal! zvzz
+endfunction
+
 " fzf.vim needs bash to display the preview window.
 " On Windows, fzf.vim will first see if bash is in $PATH, then if
 " Git bash (C:\Program Files\Git\bin\bash.exe) is available.
