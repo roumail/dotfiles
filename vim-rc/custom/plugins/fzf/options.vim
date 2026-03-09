@@ -1,10 +1,6 @@
 " https://github.com/junegunn/fzf/blob/master/README-VIM.md
-" let g:fzf_layout = { 'down': '~40%' }
-let g:fzf_layout = { 'window': {
-                \ 'width': 0.9,
-                \ 'height': 0.7,
-                \ 'highlight': 'Comment',
-                \ 'rounded': v:false } }
+" let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6, 'rounded': v:false ,'yoffset': 1.0 } }
+let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_commits_log_options = '--graph --color=always
   \ --format="%C(yellow)%h%C(red)%d%C(reset)
   \ - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)"'
@@ -27,6 +23,24 @@ let g:fzf_vim = {}
 " Avoid matching on file name
 let g:fzf_vim.rg_options = '--nth 4..'
 
+" Customize fzf colors to match your color scheme
+" - fzf#wrap translates this to a set of `--color` options
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'query':   ['fg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+ 
 " fzf.vim needs bash to display the preview window.
 " On Windows, fzf.vim will first see if bash is in $PATH, then if
 " Git bash (C:\Program Files\Git\bin\bash.exe) is available.

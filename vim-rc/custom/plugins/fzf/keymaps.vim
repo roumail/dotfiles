@@ -1,27 +1,28 @@
 " Look up file in current directory, often project root
-nnoremap <silent> <leader><leader> :Files<CR>
+nnoremap <silent> <leader><leader> <Cmd>Files<CR>
 
 " edit a test file
-" nnoremap <silent> <leader>et :FZF tests<CR>
+" nnoremap <silent> <leader>et <Cmd>FZF tests<CR>
 " Search files only from the CURRENT buffer's directory
-" nnoremap <silent> <leader>. :Files <C-r>=expand("%:h")<CR>/<CR>
+" nnoremap <silent> <leader>. <Cmd>Files <C-r>=expand("%:h")<CR>/<CR>
 
 " status of current Git repository whilst also allowing easy navigation to modified files.
-nnoremap <silent> <leader>og :GFiles?<CR>
+nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 
 " Switch to open buffer
-nnoremap <leader>ob :Buffers<CR>
+nnoremap <leader>ob <Cmd>Buffers<CR>
 
-" Fuzzy line search from directory of current buffer down
-" nnoremap <Space>/ :Rg<Space>
-" nnoremap <silent> <leader>. :call LiveSiblingSearch()<CR>
-
-" TODO: RgRegex, fixed string words?
+" Fuzzy search scoped to the current buffer's directory
+nnoremap <silent> <leader>r. <Cmd>execute 'MyRG! -- ' . expand('%:.:h') . '/'<CR>
 " Line search from project root directory
-nnoremap <silent> <leader>. :MyRG!<CR>
+nnoremap <silent> <leader>r/ <Cmd>MyRG!<CR>
 
+" Scoped searaches
+nnoremap <leader>r <Cmd>call RGScopePicker()<CR>
 " Search for word under cursor
-nnoremap <silent> <Leader>rg :Rg!<C-R><C-W><CR> 
+nnoremap <silent> <leader>rw <Cmd>execute 'MyRG! \b' . expand('<cword>') . '\b'<CR>
+nnoremap <silent> <leader>rW <Cmd>execute 'MyRG! ' . expand('<cword>')<CR>
+
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 xmap <leader><tab> <plug>(fzf-maps-x)
@@ -36,8 +37,8 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " :History:, :History/ for command, and search history
 "nnoremap <leader>h :History<CR>
 " History of commits to current file, BCommits
-"nnoremap <silent> <leader>C :Commits<CR>
+"nnoremap <silent> <leader>C <Cmd>Commits<CR>
 " Bcommits --> current buffer
-" nnoremap <silent> <leader>c :BCommits<CR>
-
-xnoremap <silent> <Leader>rg y:Rg <C-R>"<CR>
+" nnoremap <silent> <leader>c <Cmd>BCommits<CR>
+xnoremap <silent> <Leader>rw y:<C-u>execute 'MyRG! \b' . getreg('"') . '\b'<CR>
+xnoremap <silent> <Leader>rW y:<C-u>execute 'MyRG! ' . getreg('"')<CR>

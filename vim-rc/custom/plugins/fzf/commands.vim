@@ -35,39 +35,96 @@ command! FzfToggleIgnored
       \ call s:update_fzf_default_command() |
       \ echo 'FZF include ignored: ' . (s:fzf_include_ignored ? 'on' : 'off')
 
+
 function! s:parse_live_args(arg_list) abort
-  let l:pattern = get(a:arg_list, 0, '')
-  let l:extra = len(a:arg_list) > 1 ? a:arg_list[1:] : []
+    let sep = index(a:arg_list, '--')
+    
+    " Step 1: Split into pattern and options based on --
+    if sep == -1
+        " Scenario 3: No '--' found. Assume everything is the pattern.
+        let pattern = join(a:arg_list, ' ')
+        let options = []
+    elseif sep == 0
+        " Scenario 2: '--' is the very first token. Empty pattern, only scope.
+        let pattern = ''
+        let options = a:arg_list[1:]
+    else
+        " Scenario 1: '--' is in the middle. Pattern before, scope after.
+        let pattern = join(a:arg_list[:sep-1], ' ')
+        let options = a:arg_list[sep+1:]
+    endif
+    
+    " Step 2: Separate options into paths (trailing /) and rg flags
+    let rg_options = []
+    
+    for item in options
+        if item =~ '/$' || item =~ '^\.\{0,2\}/'  " Matches paths ending with / or starting with ./, .., or /
+            " Keep original syntax, just add it as a -g "path/**" glob
+            call add(rg_options, '-g')
+            " Remove trailing slash if present before adding /**
+            let path = substitute(item, '/$', '', '')
+            call add(rg_options, shellescape(path . '/**'))
+        else
+            " Keep regular rg flags as-is
+            call add(rg_options, item)
+        endif
+    endfor
+    
+    return [rg_options, pattern]
+endfunction
 
+function! s:rg_command_factory(extra_opts) abort
   " Don't escape - <f-args> already gave us properly parsed arguments
-  let l:base_cmd = s:rg_cmd()
-  if !empty(l:extra)
-      let l:base_cmd .= ' ' . join(l:extra, ' ')
+  let l:cmd = s:rg_cmd()
+  if !empty(a:extra_opts)
+    let l:cmd .= ' ' . join(a:extra_opts, ' ')
   endif
-  
-  " Append -e so the live query from FZF is always the pattern
-  let l:base_cmd .= ' -e'
+  return l:cmd
+endfunction
 
-  return [l:base_cmd, l:pattern]
+function! s:rg_mode(prefix, flag) abort
+  return a:prefix . (empty(a:flag) ? '' : ' ' . a:flag) . ' -e'
 endfunction
 
 function! s:live_grep_handler(bang, preview_options, ...) abort
-  " a:000 is the internal Vim list of all arguments after preview_options
-  let [l:base_cmd, l:pattern] = s:parse_live_args(a:000)
-  
+  let [l:options, l:pattern] = s:parse_live_args(a:000)
+
+  let l:prefix = s:rg_command_factory(l:options)
+
+  let l:cmd_regex = s:rg_mode(l:prefix, '')
+  let l:cmd_fixed = s:rg_mode(l:prefix, '-F')
+  let l:cmd_word  = s:rg_mode(l:prefix, '-w')
+
+
+  " \   '--header', ':: C-r (regex) | C-f (fixed) | C-w (word) :: ' . l:prefix,
+  let l:extra_opts = {
+  \ 'options': [
+  \   '--phony', 
+  \   '--prompt', 'Regex> ',
+  \   '--header', 'C-r (regex) | C-f (fixed) | C-w (word)',
+  \   '--bind', 'ctrl-f:change-prompt(Fixed> )+reload(' . l:cmd_fixed . ' {q})',
+  \   '--bind', 'ctrl-w:change-prompt(Word> )+reload(' . l:cmd_word  . ' {q})',
+  \   '--bind', 'ctrl-r:change-prompt(Regex> )+reload(' . l:cmd_regex . ' {q})',
+  \ ]
+  \ }
+  let l:opts = copy(a:preview_options)
+  call extend(l:opts.options, l:extra_opts.options)
+
+  " echom string(l:opts)
   call fzf#vim#grep2(
-        \ l:base_cmd,
+        \ l:prefix,
         \ l:pattern,
-        \ a:preview_options,
+        \ l:opts,
         \ a:bang)
 endfunction
 
 " Supports Passing multiple args like directory and glob patterns 
 " Rg -u -g "!log/" pat
+" \   'window': { 'width': 1.0, 'height': 1.0 }
 command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0, 
       \ fzf#vim#with_preview({
-      \   'options': ['--delimiter', ':', '--nth', '4..']
-      \ }, 'up,60%,border-bottom,+{2}+4/3,~4', 'ctrl-p'), 
+      \   'options': ['--delimiter', ':', '--nth', '4..', '--with-nth', '1,2'],
+      \ }, 'right,70%,border-left,+{2}+4/3,~4', 'ctrl-p'), 
       \ <f-args>)
 
 " Rg: Static grep (runs ripgrep once, then fzf filters that fixed list)
