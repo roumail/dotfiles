@@ -3,6 +3,7 @@ set nocompatible
 " Allow customization via ~/.vim/ftplugin/
 filetype plugin on
 set mouse=a
+set nowrap                " globally disable wrapping
 set ignorecase                  " Search ignoring case
 set smartcase                   " Do not ignore case if the search patter is uppercase
 set noswapfile                  " Do not leave any backup files
