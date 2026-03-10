@@ -46,46 +46,8 @@ function! MySource(file) abort
     execute 'source ' . g:vimdir . '/' . a:file
 endfunction
 
-
-function! SmartFilterClose()
-    let l:current = bufnr('%')
-    " Define what to ignore
-    let l:skip_bt = ['terminal', 'nofile']
-    let l:skip_ft = ['netrw']
-
-    " Get all listed buffers
-    let l:all_bufs = filter(range(1, bufnr('$')), 'buflisted(v:val)')
-
-    " Filter out based on our skip variables
-    let l:valid_bufs = filter(l:all_bufs, 
-        \ 'index(l:skip_bt, getbufvar(v:val, "&buftype")) == -1 && ' .
-        \ 'index(l:skip_ft, getbufvar(v:val, "&filetype")) == -1')
-
-    " Find index and jump. 
-    " If current is a terminal, idx is -1, so it jumps to the last valid buffer.
-    let l:idx = index(l:valid_bufs, l:current)
-    let l:target_idx = (l:idx - 1 + len(l:valid_bufs)) % len(l:valid_bufs)
-    
-    execute 'buffer ' . l:valid_bufs[l:target_idx]
-
-    " Delete with silent! to ignore Netrw/Terminal complaints
-    execute 'silent! bdelete! ' . l:current
-endfunction
-
-" The default lsp behaviour is to open a quickfix/location list
-"https://github.com/prabirshrestha/vim-lsp/pull/1140/changes#diff-5644b29c0f34f56ca832ab251585503f273b59b2149cf29c7a38c004c2bad69c
-" These overrides attempt to prevent these from happening
-function! MyLspQuickfix() abort
-  " botright copen
-endfunction
-
-function! MyLspLocationlist() abort
-  " botright lopen
-endfunction
-
-let g:Lsp_copen_funcref = function('MyLspQuickfix')
-let g:Lsp_lopen_funcref = function('MyLspLocationlist')
-
+" Load Functions and autocommands
+call MySource('custom/functions.vim')
 
 " Load plugin initialization
 call MySource('custom/plug.vim')
@@ -103,107 +65,9 @@ let mapleader = " "
 """""""""""""""""""""""""""""""""
 call MySource('custom/options.vim')
 call MySource('custom/keymaps.vim')
+call MySource('custom/autocommands.vim')
+call MySource('custom/clipboard.vim')
 
-" Add autocommands
-command! QuickFixToLocList call setloclist(0, getqflist())
-command! LocListToQuickFix call setqflist(getloclist(0))
-
-" Understand jsconc
-autocmd FileType json syntax match Comment +\/\/.\+$+
-
-" Remember cursor position when reopening a file
-augroup vimrc-remember-cursor-position
-  autocmd!
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-augroup END
-
-" group for your Markdown settings 
-set nowrap                " globally disable wrapping
-"autocmd BufRead,BufNewFile *.md,*.txt setlocal wrap " DO wrap on markdown files
-augroup MarkdownSettings
-    autocmd!
-    " Apply these settings ONLY to markdown files
-    autocmd FileType markdown setlocal wrap linebreak textwidth=0
-augroup END
-
-" Enable system clipboard access
-" set clipboard=
-if g:os ==# 'Windows'
-    " On Windows, this was breaking yy
-    set clipboard=
-else
-    set clipboard=unnamed,unnamedplus
-endif
-
-" WSL clipboard support (adjust path as needed)
-" let s:clip = '/mnt/c/Windows/System32/clip.exe'
-" if executable(s:clip)
-"   augroup WSLYank
-"     autocmd!
-"     autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
-"   augroup END
-" endif
-
-
-" WSL specific magic since we get extra lines due to \r\n being
-" misinterpretted
-if has('unix') && executable('win32yank.exe')
-  let g:clipboard = {
-        \ 'name': 'win32yank-wsl',
-        \ 'copy': {
-        \   '+': 'win32yank.exe -i --crlf',
-        \   '*': 'win32yank.exe -i --crlf',
-        \ },
-        \ 'paste': {
-        \   '+': 'win32yank.exe -o --lf',
-        \   '*': 'win32yank.exe -o --lf',
-        \ },
-        \ 'cache_enabled': 0,
-        \ }
-endif
-
-augroup StripTrailingCR
-  autocmd!
-  " Trigger on: Read Post, Write Pre (before saving), and exiting a window
-  autocmd BufReadPost,BufWritePre,BufWinLeave *
-        \ if !&readonly && &modifiable && search('\r$', 'nw') |
-        \   let save_cursor = getpos(".") |
-        \   silent! %s/\r$//e |
-        \   call setpos('.', save_cursor) |
-        \ endif
-augroup END
-
-" Make sure all types of requirements.txt files get syntax highlighting.
-autocmd BufNewFile,BufRead requirements*.txt set ft=python
-
-" Make sure .aliases, .bash_aliases and similar files get syntax highlighting.
-autocmd BufNewFile,BufRead .*aliases* set ft=sh
-
-autocmd BufReadPost fugitive://* set bufhidden=delete
-
-function! DetectProjectName() abort
-  " guard
-  if exists('g:project_name')
-    return
-  endif
-
-  let l:file = findfile('pyproject.toml', '.;')
-  if empty(l:file)
-    return
-  endif
-
-  for l:line in readfile(l:file)
-    if l:line =~ '^name\s*='
-      let g:project_name = matchstr(l:line, '"\zs[^"]\+\ze"')
-      break
-    endif
-  endfor
-endfunction
-
-augroup DetectPythonProject
-  autocmd!
-  autocmd VimEnter * call DetectProjectName()
-augroup END
 """"""""""""""""""""""""""""""""
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
