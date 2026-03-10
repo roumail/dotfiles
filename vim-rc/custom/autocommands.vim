@@ -39,6 +39,7 @@ augroup DetectPythonProject
   autocmd VimEnter * call DetectProjectName()
 augroup END
 
+" Make this more specific
 augroup pytest_parse
     autocmd!
     autocmd QuickFixCmdPost dispatch call ParsePytestFailures()
