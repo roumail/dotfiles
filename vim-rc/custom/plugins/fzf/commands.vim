@@ -8,7 +8,7 @@ let s:fzf_include_ignored = get(g:, 'fzf_include_ignored', 0)
 let s:rg_base = 'rg --column --line-number --no-heading --color=always --smart-case'
 let s:fd_base = 'fd --type f --strip-cwd-prefix --hidden --follow --exclude .git -E "**/__pycache__/**"'
 " My FZF command prefix, see definition below
-let s:fzf_rg_cmd = 'MyRG!'
+let s:fzf_rg_cmd = 'LiveGrep!'
 
 function! s:rg_cmd() abort
   return s:rg_base . (s:fzf_include_ignored ? ' -u' : '')
@@ -75,8 +75,8 @@ function! s:parse_live_args(arg_list) abort
     return [rg_options, pattern]
 endfunction
 
-" Helper function to execute MyRG with optional pattern and scope
-function! MyRGSearch(...) abort
+" Helper function to execute LiveGrep with optional pattern and scope
+function! LiveGrepSearch(...) abort
   let [l:options, l:pattern] = s:parse_live_args(a:000)  
 
   let cmd = s:fzf_rg_cmd
@@ -91,8 +91,8 @@ function! MyRGSearch(...) abort
 endfunction
 
 " Command wrapper for easier use
-command! -nargs=* RGS call MyRGSearch(<f-args>)
-command! -nargs=* RGSP call RGScopePicker(<f-args>)
+command! -nargs=* Grep call LiveGrepSearch(<f-args>)
+command! -nargs=* GrepScope call RGScopePicker(<f-args>)
 
 function! s:rg_command_factory(extra_opts) abort
   " Don't escape - <f-args> already gave us properly parsed arguments
@@ -139,30 +139,30 @@ function! s:live_grep_handler(bang, preview_options, ...) abort
         \ a:bang)
 endfunction
 
-" MyRG: Live grep (updates search results as you type in fzf)
+" LiveGrep: Live grep (updates search results as you type in fzf)
 "
 " Uses '--' to separate the search pattern from ripgrep options:
 "
-"   :MyRG pattern -- -g "*.vim" -t python
+"   :LiveGrep pattern -- -g "*.vim" -t python
 "
 " Three scenarios:
 "
 " 1. Pattern before '--', options after:
-"      :MyRG error -- -g "*.log"
+"      :LiveGrep error -- -g "*.log"
 "    → Initial pattern: "error", filtered to *.log files
 "
 " 2. No pattern, only options (starts with '--'):
-"      :MyRG -- -g "*.vim"
+"      :LiveGrep -- -g "*.vim"
 "    → No initial pattern, type in fzf, filtered to *.vim files
 "
 " 3. No '--' found:
-"      :MyRG error code
+"      :LiveGrep error code
 "    → Entire input treated as pattern: "error code"
 "
 " Path shortcuts:
 "   Paths ending with '/' or starting with './', '../', or '/' 
 "   are automatically converted to glob patterns:
-"      :MyRG pattern -- src/
+"      :LiveGrep pattern -- src/
 "    → Becomes: -g "src/**"
 "
 " Mode switching (via keybinds in fzf):
@@ -171,12 +171,12 @@ endfunction
 "   C-w: Word boundary mode
 "
 " Examples:
-"   :MyRG pattern
-"   :MyRG pattern -- -g "*vim-rc*"
-"   :MyRG pattern -- -g "!*.log" -t python
-"   :MyRG -- -g "*.vim"
-"   :MyRG error -- src/
-command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0, 
+"   :LiveGrep pattern
+"   :LiveGrep pattern -- -g "*vim-rc*"
+"   :LiveGrep pattern -- -g "!*.log" -t python
+"   :LiveGrep -- -g "*.vim"
+"   :LiveGrep error -- src/
+command! -bang -nargs=* LiveGrep call s:live_grep_handler(<bang>0, 
       \ fzf#vim#with_preview({
       \   'options': ['--delimiter', ':', '--nth', '4..', '--with-nth', '1,2'],
       \ }, 'right,70%,border-left,+{2}+4/3,~4', 'ctrl-p'), 
@@ -191,7 +191,7 @@ command! -bang -nargs=* MyRG call s:live_grep_handler(<bang>0,
 "   :Rg -g "*vim-rc*" pattern
 "   :Rg -u -g "!log/" pattern path/to/dir
 "
-" Unlike MyRG, this command does not re-run ripgrep while typing;
+" Unlike LiveGrep, this command does not re-run ripgrep while typing;
 " fzf only filters the fixed result set returned by the initial rg run.
 command! -bang -nargs=* Rg call fzf#vim#grep(
             \ s:rg_cmd() . " " . <q-args>,

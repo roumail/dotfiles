@@ -13,26 +13,21 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
 " Fuzzy search scoped to the current buffer's directory
-" nnoremap <silent> <leader>r. <Cmd>call MyRGSearch('--', expand('%:.:h') . '/')<CR>
-nnoremap <silent> <leader>r. <Cmd>execute 'RGS -- ' . expand('%:.:h') . '/'<CR>
+nnoremap <silent> <leader>r. <Cmd>execute 'Grep -- ' . expand('%:.:h') . '/'<CR>
 " Line search from project root directory
-" nnoremap <silent> <leader>r/ <Cmd>call MyRGSearch()<CR>
-nnoremap <silent> <leader>r/ <Cmd>RGS<CR>
+nnoremap <silent> <leader>r/ <Cmd>Grep<CR>
 " Prefilled to type pattern/scope
-nnoremap <leader>r: :RGS 
+nnoremap <leader>r: :Grep 
 " Prefilled to type pattern
-nnoremap <leader>gr: :RGSP 
+nnoremap <leader>gr: :GrepScope 
 
 " Scoped searaches (Standard)
-" nnoremap <leader>r <Cmd>call RGScopePicker()<CR>
-nnoremap <leader>r <Cmd>RGSP<CR>
+nnoremap <leader>r <Cmd>GrepScope<CR>
 " Search for word under cursor
 " Word with boundaries
-" nnoremap <silent> <leader>rw <Cmd>call RGScopePicker('\b' . expand('<cword>') . '\b')<CR>
-nnoremap <silent> <leader>rw <Cmd>execute 'RGSP' '\b' . expand('<cword>') . '\b'<CR>
+nnoremap <silent> <leader>rw <Cmd>execute 'GrepScope' '\b' . expand('<cword>') . '\b'<CR>
 " Word without boundaries
-" nnoremap <silent> <leader>rW <Cmd>call RGScopePicker(expand('<cword>'))<CR>
-nnoremap <silent> <leader>rW <Cmd>execute 'RGSP' expand('<cword>')<CR>
+nnoremap <silent> <leader>rW <Cmd>execute 'GrepScope' expand('<cword>')<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
@@ -52,5 +47,5 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 "nnoremap <silent> <leader>C <Cmd>Commits<CR>
 " Bcommits --> current buffer
 " nnoremap <silent> <leader>c <Cmd>BCommits<CR>
-xnoremap <silent> <leader>rw y:<C-u>call RGScopePicker('\b' . getreg('"') . '\b')<CR>
-xnoremap <silent> <leader>rW y:<C-u>call RGScopePicker(getreg('"'))<CR>
+xnoremap <silent> <leader>rw y:<C-u>execute 'GrepScope' '\b' . getreg('"') . '\b'<CR>
+xnoremap <silent> <leader>rW y:<C-u>execute 'GrepScope' getreg('"')<CR>
