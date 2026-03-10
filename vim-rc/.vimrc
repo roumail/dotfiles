@@ -76,6 +76,10 @@ call MySource('custom/clipboard.vim')
 let g:python_highlight_all = 1
 let g:instant_markdown_autostart = 0
 
+" vim dispatch
+compiler pytest
+autocmd FileType python let b:dispatch = 'chkpyt.sh %'
+
 " Load fzf key maps ---
 if isdirectory('/opt/homebrew/opt/fzf')
     set rtp+=/opt/homebrew/opt/fzf
