@@ -78,7 +78,7 @@ let g:instant_markdown_autostart = 0
 
 " vim dispatch
 compiler pytest
-autocmd FileType python let b:dispatch = 'chkpyt.sh %'
+" autocmd FileType python let b:dispatch = 'chkpyt.sh %'
 
 " Load fzf key maps ---
 if isdirectory('/opt/homebrew/opt/fzf')
