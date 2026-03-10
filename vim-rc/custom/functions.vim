@@ -44,6 +44,23 @@ function! ParsePytestFailures()
     sort u
 endfunction
 
+command! -nargs=* -complete=file Pytest Dispatch -compiler=pytest -- <args>
+command! -nargs=* -complete=file PyFail call PyFailDispatch(<q-args>)
+
+function! PyFailDispatch(cmd)
+    if empty(a:cmd)
+        execute 'Pytest'
+    else
+        execute 'Pytest ' . a:cmd
+    endif
+endfunction
+
+augroup pytest_parse
+    autocmd!
+    " This runs AFTER dispatch completes and populates quickfix
+    autocmd QuickFixCmdPost dispatch call ParsePytestFailures()
+augroup END
+
 " The default lsp behaviour is to open a quickfix/location list
 "https://github.com/prabirshrestha/vim-lsp/pull/1140/changes#diff-5644b29c0f34f56ca832ab251585503f273b59b2149cf29c7a38c004c2bad69c
 " These overrides attempt to prevent these from happening
@@ -79,4 +96,3 @@ endfunction
 
 command! QuickFixToLocList call setloclist(0, getqflist())
 command! LocListToQuickFix call setqflist(getloclist(0))
-
