@@ -4,25 +4,30 @@ function! s:rg_scope_sink(choice) abort
    " Build arguments array matching the DSL: pattern -- scope
   if s:current_search_pattern ==# '--' || empty(s:current_search_pattern)
     " No pattern, just scope
-    call MyRGSearch('--', scope)
+    call LiveGrepSearch('--', scope)
   else
     " Pattern with scope
-    call MyRGSearch(s:current_search_pattern, '--', scope)
+    call LiveGrepSearch(s:current_search_pattern, '--', scope)
   endif
 endfunction
 
 function! RGScopePicker(...) abort
+  " Validate arguments - only accept 0 or 1 argument
+  if a:0 > 1
+    echoerr 'RGScopePicker: Too many arguments. Usage: :GrepScope [pattern]'
+    echoerr 'Did you mean to use :Grep instead? (supports -- separator and options)'
+    return
+  endif
   if !exists('g:project_name')
-    echo "No project detected — RGScopePicker disabled"
+    echo "No project detected — falling back to LiveGrep"
+    if a:0 > 0
+      call LiveGrepSearch(a:1)
+    else
+      call LiveGrepSearch()
+    endif
     return
   endif
 
-  " Validate arguments - only accept 0 or 1 argument
-  if a:0 > 1
-    echoerr 'RGScopePicker: Too many arguments. Usage: :RGSP [pattern]'
-    echoerr 'Did you mean to use :RGS instead? (supports -- separator and options)'
-    return
-  endif
 
   let s:current_search_pattern = a:0 > 0 ? a:1 : '--'
 
