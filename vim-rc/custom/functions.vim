@@ -44,16 +44,7 @@ function! ParsePytestFailures()
     sort u
 endfunction
 
-command! -nargs=* -complete=file Pytest Dispatch -compiler=pytest -- <args>
-command! -nargs=* -complete=file PyFail call PyFailDispatch(<q-args>)
-
-function! PyFailDispatch(cmd)
-    if empty(a:cmd)
-        execute 'Pytest'
-    else
-        execute 'Pytest ' . a:cmd
-    endif
-endfunction
+command! -bang -nargs=* -complete=file Pytest Dispatch<bang> -compiler=pytest -- <args>
 
 augroup pytest_parse
     autocmd!
