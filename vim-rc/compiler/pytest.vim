@@ -11,12 +11,12 @@ CompilerSet makeprg=chkpyt.sh\ $*
 "     \%ZFAILED\ %m,
 "     \%ZERROR\ %m,
 "     \%-G%.%#
-CompilerSet errorformat=
-    \%E%f:%l:\ in\ %m,
-    \%E\ \ \ \ %f:%l:\ in\ %m,
-    \%E%f:%l:\ %m,
-    \%EFAILED\ %f::%m,
-    \%EERROR\ %f::%m,
-    \%C\ \ \ \ %m,
-    \%Z\ \ %m,
-    \%-G%.%#
+" CompilerSet errorformat=
+"     \%E%f:%l:\ in\ %m,
+"     \%E\ \ \ \ %f:%l:\ in\ %m,
+"     \%E%f:%l:\ %m,
+"     \%EFAILED\ %f::%m,
+"     \%EERROR\ %f::%m,
+"     \%C\ \ \ \ %m,
+"     \%Z\ \ %m,
+"     \%-G%.%#
