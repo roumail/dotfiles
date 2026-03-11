@@ -40,7 +40,7 @@ augroup DetectPythonProject
 augroup END
 
 " Make this more specific
-augroup pytest_parse
-    autocmd!
-    autocmd QuickFixCmdPost dispatch call ParsePytestFailures()
-augroup END
+" augroup pytest_parse
+"     autocmd!
+"     autocmd QuickFixCmdPost dispatch call ParsePytestFailures()
+" augroup END

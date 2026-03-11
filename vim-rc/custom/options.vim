@@ -1,6 +1,7 @@
 " General settings
 set nocompatible
 " Allow customization via ~/.vim/ftplugin/
+filetype on
 filetype plugin on
 set mouse=a
 set nowrap                " globally disable wrapping

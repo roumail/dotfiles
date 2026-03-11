@@ -31,26 +31,6 @@ endfunction
 
 command! -nargs=+ ScratchFrom call s:ScratchFrom(<q-args>)
 
-function! ParsePytestFailures()
-    " Keep only FAILED / ERROR lines
-    g!/^FAILED\|^ERROR/d
-    "
-    " 2. Remove the FAILED/ERROR prefix (using regex instead of norm)
-    %s/^\(FAILED\|ERROR\) //e
-    "" 3. Remove the trailing error message (the part after ' - ')
-    " Pytest separates the Node ID from the error with ' - '
-    %s/\s-.*$//e 
-    " Sort and remove duplicates
-    sort u
-endfunction
-
-command! -bang -nargs=* -complete=file Pytest Dispatch<bang> -compiler=pytest -- <args>
-
-augroup pytest_parse
-    autocmd!
-    " This runs AFTER dispatch completes and populates quickfix
-    autocmd QuickFixCmdPost dispatch call ParsePytestFailures()
-augroup END
 
 " The default lsp behaviour is to open a quickfix/location list
 "https://github.com/prabirshrestha/vim-lsp/pull/1140/changes#diff-5644b29c0f34f56ca832ab251585503f273b59b2149cf29c7a38c004c2bad69c
