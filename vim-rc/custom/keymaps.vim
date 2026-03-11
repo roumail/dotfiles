@@ -22,6 +22,8 @@ nnoremap <leader>ot :tab term ++kill=term<CR>
 " Save session - load session
 " nnoremap <leader>ss :mksession! Session.vim<CR>
 " nnoremap <leader>sl :source Session.vim<CR>
+" Open log of last dispatch run as a buffer
+nnoremap <leader>dl :tabedit `=dispatch#request().file`<CR>
 
 nnoremap <leader>q :wq<CR>
 " buffer switching
