@@ -12,9 +12,10 @@ inoremap <silent> ,tt <C-O>:tab split<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
-" zm, zr to increase/decrease folding
-" zM, zR for unfolfing/collapsing all
-nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied to clipboard!"<CR>
+" Current file relative path
+nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied!"<CR>
+" Absolute path
+nnoremap <leader>F :let @+ = expand('%:p')<CR>:echo "Absolute path copied!"<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
 " open tab in terminal
 nnoremap <leader>ot :tab term ++kill=term<CR>
