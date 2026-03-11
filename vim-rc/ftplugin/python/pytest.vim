@@ -78,6 +78,52 @@ function! s:FindPythonObject(obj)
 
 endfunction
 
+" Copy test paths to clipboard/register without running
+command! -buffer YankTestMethod call s:YankTestPath('method')
+command! -buffer YankTestClass call s:YankTestPath('class')
+command! -buffer YankTestFunction call s:YankTestPath('function')
+command! -buffer YankTestFile call s:YankTestPath('file')
+
+function! s:YankTestPath(type) abort
+    let filepath = expand('%:p')
+    let relpath = expand('%')
+    
+    if a:type == 'method'
+        let method = s:NameOfCurrentMethod()
+        let class = s:NameOfCurrentClass()
+        if empty(method) || empty(class)
+            echo "Not inside a test method"
+            return
+        endif
+        let path = relpath . '::' . class . '::' . method
+        
+    elseif a:type == 'class'
+        let class = s:NameOfCurrentClass()
+        if empty(class)
+            echo "Not inside a test class"
+            return
+        endif
+        let path = relpath . '::' . class
+        
+    elseif a:type == 'function'
+        let func = s:NameOfCurrentFunction()
+        if empty(func)
+            echo "Not inside a test function"
+            return
+        endif
+        let path = relpath . '::' . func
+        
+    else  " file
+        let path = relpath
+    endif
+    
+    " Copy to system clipboard and unnamed register
+    let @+ = path
+    let @" = path
+    
+    echo "Copied: " . path
+endfunction
+
 " ============================================================================
 " Smart Dispatch Commands
 " ============================================================================
@@ -136,3 +182,41 @@ function! s:RunSmart(bang) abort
     
     execute 'Pytest' . a:bang . ' %'
 endfunction
+
+" Helper function to run pytest with trace in terminal
+function! s:RunTestWithTrace(scope, bang) abort
+    let relpath = expand('%')
+    
+    if a:scope == 'method'
+        let method = s:NameOfCurrentMethod()
+        if empty(method)
+            echo "Not inside a test method"
+            return
+        endif
+        let cmd = 'pytest ' . relpath . ' -k ' . method . ' --trace'
+        
+    elseif a:scope == 'class'
+        let class = s:NameOfCurrentClass()
+        if empty(class)
+            echo "Not inside a test class"
+            return
+        endif
+        let cmd = 'pytest ' . relpath . '::' . class . ' --trace'
+        
+    elseif a:scope == 'function'
+        let func = s:NameOfCurrentFunction()
+        if empty(func)
+            echo "Not inside a test function"
+            return
+        endif
+        let cmd = 'pytest ' . relpath . '::' . func . ' --trace'
+        
+    else  " file
+        let cmd = 'pytest ' . relpath . ' --trace'
+    endif
+    
+    let debug_flag = empty(a:bang) ? '--trace' : '--pdb'
+    execute 'Start! -strategy=terminal ' . cmd . ' ' . debug_flag
+endfunction
+
+command! -buffer -nargs=1 -bang RunPytestTrace call s:RunTestWithTrace(<q-args>, "<bang>")
