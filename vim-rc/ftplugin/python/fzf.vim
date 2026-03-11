@@ -1,4 +1,8 @@
-" script-local sink
+if exists('g:loaded_python_fzf_ftplugin')
+  finish
+endif
+let g:loaded_python_fzf_ftplugin = 1
+
 function! s:rg_scope_sink(choice) abort
   let scope = s:rg_scopes[a:choice]
    " Build arguments array matching the DSL: pattern -- scope
