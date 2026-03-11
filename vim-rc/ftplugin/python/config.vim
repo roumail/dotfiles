@@ -4,4 +4,5 @@ let g:python_highlight_all = 1
 let g:disable_pytest_plugin = 1
 " vim dispatch
 compiler pytest
+let b:dispatch = '-compiler=pytest'
 " autocmd FileType python let b:dispatch = 'chkpyt.sh %'
