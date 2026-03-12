@@ -1,7 +1,7 @@
-if exists('g:loaded_python_keymaps_ftplugin')
+if exists('b:loaded_python_keymaps_ftplugin')
   finish
 endif
-let g:loaded_python_keymaps_ftplugin = 1
+let b:loaded_python_keymaps_ftplugin = 1
 
 function! s:SetupPytestKeymaps() abort
     if expand('%:t') !~ '^test_'

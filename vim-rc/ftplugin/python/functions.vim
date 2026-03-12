@@ -1,7 +1,8 @@
-if exists('g:loaded_python_functions_ftplugin')
+if exists('b:loaded_python_functions_ftplugin')
   finish
 endif
-let g:loaded_python_functions_ftplugin = 1
+let b:loaded_python_functions_ftplugin = 1
+
 function! ParsePytestFailures()
     " Keep only FAILED / ERROR lines
     g!/^FAILED\|^ERROR/d
