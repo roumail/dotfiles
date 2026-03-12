@@ -193,7 +193,7 @@ function! s:RunTestWithTrace(scope, bang) abort
             echo "Not inside a test method"
             return
         endif
-        let cmd = 'pytest ' . relpath . ' -k ' . method . ' --trace'
+        let cmd = 'pytest ' . relpath . ' -k ' . method
         
     elseif a:scope == 'class'
         let class = s:NameOfCurrentClass()
@@ -201,7 +201,7 @@ function! s:RunTestWithTrace(scope, bang) abort
             echo "Not inside a test class"
             return
         endif
-        let cmd = 'pytest ' . relpath . '::' . class . ' --trace'
+        let cmd = 'pytest ' . relpath . '::' . class
         
     elseif a:scope == 'function'
         let func = s:NameOfCurrentFunction()
@@ -209,10 +209,10 @@ function! s:RunTestWithTrace(scope, bang) abort
             echo "Not inside a test function"
             return
         endif
-        let cmd = 'pytest ' . relpath . '::' . func . ' --trace'
+        let cmd = 'pytest ' . relpath . '::' . func
         
     else  " file
-        let cmd = 'pytest ' . relpath . ' --trace'
+        let cmd = 'pytest ' . relpath
     endif
     
     let debug_flag = empty(a:bang) ? '--trace' : '--pdb'
