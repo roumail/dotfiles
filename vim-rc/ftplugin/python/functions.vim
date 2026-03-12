@@ -16,10 +16,6 @@ function! ParsePytestFailures()
     sort u
 endfunction
 
-" command! -bang -nargs=* -complete=file Pytest Dispatch<bang> -compiler=pytest -- <args>
-" -- needs to be added after dispatch, even if we automatically add -compiler pytest
-"https://github.com/tpope/vim-dispatch/issues/263
-command! -bang -nargs=* -complete=file Pytest Dispatch<bang> -- <args>
 
 augroup pytest_parse
     autocmd!

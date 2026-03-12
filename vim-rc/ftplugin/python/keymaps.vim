@@ -9,6 +9,11 @@ function! s:SetupPytestKeymaps() abort
     endif
     
     
+    nnoremap <buffer> <localleader>rm :RunPytest method<CR>
+    nnoremap <buffer> <localleader>rc :RunPytest class<CR>
+    nnoremap <buffer> <localleader>rf :RunPytest function<CR>
+    nnoremap <buffer> <localleader>rt :RunPytest file<CR>
+
     " Run with --pdb in terminal
     nnoremap <buffer> <localleader>dm :RunPytestTrace! method<CR>
     nnoremap <buffer> <localleader>dc :RunPytestTrace! class<CR>
