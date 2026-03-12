@@ -7,8 +7,7 @@ function! s:SetupPytestKeymaps() abort
     if expand('%:t') !~ '^test_'
         return
     endif
-    
-    
+    nnoremap <buffer> <localleader>cs :call pytest#dispatch#toggle_strategy()<CR>
     nnoremap <buffer> <localleader>rm :RunPytest method<CR>
     nnoremap <buffer> <localleader>rc :RunPytest class<CR>
     nnoremap <buffer> <localleader>rf :RunPytest function<CR>

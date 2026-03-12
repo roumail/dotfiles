@@ -31,3 +31,10 @@ function! pytest#dispatch#RunTest(scope, bang) abort
 endfunction
 
 
+" g:Prefer vim terminal for interactive processes
+"   1 = Launch in terminal
+"   0 = Launch in tmux window
+function! pytest#dispatch#toggle_strategy() abort
+  let g:dispatch_no_tmux_start = !get(g:, 'dispatch_no_tmux_start', 1)
+  echo 'Default Start startegy set to terminal: ' . (g:dispatch_no_tmux_start ? 'on' : 'off')
+endfunction
