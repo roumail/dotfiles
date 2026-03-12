@@ -4,10 +4,10 @@
 " Maintainer:  Alfredo Deza <alfredodeza AT gmail.com>
 " License:     MIT
 "============================================================================
-if exists('g:loaded_python_pytest_ftplugin')
+if exists('b:loaded_python_pytest_ftplugin')
   finish
 endif
-let g:loaded_python_pytest_ftplugin = 1
+let b:loaded_python_pytest_ftplugin = 1
 
 function! s:NameOfCurrentClass()
     let save_cursor = getpos(".")
