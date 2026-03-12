@@ -4,3 +4,5 @@ let g:python_highlight_all = 1
 compiler pytest
 " https://github.com/tpope/vim-dispatch/issues/315
 let b:dispatch = '-compiler=pytest'
+" prefer terminal for launching debug
+let g:dispatch_no_tmux_start = 1
