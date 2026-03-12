@@ -189,11 +189,12 @@ function! s:RunTestWithTrace(scope, bang) abort
     
     if a:scope == 'method'
         let method = s:NameOfCurrentMethod()
-        if empty(method)
+        let class = s:NameOfCurrentClass()
+        if empty(method) || empty(class)
             echo "Not inside a test method"
             return
         endif
-        let cmd = 'pytest ' . relpath . ' -k ' . method
+        let cmd = 'pytest ' . relpath . '::' . class . '::' . method
         
     elseif a:scope == 'class'
         let class = s:NameOfCurrentClass()
