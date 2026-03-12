@@ -25,4 +25,5 @@ export LS_OPTIONS='--color=auto'
 export BAT_THEME="Monokai Extended Origin"
 export BAT_CONFIG_PATH="$HOME/.config/bat/bat.conf"
 export BAT_STYLE="numbers,changes,header,rule,snip"
+export PYTHONSTARTUP=$HOME/.startup.py
 # export BAT_STYLE="full"
