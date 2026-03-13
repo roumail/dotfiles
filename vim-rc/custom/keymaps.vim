@@ -51,8 +51,8 @@ nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
 
-" Open netrw
-nnoremap <leader>se :Explore<CR>
+" Enable lsp
+nnoremap <leader>el :call lsp#enable()<CR>
 
 
 " Visual mode mappings
