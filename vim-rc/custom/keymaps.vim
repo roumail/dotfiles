@@ -12,6 +12,9 @@ inoremap <silent> ,tt <C-O>:tab split<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
+" Current line number
+nnoremap <leader>gl :let @+ =line('.')<CR>:echo "Line number copied!"<CR>
+nnoremap <leader>gL :let @+ = expand('%') . ':' . line('.')<CR>:echo "File:line copied!"<CR>
 " Current file relative path
 nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied!"<CR>
 " Absolute path
@@ -23,8 +26,6 @@ nnoremap <leader>ot :tab term ++kill=term<CR>
 " Save session - load session
 " nnoremap <leader>ss :mksession! Session.vim<CR>
 " nnoremap <leader>sl :source Session.vim<CR>
-" Open log of last dispatch run as a buffer
-nnoremap <leader>dl :tabedit `=dispatch#request().file`<CR>
 
 nnoremap <leader>q :wq<CR>
 " buffer switching
@@ -53,7 +54,6 @@ nnoremap <leader>l <C-w>l
 
 " Enable lsp
 nnoremap <leader>el :call lsp#enable()<CR>
-
 
 " Visual mode mappings
 " Keep VisualMode after indent with > or <

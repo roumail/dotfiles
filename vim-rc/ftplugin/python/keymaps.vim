@@ -7,6 +7,9 @@ function! s:SetupPytestKeymaps() abort
     if expand('%:t') !~ '^test_'
         return
     endif
+
+    " Open log of last dispatch run as a buffer
+    nnoremap <buffer> <localleader>dl :tabedit `=dispatch#request().file`<CR>
     nnoremap <buffer> <localleader>cs :call pytest#dispatch#toggle_strategy()<CR>
     nnoremap <buffer> <localleader>rm :RunPytest method<CR>
     nnoremap <buffer> <localleader>rc :RunPytest class<CR>
