@@ -63,16 +63,20 @@ function! DetectProjectName() abort
   endif
 
   let l:file = findfile('pyproject.toml', '.;')
-  if empty(l:file)
+  if empty(l:file) || !filereadable(l:file)
     return
   endif
 
-  for l:line in readfile(l:file)
-    if l:line =~ '^name\s*='
-      let g:project_name = matchstr(l:line, '"\zs[^"]\+\ze"')
-      break
-    endif
-  endfor
+  try
+      for l:line in readfile(l:file)
+        if l:line =~ '^name\s*='
+          let g:project_name = matchstr(l:line, '"\zs[^"]\+\ze"')
+          break
+        endif
+      endfor
+  catch
+      return
+  endtry
 endfunction
 
 command! QuickFixToLocList call setloclist(0, getqflist())
