@@ -29,10 +29,13 @@ fzf_git_log() {
           --reverse \
           --prompt 'Commits(stat)> ' \
           --expect=enter,ctrl-o \
-          --header "Enter: commit diff | Ctrl-o: Gedit | Ctrl-p/s: toggle preview" \
+          --header "Enter: commit diff | Ctrl-o: Gedit | Ctrl-t: toggle preview" \
           --preview 'git show --stat --oneline --color=always {1}' \
-          --bind 'ctrl-p:change-preview(git show -p --color=always {1})' \
-          --bind 'ctrl-s:change-preview(git show --stat --oneline --color=always {1})' \
+          --bind 'ctrl-t:transform:
+              [[ $FZF_PROMPT =~ stat ]] &&
+                  echo "change-prompt(Commits(patch)> )+change-preview(git show -p --color=always {1})" ||
+                  echo "change-prompt(Commits(stat)> )+change-preview(git show --stat --oneline --color=always {1} )"
+          ' \
           --preview-window='right:60%:wrap'
     )
 
