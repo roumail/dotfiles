@@ -24,8 +24,8 @@ let g:lsp_preview_keep_focus= 0
 " '', 'float', 'preview'
 " let g:lsp_hover_ui = 'preview'
 let g:lsp_semantic_enabled = 0
-
-
+" Internal command used to delay starting the lsp
+let g:lsp_delayed_started = 0
 " -- Vim lsp settings config ---
 let g:lsp_settings_filetype_json = 'json-languageserver'
 let g:lsp_settings_filetype_yaml = 'yaml-language-server'
