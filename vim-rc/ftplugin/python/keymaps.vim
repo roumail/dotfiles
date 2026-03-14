@@ -28,6 +28,9 @@ function! s:SetupPytestKeymaps() abort
     nnoremap <buffer> <localleader>tf :RunPytestTrace function<CR>
     nnoremap <buffer> <localleader>tt :RunPytestTrace file<CR>
     
+    " rerun last start command (debug)
+    nnoremap <buffer> <localleader>rr :call pytest#dispatch#RepeatLast()<CR>
+
     " Yank test paths
     nnoremap <buffer> <localleader>ym :YankTestMethod<CR>
     nnoremap <buffer> <localleader>yc :YankTestClass<CR>
