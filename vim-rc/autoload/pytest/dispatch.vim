@@ -11,6 +11,30 @@ function! pytest#dispatch#RunTestWithTrace(scope, bang) abort
     execute 'Start! -strategy=terminal pytest ' . test_path . ' ' . debug_flag
 endfunction
 
+" Repeat the last dispatch command
+function! pytest#dispatch#RepeatLast() abort
+  if !exists('g:dispatch_last_start')
+    echo "No previous dispatch command to repeat"
+    return
+  endif
+  
+  let last = g:dispatch_last_start
+  let command = get(last, 'expanded', '')
+  
+  if empty(command)
+    echo "Could not find command in dispatch history"
+    return
+  endif
+  
+  " Re-run the command using the same handler and options
+  let opts = {
+        \ 'background': get(last, 'background', 1),
+        \ 'directory': get(last, 'directory', getcwd()),
+        \ 'handler': get(last, 'handler', 'terminal')
+        \ }
+  
+  call dispatch#start(command, opts)
+endfunction
 " -- needs to be added after dispatch, even if we automatically add -compiler pytest
 "https://github.com/tpope/vim-dispatch/issues/263
 " Previously we had to explicitly pass -compiler=pytest -- <args>
