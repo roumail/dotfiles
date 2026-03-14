@@ -6,9 +6,14 @@ fzf_git_log() {
     local selection
     local commit
     local root_dir
+    local default_branch
 
     root_dir=$(git rev-parse --show-toplevel 2>/dev/null) || return
+    default_branch=$(git_get_default_branch "$root_dir/.git")
 
+    if [[ -z "$default_branch" ]]; then
+        default_branch="main"
+    fi
     if [[ $# -eq 0 ]]; then
         set -- -n 20
     fi  
@@ -22,8 +27,9 @@ fzf_git_log() {
           --ansi \
           --no-sort \
           --reverse \
-          --no-multi \
-          --header "C-p: Patch | C-s: Stat | Enter: Diff" \
+          --prompt 'Commits(stat)> ' \
+          --expect=enter,ctrl-o \
+          --header "Enter: commit diff | Ctrl-o: Gedit | Ctrl-p/s: toggle preview" \
           --preview 'git show --stat --oneline --color=always {1}' \
           --bind 'ctrl-p:change-preview(git show -p --color=always {1})' \
           --bind 'ctrl-s:change-preview(git show --stat --oneline --color=always {1})' \
@@ -33,10 +39,22 @@ fzf_git_log() {
     # If the user made a selection (didn't hit ESC)
     if [[ -n "$selection" ]]; then
         # Extract the commit hash
-        commit=$(echo "$selection" | awk '{print $1}') 
-        # Open Vim, change to root directory, and run Fugitive's difftool
-        # We use -c "cmd" for the first command and -c "cmd" for the second
-        vim -c "cd $root_dir" -c "Git difftool -y ${commit}^ $commit"
+        key=$(echo "$selection" | head -1)
+        line=$(echo "$selection" | tail -1)
+
+        commit=$(echo "$line" | awk '{print $1}')
+        case "$key" in
+            ctrl-o)
+                vim -c "cd $root_dir" \
+                    -c "Gedit ${commit}"
+                # vim -c "cd $root_dir" \
+                #     -c "Git difftool -y ${default_branch}...${commit}"
+                ;;
+            *)
+                vim -c "cd $root_dir" \
+                    -c "Git difftool -y ${commit}^ ${commit}"
+                ;;
+        esac
     fi  
 }
 alias gll='fzf_git_log'
