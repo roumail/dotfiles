@@ -20,12 +20,13 @@ if executable('ty')
   \ })
 endif
 
-
-" augroup LspPopupCustom
-"     autocmd!
-"     " Once you jump into the popup, 'q' will close it and jump back
-"     autocmd User lsp_float_opened nmap <buffer> q <plug>(lsp-preview-close)
-" augroup END
+augroup DelayedLsp
+    autocmd!
+    autocmd FileType python,rust,go if !g:lsp_delayed_started |
+        \ let g:lsp_delayed_started = 1 |
+        \ call timer_start(200, {-> lsp#enable()}) |
+        \ endif
+augroup END
 
 " Toggling diagnostics and virtual text {{{
 let g:lsp_diagnostics_default_on = 0  " Set to 1 for ON, 0 for OFF
