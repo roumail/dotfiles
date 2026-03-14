@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # https://github.com/junegunn/fzf-git.sh
+# https://github.com/junegunn/fzf/wiki/Examples#git
 # Log view
 fzf_git_log() {
     local selection
@@ -14,43 +15,25 @@ fzf_git_log() {
 
     selection=$(
       git log \
-          --format='%C(auto)%h %d %s %C(black)%C(bold)%cr%C(reset)' \
+          --oneline \
           --color=always \
           "$@" | \
-            while read -r line; do
-             hash=$(echo "$line" | grep -o "[a-f0-9]\{7,\}" | head -1)
-             count=$(git diff-tree --no-commit-id --name-only -r "$hash" | wc -l)
-             marker=$(( count > 1 ? 1 : 0 ))
-             if (( marker )); then
-                 marker="●"
-             else
-                 marker="."
-             fi
-             printf "%s %s %s\n" "$marker" "$hash" "$line"
-        done |
         fzf \
           --ansi \
           --no-sort \
           --reverse \
           --no-multi \
-          --preview '
-              commit=$(echo {} | grep -o "[a-f0-9]\{7,\}" | head -1)
-              echo "FILES:"
-              git diff-tree --no-commit-id --name-only -r $commit
-              echo 
-              echo "STATS:"
-              git show --stat --oneline $commit
-              echo
-              echo "PATCH:"
-              git show --color=always $commit
-          '
+          --header "C-p: Patch | C-s: Stat | Enter: Diff" \
+          --preview 'git show --stat --oneline --color=always {1}' \
+          --bind 'ctrl-p:change-preview(git show -p --color=always {1})' \
+          --bind 'ctrl-s:change-preview(git show --stat --oneline --color=always {1})' \
+          --preview-window='right:60%:wrap'
     )
 
     # If the user made a selection (didn't hit ESC)
     if [[ -n "$selection" ]]; then
         # Extract the commit hash
-        commit=$(echo "$selection" | grep -o "[a-f0-9]\{7,\}" | head -1)
-        
+        commit=$(echo "$selection" | awk '{print $1}') 
         # Open Vim, change to root directory, and run Fugitive's difftool
         # We use -c "cmd" for the first command and -c "cmd" for the second
         vim -c "cd $root_dir" -c "Git difftool -y ${commit}^ $commit"
