@@ -39,6 +39,16 @@ function! MyLspQuickfix() abort
   " botright copen
 endfunction
 
+function! ToggleQuickfix()
+    " Check if any quickfix window is open
+    let l:win = filter(range(1, winnr('$')), 'getwinvar(v:val, "&buftype") ==# "quickfix"')
+    if empty(l:win)
+        copen
+    else
+        cclose
+    endif
+endfunction
+
 function! MyLspLocationlist() abort
   " botright lopen
 endfunction

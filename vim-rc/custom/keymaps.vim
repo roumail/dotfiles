@@ -52,8 +52,7 @@ nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
 
-" Enable lsp
-nnoremap <leader>el :call lsp#enable()<CR>
+nnoremap <silent> yoq :call ToggleQuickfix()<CR>
 
 " Visual mode mappings
 " Keep VisualMode after indent with > or <
