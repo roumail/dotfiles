@@ -8,12 +8,26 @@ fzf_git_log() {
 
     root_dir=$(git rev-parse --show-toplevel 2>/dev/null) || return
 
+    if [[ $# -eq 0 ]]; then
+        set -- -n 20
+    fi  
+
     selection=$(
       git log \
-          --graph \
-          --format='%C(auto)%h %d %s %C(black)%C(bold)%cr' \
+          --format='%C(auto)%h %d %s %C(black)%C(bold)%cr%C(reset)' \
           --color=always \
           "$@" | \
+            while read -r line; do
+             hash=$(echo "$line" | grep -o "[a-f0-9]\{7,\}" | head -1)
+             count=$(git diff-tree --no-commit-id --name-only -r "$hash" | wc -l)
+             marker=$(( count > 1 ? 1 : 0 ))
+             if (( marker )); then
+                 marker="●"
+             else
+                 marker="."
+             fi
+             printf "%s %s %s\n" "$marker" "$hash" "$line"
+        done |
         fzf \
           --ansi \
           --no-sort \
