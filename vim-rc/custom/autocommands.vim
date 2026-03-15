@@ -10,9 +10,9 @@ augroup END
 
 "autocmd BufRead,BufNewFile *.md,*.txt setlocal wrap " DO wrap on markdown files
 augroup MarkdownSettings
-    autocmd!
-    " Apply these settings ONLY to markdown files
-    autocmd FileType markdown setlocal wrap linebreak textwidth=0
+  autocmd!
+  " Apply these settings ONLY to markdown files
+  autocmd FileType markdown setlocal wrap linebreak textwidth=0
 augroup END
 
 augroup StripTrailingCR

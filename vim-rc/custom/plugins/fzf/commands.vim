@@ -77,18 +77,18 @@ command! -bang -nargs=* LiveGrep call fzf_utils#live_grep#interactive(<bang>0, <
 "   :Rg!  → Fullscreen mode
 "   :Rg   → Normal mode (windowed)
 command! -bang -nargs=* Rg call fzf#vim#grep(
-            \ fzf_utils#ripgrep#get_command() . " " . <q-args>,
-            \ fzf#vim#with_preview({
-            \       'options': '--delimiter : --nth 4.. --preview-window +{2}-5,~3'
-            \       }, 'right:50%', 'ctrl-p'),
-            \ <bang>0)
- 
+      \ fzf_utils#ripgrep#get_command() . " " . <q-args>,
+      \ fzf#vim#with_preview({
+      \       'options': '--delimiter : --nth 4.. --preview-window +{2}-5,~3'
+      \       }, 'right:50%', 'ctrl-p'),
+      \ <bang>0)
+
 " Similar to default FZF command, however FZF doesn't give preview
 " https://github.com/junegunn/fzf.vim?tab=readme-ov-file#example-customizing-files-command
 command! -bang -nargs=* Files
-            \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+      \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 command! -bang -nargs=* Buffers
-            \ call fzf#vim#buffers(fzf#vim#with_preview(), <bang>0)
+      \ call fzf#vim#buffers(fzf#vim#with_preview(), <bang>0)
 
 " GrepScope: Interactive scope picker for grep
 "

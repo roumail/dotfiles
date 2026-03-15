@@ -1,6 +1,6 @@
 function! s:rg_scope_sink(choice) abort
   let scope = s:rg_scopes[a:choice]
-   " Build arguments array matching the DSL: pattern -- scope
+  " Build arguments array matching the DSL: pattern -- scope
   if s:current_search_pattern ==# '--' || empty(s:current_search_pattern)
     " No pattern, just scope
     let args = ['--'] + scope
@@ -32,14 +32,14 @@ function! fzf_utils#rg_scope#run(...) abort
   let s:current_search_pattern = a:0 > 0 ? a:1 : '--'
 
   let s:rg_scopes = {
-  \ 'project': [g:project_name . '/'],
-  \ 'tests': ['tests/'],
-  \ 'project python': [g:project_name . '/', '-tpy'],
-  \ 'tests python': ['tests/', '-tpy']
-  \ }
+        \ 'project': [g:project_name . '/'],
+        \ 'tests': ['tests/'],
+        \ 'project python': [g:project_name . '/', '-tpy'],
+        \ 'tests python': ['tests/', '-tpy']
+        \ }
 
   let choice = fzf#run(fzf#wrap({
-  \ 'source': keys(s:rg_scopes),
-  \ 'sink': function('s:rg_scope_sink')
-  \ }))
+        \ 'source': keys(s:rg_scopes),
+        \ 'sink': function('s:rg_scope_sink')
+        \ }))
 endfunction

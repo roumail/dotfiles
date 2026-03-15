@@ -4,46 +4,46 @@ endif
 let b:loaded_python_keymaps_ftplugin = 1
 
 function! s:SetupPytestKeymaps() abort
-    if expand('%:t') !~ '^test_'
-        return
-    endif
+  if expand('%:t') !~ '^test_'
+    return
+  endif
 
-    " Open log of last dispatch run as a buffer
-    nnoremap <buffer> <localleader>dl :tabedit `=dispatch#request().file`<CR>
-    " Switch b/w tmux and terminal running strategy for Start (used for debugging)
-    nnoremap <buffer> <localleader>cs :call pytest#dispatch#toggle_strategy()<CR>
-    nnoremap <buffer> <localleader>rm :RunPytest method<CR>
-    nnoremap <buffer> <localleader>rc :RunPytest class<CR>
-    nnoremap <buffer> <localleader>rf :RunPytest function<CR>
-    nnoremap <buffer> <localleader>rt :RunPytest file<CR>
+  " Open log of last dispatch run as a buffer
+  nnoremap <buffer> <localleader>dl :tabedit `=dispatch#request().file`<CR>
+  " Switch b/w tmux and terminal running strategy for Start (used for debugging)
+  nnoremap <buffer> <localleader>cs :call pytest#dispatch#toggle_strategy()<CR>
+  nnoremap <buffer> <localleader>rm :RunPytest method<CR>
+  nnoremap <buffer> <localleader>rc :RunPytest class<CR>
+  nnoremap <buffer> <localleader>rf :RunPytest function<CR>
+  nnoremap <buffer> <localleader>rt :RunPytest file<CR>
 
-    " Run with --pdb in terminal
-    nnoremap <buffer> <localleader>dm :RunPytestTrace! method<CR>
-    nnoremap <buffer> <localleader>dc :RunPytestTrace! class<CR>
-    nnoremap <buffer> <localleader>df :RunPytestTrace! function<CR>
-    nnoremap <buffer> <localleader>dt :RunPytestTrace! file<CR>
+  " Run with --pdb in terminal
+  nnoremap <buffer> <localleader>dm :RunPytestTrace! method<CR>
+  nnoremap <buffer> <localleader>dc :RunPytestTrace! class<CR>
+  nnoremap <buffer> <localleader>df :RunPytestTrace! function<CR>
+  nnoremap <buffer> <localleader>dt :RunPytestTrace! file<CR>
 
-    " Run with --trace in terminal
-    nnoremap <buffer> <localleader>tm :RunPytestTrace method<CR>
-    nnoremap <buffer> <localleader>tc :RunPytestTrace class<CR>
-    nnoremap <buffer> <localleader>tf :RunPytestTrace function<CR>
-    nnoremap <buffer> <localleader>tt :RunPytestTrace file<CR>
-    
-    " rerun last start command (debug)
-    nnoremap <buffer> <localleader>rs :call pytest#dispatch#RepeatLast()<CR>
-    " https://github.com/tpope/vim-dispatch/issues/80#issuecomment-290958499
-    nnoremap <buffer> <localleader>rd :Copen \| Dispatch<CR>
+  " Run with --trace in terminal
+  nnoremap <buffer> <localleader>tm :RunPytestTrace method<CR>
+  nnoremap <buffer> <localleader>tc :RunPytestTrace class<CR>
+  nnoremap <buffer> <localleader>tf :RunPytestTrace function<CR>
+  nnoremap <buffer> <localleader>tt :RunPytestTrace file<CR>
 
-    " Yank test paths
-    nnoremap <buffer> <localleader>ym :YankTestMethod<CR>
-    nnoremap <buffer> <localleader>yc :YankTestClass<CR>
-    nnoremap <buffer> <localleader>yf :YankTestFunction<CR>
-    nnoremap <buffer> <localleader>yF :YankTestFile<CR>
+  " rerun last start command (debug)
+  nnoremap <buffer> <localleader>rs :call pytest#dispatch#RepeatLast()<CR>
+  " https://github.com/tpope/vim-dispatch/issues/80#issuecomment-290958499
+  nnoremap <buffer> <localleader>rd :Copen \| Dispatch<CR>
+
+  " Yank test paths
+  nnoremap <buffer> <localleader>ym :YankTestMethod<CR>
+  nnoremap <buffer> <localleader>yc :YankTestClass<CR>
+  nnoremap <buffer> <localleader>yf :YankTestFunction<CR>
+  nnoremap <buffer> <localleader>yF :YankTestFile<CR>
 endfunction
 
 let maplocalleader = "_"
 
 augroup python_pytest_keymaps
-    autocmd!
-    autocmd BufEnter <buffer> call s:SetupPytestKeymaps()
+  autocmd!
+  autocmd BufEnter <buffer> call s:SetupPytestKeymaps()
 augroup END

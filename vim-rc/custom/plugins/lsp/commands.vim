@@ -13,16 +13,16 @@
 "         \ }])
 " endif
 if executable('ty')
-    au User lsp_setup call lsp#register_server({
+  au User lsp_setup call lsp#register_server({
         \ 'name': 'ty',
         \ 'cmd': {server_info->['ty', 'server']},
         \ 'allowlist': ['python'],
-  \ })
+        \ })
 endif
 
 augroup DelayedLsp
-    autocmd!
-    autocmd FileType python,rust,go if !g:lsp_delayed_started |
+  autocmd!
+  autocmd FileType python,rust,go if !g:lsp_delayed_started |
         \ let g:lsp_delayed_started = 1 |
         \ call timer_start(200, {-> lsp#enable()}) |
         \ endif
@@ -33,15 +33,15 @@ let g:lsp_diagnostics_default_on = 0  " Set to 1 for ON, 0 for OFF
 " ----------------------------------------
 
 function! s:ApplyLSPState(enable, silent)
-    if a:enable
-        call lsp#enable_diagnostics_for_buffer()
-        let b:my_lsp_diagnostics_enabled = 1
-        if !a:silent | echo "LSP Diagnostics : ON" | endif
-    else
-        call lsp#disable_diagnostics_for_buffer()
-        let b:my_lsp_diagnostics_enabled = 0
-        if !a:silent | echo "LSP Diagnostics : OFF" | endif
-    endif
+  if a:enable
+    call lsp#enable_diagnostics_for_buffer()
+    let b:my_lsp_diagnostics_enabled = 1
+    if !a:silent | echo "LSP Diagnostics : ON" | endif
+  else
+    call lsp#disable_diagnostics_for_buffer()
+    let b:my_lsp_diagnostics_enabled = 0
+    if !a:silent | echo "LSP Diagnostics : OFF" | endif
+  endif
 endfunction
 
 " Initialize buffer based on global default
@@ -49,8 +49,8 @@ autocmd BufEnter * if !exists('b:my_lsp_diagnostics_enabled') | call s:ApplyLSPS
 
 " Toggle function flips the current buffer state
 function! s:MyToggleLSPDiagnostics()
-    let l:current = get(b:, 'my_lsp_diagnostics_enabled', g:lsp_diagnostics_default_on)
-    call s:ApplyLSPState(!l:current, 0)
+  let l:current = get(b:, 'my_lsp_diagnostics_enabled', g:lsp_diagnostics_default_on)
+  call s:ApplyLSPState(!l:current, 0)
 endfunction
 
 command MyToggleLSPDiagnostics call s:MyToggleLSPDiagnostics()

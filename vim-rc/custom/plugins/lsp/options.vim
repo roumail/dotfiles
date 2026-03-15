@@ -32,26 +32,26 @@ let g:lsp_settings_filetype_yaml = 'yaml-language-server'
 let g:lsp_settings_filetype_python = 'ty'
 " These settings seem to be ignored
 let g:lsp_settings = {
-\  'ty': {
-\    "workspace_config": {
-\      'ty': {
-\        'diagnosticMode': 'workspace',
-\        'showSyntaxErrors': v:true,
-\        'inlayHints': {
-\          'variableTypes': v:true,
-\          'callArgumentNames': v:true
-\        },
-\        'completions': {
-\          'autoImport': v:true
-\        }
-\      }
-\    },
-\    "initialization_options": {
-\      'logFile': expand('~/.local/ty.log'),
-\      'logLevel': 'debug'
-\    }
-\  }
-\}
+      \  'ty': {
+      \    "workspace_config": {
+      \      'ty': {
+      \        'diagnosticMode': 'workspace',
+      \        'showSyntaxErrors': v:true,
+      \        'inlayHints': {
+      \          'variableTypes': v:true,
+      \          'callArgumentNames': v:true
+      \        },
+      \        'completions': {
+      \          'autoImport': v:true
+      \        }
+      \      }
+      \    },
+      \    "initialization_options": {
+      \      'logFile': expand('~/.local/ty.log'),
+      \      'logLevel': 'debug'
+      \    }
+      \  }
+      \}
 
 " lsp config
 " autocmd User LspSetup call LspOptionsSet(lspOpts)
