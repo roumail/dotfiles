@@ -28,7 +28,6 @@ fzf_git_log() {
           --no-sort \
           --reverse \
           --prompt 'Commits(stat)> ' \
-          --expect=enter,ctrl-o \
           --header "Enter: commit diff | Ctrl-o: Gedit | Ctrl-t: toggle preview" \
           --preview 'git show --stat --oneline --color=always {1}' \
           --bind 'ctrl-t:transform:
@@ -36,29 +35,15 @@ fzf_git_log() {
                   echo "change-prompt(Commits(patch)> )+change-preview(git show -p --color=always {1})" ||
                   echo "change-prompt(Commits(stat)> )+change-preview(git show --stat --oneline --color=always {1} )"
           ' \
+          --bind "enter:become(vim -c 'Git difftool -y {1}^ {1}' < /dev/tty > /dev/tty)" \
+          --bind "ctrl-o:become(vim -c 'Gedit {1}' < /dev/tty > /dev/tty)" \
           --preview-window='right:60%:wrap'
     )
+    # origin/main...feature
+    # origin/main..HEAD - What have I changed locally compared to the remote main
+    # origin/main..main - commits you have that remote doesn't have
+    # main..origin/main - commits remote has that you don’t)
 
-    # If the user made a selection (didn't hit ESC)
-    if [[ -n "$selection" ]]; then
-        # Extract the commit hash
-        key=$(echo "$selection" | head -1)
-        line=$(echo "$selection" | tail -1)
-
-        commit=$(echo "$line" | awk '{print $1}')
-        case "$key" in
-            ctrl-o)
-                vim -c "cd $root_dir" \
-                    -c "Gedit ${commit}"
-                # vim -c "cd $root_dir" \
-                #     -c "Git difftool -y ${default_branch}...${commit}"
-                ;;
-            *)
-                vim -c "cd $root_dir" \
-                    -c "Git difftool -y ${commit}^ ${commit}"
-                ;;
-        esac
-    fi  
 }
 alias gll='fzf_git_log'
 
