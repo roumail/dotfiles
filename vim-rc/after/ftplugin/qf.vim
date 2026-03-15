@@ -1,4 +1,3 @@
-            " \ execute 'normal! ' . min([lnum, len(qf)]) . 'G'
 if exists("b:did_qf_ftplugin")
   finish
 endif
