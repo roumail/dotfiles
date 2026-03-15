@@ -1,32 +1,32 @@
 function! SmartFilterClose()
-    let l:current = bufnr('%')
-    " Define what to ignore
-    let l:skip_bt = ['terminal', 'nofile']
-    let l:skip_ft = ['netrw']
+  let l:current = bufnr('%')
+  " Define what to ignore
+  let l:skip_bt = ['terminal', 'nofile']
+  let l:skip_ft = ['netrw']
 
-    " Get all listed buffers
-    let l:all_bufs = filter(range(1, bufnr('$')), 'buflisted(v:val)')
+  " Get all listed buffers
+  let l:all_bufs = filter(range(1, bufnr('$')), 'buflisted(v:val)')
 
-    " Filter out based on our skip variables
-    let l:valid_bufs = filter(l:all_bufs, 
+  " Filter out based on our skip variables
+  let l:valid_bufs = filter(l:all_bufs, 
         \ 'index(l:skip_bt, getbufvar(v:val, "&buftype")) == -1 && ' .
         \ 'index(l:skip_ft, getbufvar(v:val, "&filetype")) == -1')
 
-    " Find index and jump. 
-    " If current is a terminal, idx is -1, so it jumps to the last valid buffer.
-    let l:idx = index(l:valid_bufs, l:current)
-    let l:target_idx = (l:idx - 1 + len(l:valid_bufs)) % len(l:valid_bufs)
-    
-    execute 'buffer ' . l:valid_bufs[l:target_idx]
+  " Find index and jump. 
+  " If current is a terminal, idx is -1, so it jumps to the last valid buffer.
+  let l:idx = index(l:valid_bufs, l:current)
+  let l:target_idx = (l:idx - 1 + len(l:valid_bufs)) % len(l:valid_bufs)
 
-    " Delete with silent! to ignore Netrw/Terminal complaints
-    execute 'silent! bdelete! ' . l:current
+  execute 'buffer ' . l:valid_bufs[l:target_idx]
+
+  " Delete with silent! to ignore Netrw/Terminal complaints
+  execute 'silent! bdelete! ' . l:current
 endfunction
 
 function! s:ScratchFrom(cmd)
-    enew
-    setlocal buftype=nofile bufhidden=wipe noswapfile
-    call setline(1, systemlist(a:cmd))
+  enew
+  setlocal buftype=nofile bufhidden=wipe noswapfile
+  call setline(1, systemlist(a:cmd))
 endfunction
 
 command! -nargs=+ ScratchFrom call s:ScratchFrom(<q-args>)
@@ -40,13 +40,13 @@ function! MyLspQuickfix() abort
 endfunction
 
 function! ToggleQuickfix()
-    " Check if any quickfix window is open
-    let l:win = filter(range(1, winnr('$')), 'getwinvar(v:val, "&buftype") ==# "quickfix"')
-    if empty(l:win)
-        copen
-    else
-        cclose
-    endif
+  " Check if any quickfix window is open
+  let l:win = filter(range(1, winnr('$')), 'getwinvar(v:val, "&buftype") ==# "quickfix"')
+  if empty(l:win)
+    copen
+  else
+    cclose
+  endif
 endfunction
 
 function! MyLspLocationlist() abort
@@ -68,14 +68,14 @@ function! DetectProjectName() abort
   endif
 
   try
-      for l:line in readfile(l:file)
-        if l:line =~ '^name\s*='
-          let g:project_name = matchstr(l:line, '"\zs[^"]\+\ze"')
-          break
-        endif
-      endfor
+    for l:line in readfile(l:file)
+      if l:line =~ '^name\s*='
+        let g:project_name = matchstr(l:line, '"\zs[^"]\+\ze"')
+        break
+      endif
+    endfor
   catch
-      return
+    return
   endtry
 endfunction
 

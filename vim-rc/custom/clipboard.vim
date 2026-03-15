@@ -1,10 +1,10 @@
 " Enable system clipboard access
 " set clipboard=
 if g:os ==# 'Windows'
-    " On Windows, this was breaking yy
-    set clipboard=
+  " On Windows, this was breaking yy
+  set clipboard=
 else
-    set clipboard=unnamed,unnamedplus
+  set clipboard=unnamed,unnamedplus
 endif
 
 " WSL clipboard support (adjust path as needed)
