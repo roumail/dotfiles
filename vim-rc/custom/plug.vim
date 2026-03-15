@@ -7,6 +7,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/vim-peekaboo'
 " Couldn't get it to work
