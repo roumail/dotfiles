@@ -1,4 +1,3 @@
-
 function! fzf_utils#live_grep#parse_args(arg_list) abort
     let sep = index(a:arg_list, '--')
     
