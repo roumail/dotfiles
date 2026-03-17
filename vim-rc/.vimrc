@@ -41,6 +41,13 @@ else
         set shell=/bin/bash
     endif
 endif
+" Detect WSL (only meaningful if we're on Linux)
+let g:is_wsl = 0
+if g:os ==# 'Linux'
+    if exists('$WSL_DISTRO_NAME') || filereadable('/proc/version') && readfile('/proc/version')[0] =~? 'microsoft'
+        let g:is_wsl = 1
+    endif
+endif
 
 function! MySource(file) abort
     execute 'source ' . g:vimdir . '/' . a:file
