@@ -72,6 +72,10 @@ let g:netrw_list_hide=netrw_gitignore#Hide()
 let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+,__pycache__/**,.DS_Store'
 let g:netrw_altv = 1  " Open splits to the right
 "let g:netrw_winsize = -25
+" https://github.com/tpope/vim-rhubarb/issues/74
+if g:is_wsl
+    let g:netrw_browsex_viewer = "cmd.exe /C start"
+endif
 
 if (has("termguicolors"))
   if &term !=# 'win32'

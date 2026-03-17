@@ -19,7 +19,7 @@ endif
 
 " WSL specific magic since we get extra lines due to \r\n being
 " misinterpretted
-if has('unix') && executable('win32yank.exe')
+if g:is_wsl && executable('win32yank.exe')
   let g:clipboard = {
         \ 'name': 'win32yank-wsl',
         \ 'copy': {
