@@ -4,9 +4,9 @@
 # Log view
 fzf_git_log() {
   local selection
-  local commit
   local root_dir
   local default_branch
+  local tmpfile
 
   root_dir=$(git rev-parse --show-toplevel 2>/dev/null) || return
   default_branch=$(git_get_default_branch "$root_dir/.git")
@@ -14,16 +14,12 @@ fzf_git_log() {
   if [[ -z "$default_branch" ]]; then
     default_branch="main"
   fi
-  if [[ $# -eq 0 ]]; then
-    set -- -n 20
-  fi  
+  tmpfile=$(mktemp)
+
+  git log --oneline --color=always "$@" > "$tmpfile"
 
   selection=$(
-  git log \
-    --oneline \
-    --color=always \
-    "$@" | \
-    tac | \
+   cat "$tmpfile" | \
     fzf \
     --ansi \
     --no-sort \
@@ -37,8 +33,8 @@ fzf_git_log() {
             ' \
     --bind 'ctrl-r:transform:
       [[ $FZF_PROMPT =~ Log ]] &&
-        echo "change-prompt(${FZF_PROMPT/Log/Rebase})+reload(git log --oneline --color=always $@ | tac)" ||
-        echo "change-prompt(${FZF_PROMPT/Rebase/Log})+reload(git log --oneline --color=always $@)"
+        echo "change-prompt(${FZF_PROMPT/Log/Rebase})+reload(tac '$tmpfile')" ||
+        echo "change-prompt(${FZF_PROMPT/Rebase/Log})+reload(cat '$tmpfile')"
               ' \
     --bind "enter:become(vim -c 'Git difftool -y {1}^ {1}' < /dev/tty > /dev/tty)" \
     --bind "ctrl-o:become(vim -c 'Gedit {1}' < /dev/tty > /dev/tty)" \
@@ -48,6 +44,7 @@ fzf_git_log() {
   # origin/main..HEAD - What have I changed locally compared to the remote main
   # origin/main..main - commits you have that remote doesn't have
   # main..origin/main - commits remote has that you don’t)
+  rm -f "$tmpfile"
 
 }
 alias gll='fzf_git_log'
