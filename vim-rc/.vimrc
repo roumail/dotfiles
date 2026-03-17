@@ -78,7 +78,7 @@ call MySource('custom/clipboard.vim')
 """"""""""""""""""""""""""""""""
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
-
+let g:github_enterprise_urls = ['https://github.tools.digital.engie.com']
 let g:instant_markdown_autostart = 0
 
 " Load fzf key maps ---
