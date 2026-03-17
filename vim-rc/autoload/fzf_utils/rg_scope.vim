@@ -1,13 +1,14 @@
 function! s:rg_scope_sink(choice) abort
   let scope = s:rg_scopes[a:choice]
+  
   " Build arguments array matching the DSL: pattern -- scope
-  if s:current_search_pattern ==# '--' || empty(s:current_search_pattern)
-    " No pattern, just scope
-    let args = ['--'] + scope
-  else
-    " Pattern with scope
-    let args = [s:current_search_pattern, '--'] + scope
-  endif
+  " If pattern is '--' or empty, treat it as an empty list, otherwise wrap it
+  let pattern_part = (s:current_search_pattern ==# '--' || empty(s:current_search_pattern)) 
+        \ ? [] 
+        \ : [s:current_search_pattern]
+
+  " Concatenate: [pattern?] + ['--'] + [scopes?]
+  let args = pattern_part + ['--'] + scope
   call call('fzf_utils#live_grep#window', args)
 endfunction
 
@@ -32,14 +33,22 @@ function! fzf_utils#rg_scope#run(...) abort
   let s:current_search_pattern = a:0 > 0 ? a:1 : '--'
 
   let s:rg_scopes = {
+        \ 'all': [],
         \ 'project': [g:project_name . '/'],
         \ 'tests': ['tests/'],
         \ 'project python': [g:project_name . '/', '-tpy'],
         \ 'tests python': ['tests/', '-tpy']
         \ }
+  let s:rg_scope_order = [
+        \ 'all',
+        \ 'project',
+        \ 'project python',
+        \ 'tests',
+        \ 'tests python'
+        \ ]
 
   let choice = fzf#run(fzf#wrap({
-        \ 'source': keys(s:rg_scopes),
+        \ 'source': s:rg_scope_order,
         \ 'sink': function('s:rg_scope_sink')
         \ }))
 endfunction
