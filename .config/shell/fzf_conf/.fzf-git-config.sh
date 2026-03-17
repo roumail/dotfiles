@@ -32,8 +32,8 @@ fzf_git_log() {
           --preview 'git show --stat --oneline --color=always {1}' \
           --bind 'ctrl-t:transform:
               [[ $FZF_PROMPT =~ stat ]] &&
-                  echo "change-prompt(Commits(patch)> )+change-preview(git show -p --color=always {1})" ||
-                  echo "change-prompt(Commits(stat)> )+change-preview(git show --stat --oneline --color=always {1} )"
+                  echo "change-prompt(Commits(patch)> )+change-preview(git show -p --color=always \{1})+refresh-preview" ||
+                  echo "change-prompt(Commits(stat)> )+change-preview(git show --stat --oneline --color=always \{1})+refresh-preview"
           ' \
           --bind "enter:become(vim -c 'Git difftool -y {1}^ {1}' < /dev/tty > /dev/tty)" \
           --bind "ctrl-o:become(vim -c 'Gedit {1}' < /dev/tty > /dev/tty)" \
