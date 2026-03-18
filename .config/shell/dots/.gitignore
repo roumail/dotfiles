@@ -3,3 +3,5 @@
 docker-compose.override*
 notebooks/
 pgadmin-data/
+.pdbrc
+.vim.custom
