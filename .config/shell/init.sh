@@ -5,6 +5,7 @@ COMMON_CORE=(
   env.sh
   path.sh
   functions.sh
+  git.sh
   aliases.sh
 )
 
