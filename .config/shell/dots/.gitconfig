@@ -38,13 +38,6 @@
     # create and switch
     swc = switch -c
 	ll="!git log --graph --format='%C(yellow)%h%C(red)%d%C(reset) - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)'"
-    # these aren't working properly
-    # sync master worktree
-    wt-sm = "!bash -lc 'git_wt_pm'"
-    # delete merged branches
-    dmb = "!bash -lc 'git_dmb'"
-    # Add new worktree
-    wt-add-bf = "!bash -lc 'git_wt_add \"$@\"' --"
 
 
 [rerere]
