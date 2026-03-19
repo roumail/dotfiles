@@ -15,57 +15,8 @@ DOT_CONFIG_DST="$HOME/.config"
 SHELL_CONFIG_DEST="$DOT_CONFIG_DST/shell"
 USER_SHELL=$(basename "$SHELL")
 
-link_file() {
-  local src="$1"
-  local target="$2"
-
-  mkdir -p "$(dirname "$target")"
-
-  if [ -L "$target" ]; then
-    ln -sf "$src" "$target"
-    echo "  ↻ Refreshed symlink: $(basename "$target")"
-  elif [ -e "$target" ]; then
-    local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
-    cp "$target" "$backup"
-    ln -sf "$src" "$target"
-    echo "  ✓ Backed up and linked: $(basename "$target")"
-  else
-    ln -sf "$src" "$target"
-    echo "  ✓ Linked: $(basename "$target")"
-  fi
-}
-
-link_dir() {
-  local src="$1"
-  local target="$2"
-
-  mkdir -p "$(dirname "$target")"
-
-  # symlink (file or dir)
-  if [ -L "$target" ]; then
-    unlink "$target"
-    ln -sf "$src" "$target"
-    echo "  ↻ Updated dir symlink: $(basename "$target")"
-    # real file or directory
-  elif [ -e "$target" ]; then
-    echo "  ⚠ Directory exists: $target"
-    read -p "    Replace with symlink? (y/N) " -n 1 -r
-    echo
-
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
-      mv "$target" "$backup"
-      ln -sf "$src" "$target"
-      echo "  ✓ Backed up and linked dir: $(basename "$target")"
-    else
-      echo "  → Skipped: $(basename "$target")"
-    fi
-
-  else
-    ln -sf "$src" "$target"
-    echo "  ✓ Linked dir: $(basename "$target")"
-  fi
-}
+# 0. Bootstrap (pure shell)
+[ -r "$SHELL_CONFIG_SRC/lib/bootstrap.sh" ] && . "$SHELL_CONFIG_SRC/lib/bootstrap.sh"
 
 echo "Installing shell configuration..."
 
@@ -139,24 +90,6 @@ case "$(uname)" in
 esac
 
 link_file "$DOT_CONFIG_SRC/bat/bat.conf" "$DOT_CONFIG_DST/bat/bat.conf"
-
-link_tree() {
-  local src="$1"
-  local dst="$2"
-  find "$src" -type f | while read -r file; do
-  rel="${file#$src/}"
-  target="$dst/$rel"
-  mkdir -p "$(dirname "$target")"
-  if [ -e "$target" ] && [ ! -L "$target" ]; then
-    continue
-  fi
-  # Skip if already correct symlink
-  if [ -L "$target" ] && [ "$(readlink "$target")" = "$file" ]; then
-    continue
-  fi
-  ln -sf "$file" "$dst/$rel"
-done
-}
 
 echo ""
 
