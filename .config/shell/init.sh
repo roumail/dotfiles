@@ -5,6 +5,7 @@ BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
 [ -r "$BASE/lib/bootstrap.sh" ] && . "$BASE/lib/bootstrap.sh"
 [ -r "$BASE/common/env.sh" ] && . "$BASE/common/env.sh"
 [ -r "$BASE/common/path.sh" ] && . "$BASE/common/path.sh"
+[ -r "$BASE/common/git.sh" ] && . "$BASE/common/git.sh"
 
 # interactive guard - exit if not running interactively
 [[ $- != *i* ]] && return
@@ -12,7 +13,6 @@ BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
 # 1. Common 
 COMMON_CORE=(
   functions.sh
-  git.sh
   aliases.sh
 )
 

@@ -13,17 +13,6 @@ git_get_default_branch() {
     echo "$branch"
 }
 
-git_wt_add() {
-    local branch_name="$1"
-    local folder_name="$2"
-    if [ $# -eq 1 ]; then
-        # One arg: create branch and folder with same name
-        git worktree add "$1"
-    elif [ $# -eq 2 ]; then
-        # Two args: first is branch, second is folder
-        git worktree add -b "$1" "$2"
-    fi
-}
 
 git_get_worktree_path() {
     local bare_dir="$1"
@@ -32,41 +21,4 @@ git_get_worktree_path() {
     echo "$path"
 }
 
-git_wt_pm() {
-    local bare_dir
-    local branch
-    local worktree_path
 
-    bare_dir=$(git_get_bare_dir)
-    branch=$(git_get_default_branch "$bare_dir")
-
-    if [ -z "$branch" ]; then
-        echo "Error: Could not detect default branch"
-        return 1
-    fi
-
-    worktree_path=$(git_get_worktree_path "$bare_dir" "$branch")
-
-    if [ -z "$worktree_path" ]; then
-        echo "Error: No worktree found for branch '$branch'"
-        return 1
-    fi
-
-    git --work-tree="$worktree_path" --git-dir="$bare_dir" pull origin "$branch"
-}
-
-git_dmb() {
-    local default_branch
-    local bare_dir
-    bare_dir=$(git_get_bare_dir)
-    default_branch=$(git_get_default_branch "$bare_dir")
-
-    if [ -z "$default_branch" ]; then
-        echo "Error: Could not detect default branch"
-        return 1
-    fi
-
-    git branch --merged "origin/$default_branch" \
-        | grep -v -e "$default_branch" -e '\*' \
-        | xargs git branch -d
-    }
