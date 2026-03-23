@@ -19,7 +19,6 @@ fzf_git_log() {
   git log --oneline --color=always "$@" > "$tmpfile"
 
   selection=$(
-   cat "$tmpfile" | \
     fzf \
     --ansi \
     --no-sort \
@@ -38,7 +37,8 @@ fzf_git_log() {
               ' \
     --bind "enter:become(vim -c 'Git difftool -y {1}^ {1}' < /dev/tty > /dev/tty)" \
     --bind "ctrl-o:become(vim -c 'Gedit {1}' < /dev/tty > /dev/tty)" \
-    --preview-window='right:60%:wrap'
+    --preview-window='right:60%:wrap' \
+    < "$tmpfile"
   )
   # origin/main...feature
   # origin/main..HEAD - What have I changed locally compared to the remote main
