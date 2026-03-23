@@ -48,7 +48,13 @@ let g:lsp_settings = {
       \         'autoImport': v:true,
       \    }
       \    }
-      \  }
+      \  },
+      \ 'rust-analyzer': {
+      \   'initialization_options': {
+      \     'checkOnSave': v:false,
+      \     'diagnostics': v:false,
+      \   }
+      \}
       \}
 
 
