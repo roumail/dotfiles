@@ -19,6 +19,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-unimpaired'
 Plug 'mattn/vim-lsp-settings'
 Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/vim-easy-align'
 " Use rg integration with fzf
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'

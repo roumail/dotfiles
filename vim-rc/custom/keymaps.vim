@@ -54,6 +54,8 @@ nnoremap <leader>l <C-w>l
 
 nnoremap <silent> yoq :call ToggleQuickfix()<CR>
 
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
 " Visual mode mappings
 " Keep VisualMode after indent with > or <
 vmap < <gv
@@ -64,6 +66,8 @@ vnoremap <leader>d "_d
 " vnoremap p "0p gv"
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
 " Clashes with saving file to system registry
 " vnoremap <leader>f zf
 " Don't overwrite register with selection, losing previous yank
