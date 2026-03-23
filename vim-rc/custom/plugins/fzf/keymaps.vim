@@ -13,11 +13,11 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
 " Fuzzy search scoped to the current buffer's directory
-nnoremap <silent> <leader>r. <Cmd>execute 'Grep -- ' . expand('%:.:h') . '/'<CR>
+nnoremap <silent> <leader>r. <Cmd>execute 'LiveGrep -- ' . expand('%:.:h') . '/'<CR>
 " Line search from project root directory
-nnoremap <silent> <leader>r/ <Cmd>Grep<CR>
+nnoremap <silent> <leader>r/ <Cmd>LiveGrep<CR>
 " Prefilled to type pattern/scope
-nnoremap <leader>r: :Grep 
+nnoremap <leader>r: :LiveGrep 
 " Prefilled to type pattern
 nnoremap <leader>gr: :GrepScope 
 

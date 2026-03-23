@@ -6,14 +6,6 @@ endif
 " Single toggle for both rg and fd
 command! FzfToggleIgnored call fzf_utils#toggle#toggle_ignored()
 
-" Grep: Live grep defaulting to not fullscreen (wrapper for convenience)
-"
-" Examples:
-"   :Grep pattern
-"   :Grep pattern -- src/
-"   :Grep -- -g "*.vim"
-command! -nargs=* Grep call fzf_utils#live_grep#window(<f-args>)
-
 " LiveGrep: Live grep (updates search results as you type in fzf)
 "
 " Uses '--' to separate the search pattern from ripgrep options:
