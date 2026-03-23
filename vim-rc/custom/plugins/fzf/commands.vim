@@ -6,10 +6,7 @@ endif
 " Single toggle for both rg and fd
 command! FzfToggleIgnored call fzf_utils#toggle#toggle_ignored()
 
-" Grep: Live grep with fullscreen (wrapper for convenience)
-"
-" Convenient shorthand for LiveGrep! (always fullscreen).
-" See :help LiveGrep for full documentation.
+" Grep: Live grep defaulting to not fullscreen (wrapper for convenience)
 "
 " Examples:
 "   :Grep pattern
