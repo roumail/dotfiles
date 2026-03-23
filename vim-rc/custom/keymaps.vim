@@ -38,7 +38,6 @@ nnoremap gb :b#<CR>
 " This function skips terminal windows and netrw
 nnoremap <silent> <leader>bc :call SmartFilterClose()<CR>
 nnoremap <leader>bC :bufdo bd<CR>
-nnoremap <leader>gf :GFiles?<CR>
 " Open current buffer in new tab
 nnoremap <silent> <leader>tt :tab split<CR>
 
