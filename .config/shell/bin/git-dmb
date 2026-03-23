@@ -1,0 +1,18 @@
+#!/bin/bash
+# Delete merged branch
+
+# Load git helper functions
+BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
+[ -r "$BASE/common/git.sh" ] && . "$BASE/common/git.sh"
+
+bare_dir=$(git_get_bare_dir)
+default_branch=$(git_get_default_branch "$bare_dir")
+
+if [ -z "$default_branch" ]; then
+    echo "Error: Could not detect default branch"
+    exit 1
+fi
+
+git branch --merged "origin/$default_branch" \
+    | grep -v -e "$default_branch" -e '\*' \
+    | xargs git branch -d

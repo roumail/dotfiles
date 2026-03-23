@@ -1,26 +1,27 @@
 #!/usr/bin/env bash
+BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
 
-# 1. Common (shared across shells) - Order matters
+# 0. Bootstrap (pure shell)
+[ -r "$BASE/lib/bootstrap.sh" ] && . "$BASE/lib/bootstrap.sh"
+[ -r "$BASE/common/env.sh" ] && . "$BASE/common/env.sh"
+[ -r "$BASE/common/path.sh" ] && . "$BASE/common/path.sh"
+[ -r "$BASE/common/git.sh" ] && . "$BASE/common/git.sh"
+
+# interactive guard - exit if not running interactively
+[[ $- != *i* ]] && return
+
+# 1. Common 
 COMMON_CORE=(
-  env.sh
-  path.sh
   functions.sh
   aliases.sh
 )
 
-source_if_exists() {
-  [ -r "$1" ] && source "$1"
-}
-
-BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
 for plugin in "${COMMON_CORE[@]}"; do
   source_if_exists "$BASE/common/$plugin" 
 done
 
 USER_SHELL=$(basename "$SHELL")
 
-# interactive guard - exit if not running interactively
-[[ $- != *i* ]] && return
 
 if [ "$USER_SHELL" = "zsh" ]; then
   SHELL_NAME="zsh"

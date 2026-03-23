@@ -1,0 +1,24 @@
+#!/bin/bash
+# Update worktree without checking out
+
+# Load git helper functions
+BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
+[ -r "$BASE/common/git.sh" ] && . "$BASE/common/git.sh"
+
+BARE=$(git_get_bare_dir)
+BRANCH=$(git_get_default_branch "$BARE")
+
+if [ -z "$BRANCH" ]; then
+    echo "Error: Could not detect default branch"
+    exit 1
+fi
+
+PATH_TO_MAIN=$(git_get_worktree_path "$BARE" "$BRANCH")
+
+if [ -z "$PATH_TO_MAIN" ]; then
+    echo "Error: No worktree found for branch '$BRANCH'"
+    exit 1
+fi
+
+echo "Updating $BRANCH at $PATH_TO_MAIN..."
+git --work-tree="$PATH_TO_MAIN" --git-dir="$BARE" pull origin "$BRANCH"
