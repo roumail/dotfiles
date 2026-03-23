@@ -30,38 +30,26 @@ let g:lsp_delayed_started = 0
 let g:lsp_settings_filetype_json = 'json-languageserver'
 let g:lsp_settings_filetype_yaml = 'yaml-language-server'
 let g:lsp_settings_filetype_python = 'ty'
-" These settings seem to be ignored
+let g:lsp_settings_filetype_python = 'ty'
+let g:lsp_settings_filetype_rust = ['rust-analyzer']
+" https://github.com/astral-sh/ty/issues/2851#issuecomment-3928167194
 let g:lsp_settings = {
       \  'ty': {
-      \    "workspace_config": {
-      \      'ty': {
-      \        'diagnosticMode': 'workspace',
-      \        'showSyntaxErrors': v:true,
-      \        'inlayHints': {
-      \          'variableTypes': v:true,
-      \          'callArgumentNames': v:true
-      \        },
-      \        'completions': {
-      \          'autoImport': v:true
-      \        }
-      \      }
-      \    },
       \    "initialization_options": {
       \      'logFile': expand('~/.local/ty.log'),
-      \      'logLevel': 'debug'
+      \      'diagnosticMode': 'workspace',
+      \      'showSyntaxErrors': v:true ,
+      \      'inlayHints': {
+      \         'variableTypes': v:true,
+      \         'callArgumentNames': v:true,
+      \       }, 
+      \      'configurationFile': expand('~/.config/ty.toml'),
+      \      'completions': {
+      \         'autoImport': v:true,
+      \    }
       \    }
       \  }
       \}
-
-" lsp config
-" autocmd User LspSetup call LspOptionsSet(lspOpts)
-
-" let g:lsp_options = {
-"     \ 'autoHighlight': v:true,
-"     \ 'autoPopulateDiags': v:false,
-"     \ 'showDiagWithSign': v:false,
-"     \ 'completionMatcher': 'fuzzy',
-"     \ }
 
 
 

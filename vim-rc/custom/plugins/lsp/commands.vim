@@ -1,25 +1,3 @@
-" Configuring pyright with 
-" https://github.com/yegappan/lsp
-" if executable('pyright-langserver')
-"     au User LspSetup call LspAddServer([#{
-"         \  name: 'pyright',
-"         \  filetype: 'python',
-"         \  path: exepath('pyright-langserver'),
-"         \  args: ['--stdio'],
-"         \  workspaceConfig: #{
-"         \    python: #{
-"         \      pythonPath: 'python3'
-"         \  }}
-"         \ }])
-" endif
-if executable('ty')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'ty',
-        \ 'cmd': {server_info->['ty', 'server']},
-        \ 'allowlist': ['python'],
-        \ })
-endif
-
 augroup DelayedLsp
   autocmd!
   autocmd FileType python,rust,go if !g:lsp_delayed_started |
