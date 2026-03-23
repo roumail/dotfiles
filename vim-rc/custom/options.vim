@@ -84,23 +84,26 @@ if (has("termguicolors"))
     set notermguicolors
   endif
 endif
-set background=dark
+" set background=dark
 " xcodedarkhc, xcodehc 
 " Load any scheme-specific after/colors files
 " https://vi.stackexchange.com/questions/24846/how-to-customize-colorschemes-without-editing-their-source-files
 " Lighter diff colors
 augroup ColorOverrides
   autocmd!
+  autocmd ColorScheme * runtime! after/colors/common.vim
   autocmd ColorScheme * runtime! after/colors/<amatch>.vim
 augroup END
-"colorscheme xcodedarkhr
-colorscheme palenight
-let g:palenight_terminal_italics=1
-let g:airline_theme = "palenight"
-let g:palenight_color_overrides = {
-      \ 'black': { 'gui': '#000000', "cterm": "0", "cterm16": "0" },
-      \ 'comment_grey': { 'gui': '#FF8800', 'cterm': '214', 'cterm16': '3' }
-      \ }
+let g:afterglow_italic_comments=1
+colorscheme afterglow
+" colorscheme palenight
+" let g:palenight_terminal_italics=1
+" let g:airline_theme = "palenight"
+" let g:palenight_color_overrides = {
+"       \ 'black': { 'gui': '#000000', "cterm": "0", "cterm16": "0" },
+"       \ 'comment_grey': { 'gui': '#FF8800', 'cterm': '214', 'cterm16': '3' }
+"       \ }
+
 
 set splitbelow splitright " Open splits below and to the right
 
