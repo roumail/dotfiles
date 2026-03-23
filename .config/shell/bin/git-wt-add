@@ -1,0 +1,13 @@
+#!/bin/bash
+# Add worktree utility
+
+if [ $# -eq 1 ]; then
+    # One arg: create worktree using existing branch name
+    git worktree add "$1"
+elif [ $# -eq 2 ]; then
+    # Two args: first is new branch name, second is folder
+    git worktree add -b "$1" "$2"
+else
+    echo "Usage: git wt-add <branch> [folder]"
+    exit 1
+fi
