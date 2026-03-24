@@ -33,29 +33,32 @@ let g:lsp_settings_filetype_python = 'ty'
 let g:lsp_settings_filetype_rust = ['rust-analyzer']
 " https://github.com/astral-sh/ty/issues/2851#issuecomment-3928167194
 let g:lsp_settings = {
-      \  'ty': {
-      \    "initialization_options": {
-      \      'logFile': expand('~/.local/ty.log'),
-      \      'diagnosticMode': 'workspace',
-      \      'showSyntaxErrors': v:true ,
-      \      'inlayHints': {
-      \         'variableTypes': v:true,
-      \         'callArgumentNames': v:true,
-      \       }, 
-      \      'configurationFile': expand('~/.config/ty.toml'),
-      \      'completions': {
-      \         'autoImport': v:true,
-      \    }
-      \    }
-      \  },
-      \ 'rust-analyzer': {
-      \   'initialization_options': {
-      \     'checkOnSave': v:false,
-      \     'diagnostics': v:false,
-      \   }
-      \}
-      \}
-
-
+\   'ty': {
+\     'initialization_options': {
+\       'logFile': expand('~/.local/ty.log'),
+\       'logLevel': 'info',
+\     },
+\     'workspace_config': {
+\       'ty': {
+\         'diagnosticMode': 'workspace',
+\         'configurationFile': expand('~/.config/ty.toml'),
+\         'showSyntaxErrors': v:true,
+\         'inlayHints': {
+\           'variableTypes': v:true,
+\           'callArgumentNames': v:true,
+\         },
+\         'completions': {
+\           'autoImport': v:true,
+\         }
+\       }
+\     }
+\   },
+\   'rust-analyzer': {
+\     'initialization_options': {
+\       'checkOnSave': v:false,
+\       'diagnostics': v:false,
+\     }
+\   }  
+\ }
 
 
