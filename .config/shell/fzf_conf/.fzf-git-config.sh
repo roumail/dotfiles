@@ -8,6 +8,12 @@ fzf_git_log() {
   local default_branch
   local tmpfile
 
+  # Detect clipboard command
+  local copy_cmd
+  if command -v pbcopy >/dev/null; then copy_cmd='pbcopy'                            # macOS
+  elif command -v win32yank.exe >/dev/null; then copy_cmd='win32yank.exe -i'         # WSL
+  fi
+
   root_dir=$(git rev-parse --show-toplevel 2>/dev/null) || return
   default_branch=$(git_get_default_branch "$root_dir/.git")
 
@@ -22,9 +28,11 @@ fzf_git_log() {
     fzf \
     --ansi \
     --no-sort \
+    --multi \
     --prompt 'Log(stat)> ' \
     --header "enter/ctrl-o: Diff| ctrl-r: log/rebase order| ctrl-t: stat/patch" \
     --preview 'git show --stat --oneline --color=always {1}' \
+    --bind "ctrl-y:execute-silent(echo {+1} | tr ' ' '\n' | $copy_cmd)+abort" \
     --bind 'ctrl-t:transform:
       [[ $FZF_PROMPT =~ stat ]] &&
         echo "change-prompt(${FZF_PROMPT/stat/patch})+change-preview(git show -p --color=always \{1})+refresh-preview" ||
