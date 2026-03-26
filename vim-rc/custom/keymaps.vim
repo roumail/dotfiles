@@ -5,8 +5,6 @@
 inoremap jj <Esc>
 inoremap jk <Esc>:w<CR>
 inoremap jq <Esc>:wq<CR>
-" Open current buffer in new tab (stays in insert mode)
-inoremap <silent> ,tt <C-O>:tab split<CR>
 
 " Normal mode mappings
 nnoremap <leader>w :w<CR>
