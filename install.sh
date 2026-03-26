@@ -95,7 +95,7 @@ mkdir -p "$DOT_CONFIG_DST/alacritty"
 mkdir -p "$DOT_CONFIG_DST/bat"
 
 case "$(uname)" in
-  Darwin)
+  Darwin|Linux)
     link_file \
       "$DOT_CONFIG_SRC/alacritty/alacritty.unix.toml" \
       "$DOT_CONFIG_DST/alacritty/alacritty.toml"
