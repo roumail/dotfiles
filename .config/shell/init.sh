@@ -3,9 +3,13 @@ BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
 
 # 0. Bootstrap (pure shell)
 [ -r "$BASE/lib/bootstrap.sh" ] && . "$BASE/lib/bootstrap.sh"
-[ -r "$BASE/common/env.sh" ] && . "$BASE/common/env.sh"
-[ -r "$BASE/common/path.sh" ] && . "$BASE/common/path.sh"
-[ -r "$BASE/common/git.sh" ] && . "$BASE/common/git.sh"
+source_if_exists "$BASE/common/env.sh"
+source_if_exists "$BASE/common/path.sh"
+source_if_exists "$BASE/common/git.sh"
+
+# Make local env/secrets available to non-interactive shells too
+source_if_exists "$BASE/local/env.sh"
+source_if_exists "$BASE/local/secrets.sh"
 
 # interactive guard - exit if not running interactively
 [[ $- != *i* ]] && return
