@@ -31,6 +31,29 @@ install_local_file_from_example() {
   fi
 }
 
+install_dotconfig_dirs() {
+  echo "Symlinking .config app directories..."
+
+  # alacritty (platform-specific)
+  mkdir -p "$DOT_CONFIG_DST/alacritty"
+  case "$(uname)" in
+    Darwin|Linux)
+      link_file \
+        "$DOT_CONFIG_SRC/alacritty/alacritty.unix.toml" \
+        "$DOT_CONFIG_DST/alacritty/alacritty.toml"
+      ;;
+    MINGW*|MSYS*|CYGWIN*)
+      link_file \
+        "$DOT_CONFIG_SRC/alacritty/alacritty.win.toml" \
+        "$DOT_CONFIG_DST/alacritty/alacritty.toml"
+      ;;
+  esac
+
+  # bat 
+  mkdir -p "$DOT_CONFIG_DST/bat"
+  link_tree "$DOT_CONFIG_SRC/bat" "$DOT_CONFIG_DST/bat"
+}
+#
 # Create ~/.config if it doesn't exist
 mkdir -p "$DOT_CONFIG_DST"
 
@@ -85,29 +108,15 @@ for dotfile in "$SHELL_CONFIG_SRC/dots/".??*; do
 done
 
 echo "Symlinking .config files..."
+
 for config in "$SHELL_CONFIG_SRC/dotconfig/"*; do
   [ -f "$config" ] || continue
   filename=$(basename "$config")
   link_file "$config" "$HOME/.config/$filename"
 done
 
-mkdir -p "$DOT_CONFIG_DST/alacritty"
-mkdir -p "$DOT_CONFIG_DST/bat"
-
-case "$(uname)" in
-  Darwin|Linux)
-    link_file \
-      "$DOT_CONFIG_SRC/alacritty/alacritty.unix.toml" \
-      "$DOT_CONFIG_DST/alacritty/alacritty.toml"
-    ;;
-  MINGW*|MSYS*|CYGWIN*)
-    link_file \
-      "$DOT_CONFIG_SRC/alacritty/alacritty.win.toml" \
-      "$DOT_CONFIG_DST/alacritty/alacritty.toml"
-    ;;
-esac
-
-link_file "$DOT_CONFIG_SRC/bat/bat.conf" "$DOT_CONFIG_DST/bat/bat.conf"
+echo ""
+install_dotconfig_dirs
 
 echo ""
 
