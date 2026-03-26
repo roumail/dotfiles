@@ -20,6 +20,17 @@ USER_SHELL=$(basename "$SHELL")
 
 echo "Installing shell configuration..."
 
+install_local_file_from_example() {
+  local example_file="$1"
+  local target_file="$2"
+
+  if [ -f "$example_file" ] && [ ! -e "$target_file" ]; then
+    cp "$example_file" "$target_file"
+    chmod 600 "$target_file" || true
+    echo "✓ Created $target_file from example"
+  fi
+}
+
 # Create ~/.config if it doesn't exist
 mkdir -p "$DOT_CONFIG_DST"
 
@@ -29,6 +40,13 @@ link_dir "$SHELL_CONFIG_SRC" "$SHELL_CONFIG_DEST"
 # Create local directory if it doesn't exist
 mkdir -p "$SHELL_CONFIG_DEST/local"
 
+install_local_file_from_example \
+  "$SHELL_CONFIG_DEST/local/env.sh.example" \
+  "$SHELL_CONFIG_DEST/local/env.sh"
+
+install_local_file_from_example \
+  "$SHELL_CONFIG_DEST/local/secrets.sh.example" \
+  "$SHELL_CONFIG_DEST/local/secrets.sh"
 # Detect which shell RC we’re installing
 if [ "$USER_SHELL" = "zsh" ]; then
   RC_FILE="$HOME/.zshrc"
