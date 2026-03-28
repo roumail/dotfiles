@@ -1,6 +1,7 @@
 [window]
 title = "Alacritty"
 dynamic_title = false
+option_as_alt = "Both"
 
 [scrolling]
   # How many lines of scrollback to keep,
@@ -11,7 +12,7 @@ dynamic_title = false
   # scrolled when scrollback is enabled (history > 0).
   multiplier= 3
 
-        
+
 [env]
 TERM = "xterm-256color"
 
@@ -42,6 +43,6 @@ bindings = [
       { key = "Backspace", mods = "Command", chars = "\u0015" },
       { key = "Backspace", mods = "Control", chars = "\u001b\u007f" },
       { key="ArrowUp", mods="Control|Shift", action="ScrollLineUp" },
-      { key="ArrowDown", mods="Control|Shift", action="ScrollLineDown" } 
+      { key="ArrowDown", mods="Control|Shift", action="ScrollLineDown" }
     ]
 
