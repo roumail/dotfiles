@@ -33,6 +33,8 @@ autocmd BufNewFile,BufRead requirements*.txt set ft=python
 autocmd BufNewFile,BufRead .*aliases* set ft=sh
 
 autocmd BufReadPost fugitive://* set bufhidden=delete
+" Strip trailing whitespace
+autocmd BufWritePre * %s/\s\+$//e
 
 augroup DetectPythonProject
   autocmd!
