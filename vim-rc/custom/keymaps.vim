@@ -24,7 +24,9 @@ nnoremap <leader>ot :tab term ++kill=term<CR>
 " Save session - load session
 " nnoremap <leader>ss :mksession! Session.vim<CR>
 " nnoremap <leader>sl :source Session.vim<CR>
-
+" don't overwrite yank register when changing
+nnoremap c "_c
+nnoremap C "_C
 nnoremap <leader>q :wq<CR>
 " buffer switching
 " Switch to the alternate (last used) buffer
