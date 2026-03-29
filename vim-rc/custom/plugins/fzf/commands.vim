@@ -6,30 +6,30 @@ endif
 " Single toggle for both rg and fd
 command! FzfToggleIgnored call fzf_utils#toggle#toggle_ignored()
 
-" LiveGrep: Live grep (updates search results as you type in fzf)
+" Grep: Live grep (updates search results as you type in fzf)
 "
 " Uses '--' to separate the search pattern from ripgrep options:
 "
-"   :LiveGrep pattern -- -g "*.vim" -t python
+"   :Grep pattern -- -g "*.vim" -t python
 "
 " Three scenarios:
 "
 " 1. Pattern before '--', options after:
-"      :LiveGrep error -- -g "*.log"
+"      :Grep error -- -g "*.log"
 "    → Initial pattern: "error", filtered to *.log files
 "
 " 2. No pattern, only options (starts with '--'):
-"      :LiveGrep -- -g "*.vim"
+"      :Grep -- -g "*.vim"
 "    → No initial pattern, type in fzf, filtered to *.vim files
 "
 " 3. No '--' found:
-"      :LiveGrep error code
+"      :Grep error code
 "    → Entire input treated as pattern: "error code"
 "
 " Path shortcuts:
-"   Paths ending with '/' or starting with './', '../', or '/' 
+"   Paths ending with '/' or starting with './', '../', or '/'
 "   are automatically converted to glob patterns:
-"      :LiveGrep pattern -- src/
+"      :Grep pattern -- src/
 "    → Becomes: -g "src/**"
 "
 " Mode switching (via keybinds in fzf):
@@ -38,17 +38,17 @@ command! FzfToggleIgnored call fzf_utils#toggle#toggle_ignored()
 "   C-w: Word boundary mode
 "
 " Bang modifier:
-"   :LiveGrep!  → Fullscreen mode
-"   :LiveGrep   → Normal mode (windowed)
+"   :Grep!  → Fullscreen mode
+"   :Grep   → Normal mode (windowed)
 "
 " Examples:
-"   :LiveGrep pattern
-"   :LiveGrep pattern -- -g "*vim-rc*"
-"   :LiveGrep pattern -- -g "!*.log" -t python
-"   :LiveGrep -- -g "*.vim"
-"   :LiveGrep error -- src/
-"   :LiveGrep! pattern  " fullscreen
-command! -bang -nargs=* LiveGrep call fzf_utils#live_grep#interactive(<bang>0, <f-args>)
+"   :Grep pattern
+"   :Grep pattern -- -g "*vim-rc*"
+"   :Grep pattern -- -g "!*.log" -t python
+"   :Grep -- -g "*.vim"
+"   :Grep error -- src/
+"   :Grep! pattern  " fullscreen
+command! -bang -nargs=* Grep call fzf_utils#live_grep#interactive(<bang>0, <f-args>)
 
 " Rg: Static grep (runs ripgrep once, then fzf filters that fixed list)
 "
@@ -59,7 +59,7 @@ command! -bang -nargs=* LiveGrep call fzf_utils#live_grep#interactive(<bang>0, <
 "   :Rg -g "*vim-rc*" pattern
 "   :Rg -u -g "!log/" pattern path/to/dir
 "
-" Unlike LiveGrep, this command does not re-run ripgrep while typing;
+" Unlike Grep, this command does not re-run ripgrep while typing;
 " fzf only filters the fixed result set returned by the initial rg run.
 "
 " Bang modifier:

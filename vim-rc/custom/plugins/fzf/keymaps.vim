@@ -13,13 +13,13 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
 " Fuzzy search scoped to the current buffer's directory
-nnoremap <silent> <leader>r. <Cmd>execute 'LiveGrep -- ' . expand('%:.:h') . '/'<CR>
+nnoremap <silent> <leader>r. <Cmd>execute 'Grep -- ' . expand('%:.:h') . '/'<CR>
 " Line search from project root directory
-nnoremap <silent> <leader>r/ <Cmd>LiveGrep<CR>
+nnoremap <silent> <leader>r/ <Cmd>Grep<CR>
 " Prefilled to type pattern/scope
-nnoremap <leader>r: :LiveGrep 
+nnoremap <leader>r: :Grep
 " Prefilled to type pattern
-nnoremap <leader>gr: :GrepScope 
+nnoremap <leader>gr: :GrepScope
 
 " Scoped searaches (Standard)
 nnoremap <leader>r <Cmd>GrepScope<CR>
@@ -40,7 +40,7 @@ imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 "imap <c-x><c-k> <plug>(fzf-complete-word)
 
-" Visual mode 
+" Visual mode
 " :History:, :History/ for command, and search history
 "nnoremap <leader>h :History<CR>
 " History of commits to current file, BCommits
