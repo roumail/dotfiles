@@ -1,10 +1,10 @@
 function! s:rg_scope_sink(choice) abort
   let scope = s:rg_scopes[a:choice]
-  
+
   " Build arguments array matching the DSL: pattern -- scope
   " If pattern is '--' or empty, treat it as an empty list, otherwise wrap it
-  let pattern_part = (s:current_search_pattern ==# '--' || empty(s:current_search_pattern)) 
-        \ ? [] 
+  let pattern_part = (s:current_search_pattern ==# '--' || empty(s:current_search_pattern))
+        \ ? []
         \ : [s:current_search_pattern]
 
   " Concatenate: [pattern?] + ['--'] + [scopes?]
@@ -20,7 +20,7 @@ function! fzf_utils#rg_scope#run(...) abort
     return
   endif
   if !exists('g:project_name')
-    echo "No project detected — falling back to LiveGrep"
+    echo "No project detected — falling back to Grep"
     if a:0 > 0
       call fzf_utils#live_grep#window(a:1)
     else
