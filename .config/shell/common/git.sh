@@ -17,8 +17,9 @@ git_get_default_branch() {
 git_get_worktree_path() {
     local bare_dir="$1"
     local branch="$2"
-    local path=$(git --git-dir="$bare_dir" worktree list --porcelain | grep -A2 "branch refs/heads/$branch" | grep 'worktree' | cut -d' ' -f2)
-    echo "$path"
+    git --git-dir="$bare_dir" for-each-ref \
+      --format='%(worktreepath)' \
+      "refs/heads/$branch" | head -n1
 }
 
 
