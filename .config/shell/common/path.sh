@@ -12,6 +12,9 @@ fi
 # Local bin
 [ -d "$HOME/.local/bin" ] && export PATH="$HOME/.local/bin:$PATH"
 
+# Local bin
+[ -d "$HOME/.venv/bin" ] && export PATH="$HOME/.venv/bin:$PATH"
+#
 # Add cargo to PATH if it exists
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
