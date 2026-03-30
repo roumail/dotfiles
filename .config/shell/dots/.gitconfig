@@ -11,13 +11,8 @@
     pm = pull origin master
     pn = pull origin main
     
-    # While checked out to another branch, fetch origin/main and update my local main/master branch to match it
-    # sync-main = !git fetch origin main && git branch -f main origin/main
-    # sync-master = !git fetch origin master && git branch -f master origin/master
-    # these aren't working properly
-    sync-main = fetch origin main:main
-    sync-master = fetch origin master:master
-    check-master = "!git fetch origin master:master && git log --oneline HEAD..master"
+    # delete branches that have been merged
+    po = remote prune origin
     #push current branch to origin
     poh = "!f() { git push origin HEAD \"$@\"; }; f"
     ci = !git commit -m 'ci: empty commit' --no-verify --allow-empty && git push && git reset --soft HEAD~ && git push --force-with-lease
