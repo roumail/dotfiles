@@ -10,7 +10,9 @@
     # while on main/master update
     pm = pull origin master
     pn = pull origin main
-    
+
+    sn = fetch origin main:main
+    sm = fetch origin master:master
     # delete branches that have been merged
     po = remote prune origin
     #push current branch to origin
