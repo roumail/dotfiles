@@ -68,18 +68,7 @@ for example_file in "$SHELL_CONFIG_DEST/local/"*.example; do
   target_file="${example_file%.example}"
   install_local_file_from_example "$example_file" "$target_file"
 done
-install_local_file_from_example \
-  "$SHELL_CONFIG_DEST/local/env.sh.example" \
-  "$SHELL_CONFIG_DEST/local/env.sh"
 
-install_local_file_from_example \
-  "$SHELL_CONFIG_DEST/local/secrets.sh.example" \
-  "$SHELL_CONFIG_DEST/local/secrets.sh"
-  
-install_local_file_from_example \
-  "$SHELL_CONFIG_DEST/local/aliases.sh.example" \
-  "$SHELL_CONFIG_DEST/local/aliases.sh"
-  
 # Detect which shell RC we’re installing
 if [ "$USER_SHELL" = "zsh" ]; then
   RC_FILE="$HOME/.zshrc"
