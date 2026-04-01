@@ -32,10 +32,11 @@ autocmd BufNewFile,BufRead requirements*.txt set ft=python
 " Make sure .aliases, .bash_aliases and similar files get syntax highlighting.
 autocmd BufNewFile,BufRead .*aliases* set ft=sh
 
-if $TMUX_PLUGIN_MANAGER_PATH != ""
-  autocmd VimEnter,VimLeave * silent! !("$TMUX_PLUGIN_MANAGER_PATH/tmux-window-name/scripts/rename_session_windows.py" &)
-
+call system('python -c "import libtmux"')
+if v:shell_error == 0 && !empty($TMUX_PLUGIN_MANAGER_PATH)
+  autocmd VimEnter,VimLeave * silent! execute '!$TMUX_PLUGIN_MANAGER_PATH/tmux-window-name/scripts/rename_session_windows.py &'
 endif
+
 autocmd BufReadPost fugitive://* set bufhidden=delete
 " Strip trailing whitespace
 autocmd BufWritePre * %s/\s\+$//e
