@@ -7,6 +7,7 @@ inoremap jk <Esc>:w<CR>
 inoremap jq <Esc>:wq<CR>
 
 " Normal mode mappings
+nnoremap K i<CR><Esc>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
