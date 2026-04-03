@@ -9,6 +9,6 @@ command! -buffer YankTestClass call pytest#common#YankTestPath('class')
 command! -buffer YankTestFunction call pytest#common#YankTestPath('function')
 command! -buffer YankTestFile call pytest#common#YankTestPath('file')
 
-command! -buffer -bang -nargs=1 RunPytestScope call pytest#dispatch#RunTest(<q-args>, "<bang>")
+command! -buffer -bang -nargs=1 RunPytestScope call pytest#dispatch#WithScope(<q-args>, "<bang>")
 
-command! -buffer -nargs=1 -bang RunPytestScopeTrace call pytest#dispatch#RunTestWithTrace(<q-args>, "<bang>")
+command! -buffer -nargs=1 -bang RunPytestScopeTrace call pytest#dispatch#WithScopeAndTrace(<q-args>, "<bang>")
