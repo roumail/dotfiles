@@ -1,5 +1,5 @@
 " Helper function to run pytest with trace in terminal
-function! pytest#dispatch#RunTestWithTrace(scope, bang) abort
+function! pytest#dispatch#WithScopeAndTrace(scope, bang) abort
   let test_path = pytest#common#GetTestPath(a:scope)
 
   if empty(test_path)
@@ -43,7 +43,7 @@ function! s:DispatchPytest(bang, args) abort
   execute 'Dispatch' . a:bang . ' -compiler=pytest -- ' . a:args
 endfunction
 
-function! pytest#dispatch#RunTest(scope, bang) abort
+function! pytest#dispatch#WithScope(scope, bang) abort
   let test_path = pytest#common#GetTestPath(a:scope)
 
   if empty(test_path)
