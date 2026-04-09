@@ -7,7 +7,7 @@
 
 export TERM=xterm-256color
 export XDG_CONFIG_HOME="$HOME/.config/"
-# #export TERM=xterm-256color-italic 
+# #export TERM=xterm-256color-italic
 export EDITOR="vim"
 export SHELL=/bin/bash
 
