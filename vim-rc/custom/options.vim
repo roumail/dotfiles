@@ -50,8 +50,8 @@ set signcolumn=yes
 set number relativenumber
 set hlsearch              " Highlight search results
 set incsearch             " Incremental search (highlight as you type)
-" set nohlsearch              
-set foldmethod=indent              
+" set nohlsearch
+set foldmethod=indent
 set ruler
 set shortmess-=S           " allow search count messages
 set nowrapscan             " Don't wrap search at end of file
@@ -68,8 +68,7 @@ let g:netrw_liststyle = 3
 let g:netrw_bufsettings = 'noma nomod nu nowrap ro nobl'
 " reuse current window
 let g:netrw_browse_split = 0
-let g:netrw_list_hide=netrw_gitignore#Hide()
-let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+,__pycache__/**,.DS_Store'
+let g:netrw_list_hide=netrw_gitignore#Hide() .. ',\(^\|\s\s\)\zs\.\S\+,__pycache__/,.DS_Store'
 let g:netrw_altv = 1  " Open splits to the right
 "let g:netrw_winsize = -25
 " https://github.com/tpope/vim-rhubarb/issues/74
@@ -85,7 +84,7 @@ if (has("termguicolors"))
   endif
 endif
 " set background=dark
-" xcodedarkhc, xcodehc 
+" xcodedarkhc, xcodehc
 " Load any scheme-specific after/colors files
 " https://vi.stackexchange.com/questions/24846/how-to-customize-colorschemes-without-editing-their-source-files
 " Lighter diff colors
@@ -114,8 +113,8 @@ set splitbelow splitright " Open splits below and to the right
 " Cursor settings
 " set cursorline
 " set cursorcolumn
-" highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold 
-" highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold 
+" highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold
+" highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold
 
 
 " Change based on mode
