@@ -9,7 +9,27 @@ git_get_bare_dir() {
 
 git_get_default_branch() {
     local bare_dir="$1"
-    local branch=$(git --git-dir="$bare_dir" symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+    local branch=""
+
+    # Prefer local repo HEAD for bare repo workflows.
+    branch=$(git --git-dir="$bare_dir" symbolic-ref --short HEAD 2>/dev/null)
+
+    # If HEAD is unavailable, try common default branch names.
+    if [ -z "$branch" ]; then
+        for candidate in main master; do
+            if git --git-dir="$bare_dir" show-ref --verify --quiet "refs/heads/$candidate" || \
+               git --git-dir="$bare_dir" show-ref --verify --quiet "refs/remotes/origin/$candidate"; then
+                branch="$candidate"
+                break
+            fi
+        done
+    fi
+
+    # Last fallback: origin/HEAD if it exists.
+    if [ -z "$branch" ]; then
+        branch=$(git --git-dir="$bare_dir" symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+    fi
+
     echo "$branch"
 }
 
