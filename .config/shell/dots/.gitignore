@@ -1,4 +1,4 @@
-.venv
+.venv/
 .ipynb_checkpoints/
 docker-compose.override*
 notebooks/
