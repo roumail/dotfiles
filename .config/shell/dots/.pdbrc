@@ -1,5 +1,6 @@
 alias pp import rich; rich.print(%*)
 alias yank import subprocess; subprocess.run('win32yank.exe -i --crlf', input=str(%1).encode(), check=True, shell=True)
+alias pank import subprocess; from rich.console import Console; c=Console(record=True, color_system=None); c.print(%1); subprocess.run(['win32yank.exe', '-i', '--crlf'], input=c.export_text().encode(check=True)
 alias dir import rich; rich.print([x for x in dir(%1) if not x.startswith('__')])
 alias quit exit()
 #!import os; exec(open(os.path.expanduser("~/.pdbrc")).read())
