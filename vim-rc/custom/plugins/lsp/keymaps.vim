@@ -12,11 +12,11 @@ function! s:on_lsp_buffer_enabled() abort
 
   nmap <buffer> <leader>pd <plug>(lsp-peek-definition)
   nmap <buffer> <leader>pt <plug>(lsp-peek-type-definition)
-  nmap <buffer> <leader>pi <plug>(lsp-peek-implementation)
   " nnoremap <plug>(lsp-preview-close)
   " nnoremap <plug>(lsp-preview-focus)
   " not available
-  " nnoremap <plug>(lsp-code-lens) 
+  " nmap <buffer> <leader>pi <plug>(lsp-peek-implementation)
+  " nnoremap <plug>(lsp-code-lens)
   " Map 'Leader + f' to focus the LSP popup
   nmap <buffer> <leader>pf <plug>(lsp-preview-focus)
   " nnoremap <plug>(lsp-document-symbol)
@@ -35,7 +35,6 @@ function! s:on_lsp_buffer_enabled() abort
   nmap <buffer> [g <plug>(lsp-previous-diagnostic)
   nmap <buffer> ]g <plug>(lsp-next-diagnostic)
   " nnoremap <plug>(lsp-hover-preview)
-  nmap <buffer> <leader>cd  <plug>(lsp-hover)
   " nnoremap <plug>(lsp-document-range-format)
   " xnoremap <plug>(lsp-document-range-format)
 
