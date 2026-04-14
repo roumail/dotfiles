@@ -1,8 +1,5 @@
 " General settings
 set nocompatible
-" Allow customization via ~/.vim/ftplugin/
-filetype on
-filetype plugin on
 set mouse=a
 set nowrap                " globally disable wrapping
 set ignorecase                  " Search ignoring case
@@ -59,6 +56,9 @@ set foldnestmax=3
 set foldlevel=99
 set showmatch             " Highlight matching parentheses, brackets, and braces
 syntax on
+" Allow customization via ~/.vim/ftplugin/
+" filetype on
+" filetype plugin on
 filetype plugin indent on
 
 " Set netrw config
