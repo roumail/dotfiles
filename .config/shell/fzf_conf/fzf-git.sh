@@ -315,8 +315,9 @@ _fzf_git_stashes() {
   _fzf_git_check || return
   git stash list | _fzf_git_fzf \
     --border-label '🥡 Stashes ' \
-    --header 'CTRL-X (drop stash)' \
+    --header 'CTRL-X (drop stash)╱ CTRL-A (apply stash)' \
     --bind 'ctrl-x:reload(git stash drop -q {1}; git stash list)' \
+    --bind 'ctrl-A:execute(git stash apply {1})' \
     -d: --preview "git show --first-parent --color=$(__fzf_git_color .) {1} | $(__fzf_git_pager)" "$@" |
   cut -d: -f1
 }
