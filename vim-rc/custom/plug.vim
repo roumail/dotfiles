@@ -5,6 +5,7 @@ Plug 'tpope/vim-sensible'
 Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-dispatch'
@@ -20,10 +21,12 @@ Plug 'tpope/vim-unimpaired'
 Plug 'mattn/vim-lsp-settings'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/vim-easy-align'
+" requires dependency installation using npm install -g livedown
+Plug 'shime/vim-livedown'
 " Use rg integration with fzf
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-" Plug 'drewtempelmeyer/palenight.vim' 
+" Plug 'drewtempelmeyer/palenight.vim'
 " Plug 'projekt0n/github-nvim-theme'
 Plug 'danilo-augusto/vim-afterglow'
 call plug#end()
