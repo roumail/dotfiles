@@ -4,8 +4,9 @@ endif
 let b:loaded_md_keymaps_ftplugin = 1
 
 let maplocalleader = "_"
+let s:glow_cmd = ''
 
-function! CloseGlowBuffers()
+function! s:CloseGlowBuffers()
   for b in getbufinfo()
     if b.name =~ 'glow'
       silent execute 'bwipeout!' b.bufnr
@@ -13,14 +14,26 @@ function! CloseGlowBuffers()
   endfor
 endfunction
 
-function! GlowPreview()
-  call CloseGlowBuffers()
+function! s:GlowPreview()
+  call s:CloseGlowBuffers()
 
-  vert term glow %
+  execute 'vert term ' . s:glow_cmd
   setlocal filetype=glow
   file __glow_preview
   " go back to original window
   wincmd p
 endfunction
 
-nnoremap <buffer> <localleader>p :call GlowPreview()<CR>
+function! s:SetupMarkdownKeymaps() abort
+  if !executable('glow')
+    return
+  endif
+
+  let s:glow_cmd = executable('entr') ? 'sh -c ''echo % | entr -c glow /_''' : 'glow %'
+  nnoremap <buffer> <localleader>p :call <SID>GlowPreview()<CR>
+endfunction
+
+augroup markdown_glow_keymaps
+  autocmd!
+  autocmd BufEnter <buffer> call s:SetupMarkdownKeymaps()
+augroup END
