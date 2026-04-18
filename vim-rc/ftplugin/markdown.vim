@@ -32,7 +32,7 @@ function! s:SetupMarkdownKeymaps() abort
     return
   endif
 
-  let s:glow_cmd = executable('entr') ? 'sh -c ''echo % | entr -c glow /_''' : 'glow %'
+  let s:glow_cmd = executable('entr') ? 'sh -c "echo % | entr -c glow /_"' : 'glow %'
   nnoremap <buffer> <localleader>p :call <SID>GlowPreview()<CR>
 endfunction
 
