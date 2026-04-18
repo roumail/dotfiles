@@ -22,11 +22,10 @@ Plug 'mattn/vim-lsp-settings'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/vim-easy-align'
 " requires dependency installation using npm install -g livedown
-Plug 'shime/vim-livedown'
+" Plug 'shime/vim-livedown'
 " Use rg integration with fzf
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 " Plug 'drewtempelmeyer/palenight.vim'
-" Plug 'projekt0n/github-nvim-theme'
 Plug 'danilo-augusto/vim-afterglow'
 call plug#end()
