@@ -4,7 +4,8 @@ if g:os ==# 'Windows'
   " On Windows, this was breaking yy
   set clipboard=
 else
-  set clipboard=unnamed,unnamedplus
+  " set clipboard=unnamed,unnamedplus
+  set clipboard=
 endif
 
 " WSL clipboard support (adjust path as needed)
