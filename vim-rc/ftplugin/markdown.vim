@@ -11,7 +11,7 @@ function! s:CloseGlowBuffers()
     return
   endif
   for b in getbufinfo()
-    if b.name =~ 'glow'
+    if b.name =~# '__glow_preview'
       silent execute 'bwipeout!' b.bufnr
     endif
   endfor
