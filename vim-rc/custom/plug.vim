@@ -11,6 +11,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-tbone'
 Plug 'junegunn/vim-peekaboo'
 " Couldn't get it to work
 " Plug 'yegappan/lsp'
