@@ -7,6 +7,9 @@ let maplocalleader = "_"
 let s:glow_cmd = ''
 
 function! s:CloseGlowBuffers()
+  if s:glow_cmd =~ 'entr'
+    return
+  endif
   for b in getbufinfo()
     if b.name =~ 'glow'
       silent execute 'bwipeout!' b.bufnr
