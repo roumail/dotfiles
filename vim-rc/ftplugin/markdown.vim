@@ -4,10 +4,10 @@ endif
 let b:loaded_md_keymaps_ftplugin = 1
 
 let maplocalleader = "_"
-let s:glow_cmd = ''
+let s:term_clause = ''
 
 function! s:CloseGlowBuffers()
-  if s:glow_cmd =~ 'entr'
+  if s:term_clause =~ 'entr'
     return
   endif
   for b in getbufinfo()
@@ -20,7 +20,7 @@ endfunction
 function! s:GlowPreview()
   call s:CloseGlowBuffers()
 
-  execute 'vert term ' . s:glow_cmd
+  execute 'vert term ' . s:term_clause
   setlocal filetype=glow
   file __glow_preview
   " go back to original window
@@ -32,7 +32,9 @@ function! s:SetupMarkdownKeymaps() abort
     return
   endif
 
-  let s:glow_cmd = executable('entr') ? 'sh -c "echo % | entr -c glow /_"' : 'glow %'
+  let s:term_clause = executable('entr')
+   \ ? 'sh -c "echo % | entr -c glow /_"'
+   \ : 'glow %'
   nnoremap <buffer> <localleader>p :call <SID>GlowPreview()<CR>
 endfunction
 
