@@ -12,7 +12,7 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 nnoremap Y y$
-nnoremap <leader>Y "+Y
+nnoremap <leader>Y "+y$
 nnoremap <leader>y "+y
 nnoremap <leader>p "+p
 
