@@ -91,6 +91,13 @@ vnoremap <leader>y "+y
 vnoremap <leader>p "+p
 
 " vnoremap p "0p gv"
+"Search inside visual selection
+"for example to search for the in selection, complete the command /%Vthe
+vnoremap / <Esc>/\%V
+"Search & replace inside visual selection
+"for example to replace the with THE in selection, complete the command :%s/\%Vthe/THE/g
+vnoremap <leader>r :s/
+" vnoremap <leader>r <Esc>:%s/\%V
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -100,6 +107,7 @@ xmap ga <Plug>(EasyAlign)
 " Don't overwrite register with selection, losing previous yank
 " xnoremap p p<Esc>
 xnoremap p "_dP<Esc>
+
 " terminal input mode mapping
 tnoremap <Esc><Esc> <C-w>N
 tnoremap <S-Tab> <C-w>:tabprevious<CR>
