@@ -14,7 +14,22 @@ nnoremap <leader>d "_dd
 nnoremap Y y$
 nnoremap <leader>Y "+y$
 nnoremap <leader>y "+y
-nnoremap <leader>p "+p
+
+""""""""""""""""""""""""""
+""""" Paste mappings """""
+""""""""""""""""""""""""""
+
+" Always apply indenting
+" System variant with leader
+
+" Cursor at end of pasted chars
+nnoremap p ]p
+" Cursor at beginning of pasted line
+nnoremap P [P
+" Cursor at end of pasted chars
+nnoremap <leader>p "+]p
+" Cursor at beginning of pasted line
+nnoremap <leader>P "+[P
 
 " Current line number
 nnoremap <leader>gl :let @+ =line('.')<CR>:echo "Line number copied!"<CR>
