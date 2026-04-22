@@ -84,6 +84,7 @@ nmap ga <Plug>(EasyAlign)
 vmap < <gv
 vmap > >gv
 
+vnoremap <leader>y "+y
 " Move Visual blocks with J and K
 vnoremap <leader>d "_d
 vnoremap <leader>c "_c
