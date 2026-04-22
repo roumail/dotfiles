@@ -26,6 +26,7 @@ config.keys = remove_key(config.keys, "l", "LEADER")
 
 local my_keys = {
   -- splits
+  --   key = "s", mods = "LEADER",action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
   {
     key = "|",
     mods = "LEADER|SHIFT",
@@ -43,7 +44,10 @@ local my_keys = {
   { key = "j", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Down" },
   { key = "k", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Up" },
   { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Right" }
-  --   key = "s", mods = "LEADER",action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
+
+  -- Swapping Windows: https://github.com/sei40kr/wez-pain-control/blob/main/plugin/init.lua
+  { key = "<", mods = "LEADER|SHIFT", action = act.MoveTabRelative(-1) },
+  { key = ">", mods = "LEADER|SHIFT", action = act.MoveTabRelative(1) },
 }
 
 for _, key in ipairs(my_keys) do
