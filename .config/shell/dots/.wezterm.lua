@@ -11,6 +11,26 @@ local function remove_key(keys, key, mods)
   return result
 end
 
+local projects = {
+  { label = "WezTerm Config", path = wezterm.config_dir },
+}
+
+-- Try to load private projects
+-- ~/.config/wezterm/local_projects.lua
+-- local_projects.lua
+-- return {
+--   { label = "Top Secret Work", path = "~/work/classified-project" },
+--   { label = "Side Hustle",     path = "~/projects/money-maker" },
+-- }
+local has_local, local_projects = pcall(require, "local_projects")
+
+if has_local then
+  -- Merge the private list into the public list
+  for _, p in ipairs(local_projects) do
+    table.insert(projects, p)
+  end
+end
+
 -- config.color_scheme = 'Batman'
 config.font_size = 12
 config.font = wezterm.font 'JetBrains Mono'
