@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
 
 # .zprofile content
 eval "$(/opt/homebrew/bin/brew shellenv)"
