@@ -22,6 +22,7 @@ local wez_tmux = require("plugins.wez-tmux.plugin")
 wez_tmux.apply_to_config(config)
 config.keys = remove_key(config.keys, "%", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
+config.keys = remove_key(config.keys, "l", "LEADER")
 
 local my_keys = {
   -- splits
@@ -35,6 +36,7 @@ local my_keys = {
     mods = "LEADER",
     action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
   },
+  { key = "b", mods = "LEADER", action = wezterm.action.ActivateLastTab },
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },
