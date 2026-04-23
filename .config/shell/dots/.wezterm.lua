@@ -20,18 +20,54 @@ end
 -- end)
 -- 17:02:46.238  INFO   logging > lua: the focus state of  0 from  default  active tab is  MuxTab(tab_id:0, pid:25128)  last active workspace was  default
 local last_workspace = nil
-wezterm.on('window-focus-changed', function(window, pane)
-  local mux_window = window:mux_window()
-  wezterm.log_info(
-    'the focus state of ',
-    window:window_id(),
-    'from ',
-    mux_window:get_workspace(),
-    ' active tab is ',
-    window:active_tab(),
-    ' last active workspace was ',
-    window:active_workspace()
-  )
+local current_workspace = nil
+local function remember_workspace(name)
+  if not name then
+    return
+  end
+
+  if current_workspace == nil then
+    current_workspace = name
+    return
+  end
+
+  if name == current_workspace then
+    return
+  end
+
+  if name == last_workspace then
+    current_workspace, last_workspace = last_workspace, current_workspace
+    return
+  end
+
+  last_workspace = current_workspace
+  current_workspace = name
+end
+
+local function sync_workspace_state(window)
+  remember_workspace(window:active_workspace())
+end
+
+local function switch_workspace(window, pane, name, spawn)
+  sync_workspace_state(window)
+
+  if name == nil or name == current_workspace then
+    return
+  end
+
+  remember_workspace(name)
+
+  local action = { name = name }
+  if spawn then
+    action.spawn = spawn
+  end
+
+  window:perform_action(wezterm.action.SwitchToWorkspace(action), pane)
+end
+
+wezterm.on('update-status', function(window, pane)
+  sync_workspace_state(window)
+  wezterm.log_info('current=', current_workspace, ' last=', last_workspace)
 end)
 
 local projects = {
@@ -65,15 +101,11 @@ local function project_selector()
     choices = choices,
     fuzzy = true,
     action = wezterm.action_callback(function(window, pane, path, label)
-      if not path then return end -- User pressed Escape
+      if not path then
+        return
+      end
 
-      window:perform_action(
-        wezterm.action.SwitchToWorkspace {
-          name = label, -- Use the label as the workspace name
-          spawn = { cwd = path },
-        },
-        pane
-      )
+      switch_workspace(window, pane, label, { cwd = path })
     end),
   }
 end
@@ -175,19 +207,15 @@ local my_keys = {
     action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
   },
   { key = "b", mods = "LEADER", action = wezterm.action.ActivateLastTab },
-  -- {
-  --   key = "B", mods = "LEADER|SHIFT",
-  --   action = wezterm.action_callback(function(window, pane)
-  --   if last_workspace then
-  --     window:perform_action(
-  --       wezterm.action.SwitchToWorkspace {
-  --         name = last_workspace,
-  --       },
-  --       pane
-  --     )
-  --   end
-  -- end),
--- },
+  {
+    key = "B", mods = "LEADER|SHIFT",
+    action = wezterm.action_callback(function(window, pane)
+    sync_workspace_state(window)
+    if last_workspace and last_workspace ~= current_workspace then
+      switch_workspace(window, pane, last_workspace)
+    end
+  end),
+},
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },
