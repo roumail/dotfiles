@@ -12,8 +12,6 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 nnoremap Y y$
-nnoremap <leader>Y "+y$
-nnoremap <leader>y "+y
 
 """"""""""""""""""""""""""
 """"" Paste mappings """""
@@ -26,10 +24,6 @@ nnoremap <leader>y "+y
 nnoremap p ]p
 " Cursor at beginning of pasted line
 nnoremap P [P
-" Cursor at end of pasted chars
-nnoremap <leader>p "+]p
-" Cursor at beginning of pasted line
-nnoremap <leader>P "+[P
 
 " Current line number
 nnoremap <leader>gl :let @+ =line('.')<CR>:echo "Line number copied!"<CR>
@@ -84,12 +78,9 @@ nmap ga <Plug>(EasyAlign)
 vmap < <gv
 vmap > >gv
 
-vnoremap <leader>y "+y
 " Move Visual blocks with J and K
 vnoremap <leader>d "_d
 vnoremap <leader>c "_c
-vnoremap <leader>y "+y
-vnoremap <leader>p "+p
 
 " vnoremap p "0p gv"
 "Search inside visual selection
