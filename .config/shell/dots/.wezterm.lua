@@ -12,7 +12,7 @@ local function remove_key(keys, key, mods)
 end
 
 local projects = {
-  { label = "WezTerm Config", path = wezterm.config_dir },
+  { label = "Dotfiles", path = wezterm.config_dir .. "/../../../" },
 }
 
 -- -- local_projects.lua
