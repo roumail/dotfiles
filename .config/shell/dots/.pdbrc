@@ -3,6 +3,7 @@ alias yank import subprocess; subprocess.run('win32yank.exe -i --crlf', input=st
 alias pank import subprocess; from rich.console import Console; c=Console(record=True, color_system=None); c.print(%1); subprocess.run(['win32yank.exe', '-i', '--crlf'], input=c.export_text().encode())
 alias dir import rich; rich.print([x for x in dir(%1) if not x.startswith('__')])
 alias quit exit()
+alias diffyank import difflib, subprocess; d="\n".join(difflib.unified_diff(str(%1).splitlines(), str(%2).splitlines(), fromfile="expected", tofile="actual", lineterm="")); print(d); subprocess.run(['win32yank.exe', '-i', '--crlf'], input=d.encode(), check=True)
 #!import os; exec(open(os.path.expanduser("~/.pdbrc")).read())
 # b .venv/lib/python3.13/site-packages/pdbpp.py:93
 # b .venv/lib/python3.13/site-packages/responses/__init__.py:485
