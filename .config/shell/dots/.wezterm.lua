@@ -179,14 +179,14 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
       -- The current working directory to use when spawning commands, if
       -- the SpawnCommand doesn't otherwise specify the directory.
 
-      default_cwd = "~",
+      -- default_cwd = "~",
 
       -- The default command to run, if the SpawnCommand doesn't otherwise
       -- override it.  Note that you may prefer to use `chsh` to set the
       -- default shell for your user inside WSL to avoid needing to
       -- specify it here
 
-      -- default_prog = {"fish"}
+      default_prog = {'C:\\Windows\\System32\\wsl.exe', '--distribution', 'Debian'}
     },
   }
   config.default_domain = "WSL:Debian"
