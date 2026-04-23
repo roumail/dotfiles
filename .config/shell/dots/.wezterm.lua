@@ -60,7 +60,7 @@ config.font_size = 12
 config.font = wezterm.font 'JetBrains Mono'
 config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
 config.window_close_confirmation = 'NeverPrompt'
--- config.disable_default_key_bindings = true
+config.disable_default_key_bindings = true
 
 -- load plugin
 local wez_tmux = require("plugins.wez-tmux.plugin")
@@ -113,6 +113,16 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
 end
 
 local my_keys = {
+  {
+    key = "c",
+    mods = "LEADER",
+    action = wezterm.action.CopyTo "Clipboard",
+  },
+  {
+    key = "p",
+    mods = "LEADER",
+    action = wezterm.action.PasteFrom "Clipboard",
+  },
   {
     key = "r",
     mods = "LEADER",
