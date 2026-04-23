@@ -11,13 +11,31 @@ local function remove_key(keys, key, mods)
   return result
 end
 
+local temp_status = ""
+
+
+local function format_notification()
+  if temp_status == "" then
+      return ""
+  end
+
+  return wezterm.format({
+      { Attribute = { Intensity = 'Bold' } },
+      { Foreground = { AnsiColor = 'Fuchsia' } },
+      { Background = { Color = '#2b2042' } }, -- A subtle dark purple
+      { Text = '  󱐋 ' .. temp_status .. '  ' },
+      'ResetAttributes',
+  })
+end
+
 -- There's an issue with notifications (windows)
--- wezterm.on("window-config-reloaded", function(window, pane)
---   window:set_right_status("Config reloaded")
---   wezterm.time.call_after(2, function()
---     window:set_right_status("")
---   end)
--- end)
+-- Can't use tabline and set right status together
+wezterm.on("window-config-reloaded", function(window, pane)
+  temp_status ="Config reloaded"
+  wezterm.time.call_after(2, function()
+    temp_status = ""
+  end)
+end)
 -- 17:02:46.238  INFO   logging > lua: the focus state of  0 from  default  active tab is  MuxTab(tab_id:0, pid:25128)  last active workspace was  default
 local last_workspace = nil
 local current_workspace = nil
@@ -123,7 +141,11 @@ local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 wez_tmux.apply_to_config(config)
 local status_sections = {
- tabline_x = {},
+ tabline_x = {
+    -- This function checks if there is a temp message.
+    -- If yes, it displays it; if no, it displays nothing (or your usual segments).
+    format_notification
+ },
  tabline_y = {},
  tabline_z = { "datetime" },
 }
@@ -169,6 +191,11 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
 end
 
 local my_keys = {
+ -- {
+  --   key = "ENTER",
+  --   mods = "ALT",
+  --   action = wezterm.action.ToggleFullScreen
+  -- },
   {
     key = "c",
     mods = "SHIFT|CTRL",
