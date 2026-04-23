@@ -87,7 +87,10 @@ end
 --   sync_workspace_state(window)
 --   wezterm.log_info('current=', current_workspace, ' last=', last_workspace)
 -- end)
-
+-- on linux home and config dir can be the same
+-- on windows home dir and config dir would be different
+-- Specifically the config file is in the dotfiles directory and
+-- local projects.lua can be in the same directory
 local projects = {
   { label = "Dotfiles", path = wezterm.config_dir .. "/../../../" },
 }
