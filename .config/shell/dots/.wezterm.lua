@@ -11,6 +11,29 @@ local function remove_key(keys, key, mods)
   return result
 end
 
+-- There's an issue with notifications (windows)
+-- wezterm.on("window-config-reloaded", function(window, pane)
+--   window:set_right_status("Config reloaded")
+--   wezterm.time.call_after(2, function()
+--     window:set_right_status("")
+--   end)
+-- end)
+-- 17:02:46.238  INFO   logging > lua: the focus state of  0 from  default  active tab is  MuxTab(tab_id:0, pid:25128)  last active workspace was  default
+local last_workspace = nil
+wezterm.on('window-focus-changed', function(window, pane)
+  local mux_window = window:mux_window()
+  wezterm.log_info(
+    'the focus state of ',
+    window:window_id(),
+    'from ',
+    mux_window:get_workspace(),
+    ' active tab is ',
+    window:active_tab(),
+    ' last active workspace was ',
+    window:active_workspace()
+  )
+end)
+
 local projects = {
   { label = "Dotfiles", path = wezterm.config_dir .. "/../../../" },
 }
@@ -60,6 +83,7 @@ config.font_size = 12
 config.font = wezterm.font 'JetBrains Mono'
 config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
 config.window_close_confirmation = 'NeverPrompt'
+config.automatically_reload_config = false
 config.disable_default_key_bindings = true
 
 -- load plugin
@@ -115,12 +139,12 @@ end
 local my_keys = {
   {
     key = "c",
-    mods = "LEADER",
+    mods = "SHIFT|CTRL",
     action = wezterm.action.CopyTo "Clipboard",
   },
   {
-    key = "P",
-    mods = "LEADER",
+    key = "v",
+    mods = "SHIFT|CTRL",
     action = wezterm.action.PasteFrom "Clipboard",
   },
   {
@@ -151,6 +175,19 @@ local my_keys = {
     action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
   },
   { key = "b", mods = "LEADER", action = wezterm.action.ActivateLastTab },
+  -- {
+  --   key = "B", mods = "LEADER|SHIFT",
+  --   action = wezterm.action_callback(function(window, pane)
+  --   if last_workspace then
+  --     window:perform_action(
+  --       wezterm.action.SwitchToWorkspace {
+  --         name = last_workspace,
+  --       },
+  --       pane
+  --     )
+  --   end
+  -- end),
+-- },
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },
