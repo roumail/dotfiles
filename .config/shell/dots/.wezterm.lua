@@ -35,11 +35,21 @@ end
 config.font_size = 12
 config.font = wezterm.font 'JetBrains Mono'
 config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
+config.window_close_confirmation = 'NeverPrompt'
 -- config.disable_default_key_bindings = true
 
 -- load plugin
 local wez_tmux = require("plugins.wez-tmux.plugin")
+local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 wez_tmux.apply_to_config(config)
+local status_sections = {
+ tabline_x = {},
+ tabline_y = {},
+ tabline_z = { "datetime" },
+}
+tabline.setup({sections=status_sections})
+tabline.apply_to_config(config)
+
 config.keys = remove_key(config.keys, "%", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "l", "LEADER")
@@ -79,6 +89,11 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
 end
 
 local my_keys = {
+  {
+    key = "r",
+    mods = "LEADER",
+    action = wezterm.action.ReloadConfiguration,
+  },
   -- splits
   --   key = "s", mods = "LEADER",action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
   {
