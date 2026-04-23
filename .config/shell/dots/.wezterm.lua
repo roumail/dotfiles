@@ -65,10 +65,10 @@ local function switch_workspace(window, pane, name, spawn)
   window:perform_action(wezterm.action.SwitchToWorkspace(action), pane)
 end
 
-wezterm.on('update-status', function(window, pane)
-  sync_workspace_state(window)
-  wezterm.log_info('current=', current_workspace, ' last=', last_workspace)
-end)
+-- wezterm.on('update-status', function(window, pane)
+--   sync_workspace_state(window)
+--   wezterm.log_info('current=', current_workspace, ' last=', last_workspace)
+-- end)
 
 local projects = {
   { label = "Dotfiles", path = wezterm.config_dir .. "/../../../" },
@@ -207,15 +207,15 @@ local my_keys = {
     action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
   },
   { key = "b", mods = "LEADER", action = wezterm.action.ActivateLastTab },
-  {
-    key = "B", mods = "LEADER|SHIFT",
-    action = wezterm.action_callback(function(window, pane)
-    sync_workspace_state(window)
-    if last_workspace and last_workspace ~= current_workspace then
-      switch_workspace(window, pane, last_workspace)
-    end
-  end),
-},
+  -- {
+  --   key = "B", mods = "LEADER|SHIFT",
+  --   action = wezterm.action_callback(function(window, pane)
+  --   sync_workspace_state(window)
+  --   if last_workspace and last_workspace ~= current_workspace then
+  --     switch_workspace(window, pane, last_workspace)
+  --   end
+  -- end),
+-- },
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },
