@@ -15,20 +15,44 @@ local projects = {
   { label = "WezTerm Config", path = wezterm.config_dir },
 }
 
--- Try to load private projects
--- ~/.config/wezterm/local_projects.lua
--- local_projects.lua
--- return {
---   { label = "Top Secret Work", path = "~/work/classified-project" },
---   { label = "Side Hustle",     path = "~/projects/money-maker" },
--- }
-local has_local, local_projects = pcall(require, "local_projects")
+-- -- local_projects.lua
+-- -- return {
+-- --   { label = "Top Secret Work", path = "~/work/classified-project" },
+-- --   { label = "Side Hustle",     path = "~/projects/money-maker" },
+-- -- }
+local local_projects_path = wezterm.config_dir .. "/../local/local_projects.lua"
+local ok, local_projects = pcall(dofile, local_projects_path)
 
-if has_local then
-  -- Merge the private list into the public list
+if ok and type(local_projects) == "table" then
   for _, p in ipairs(local_projects) do
     table.insert(projects, p)
   end
+else
+  wezterm.log_warn("Could not load local projects from " .. local_projects_path .. ": " .. tostring(local_projects))
+end
+
+local function project_selector()
+  local choices = {}
+  for _, p in ipairs(projects) do
+    table.insert(choices, { label = p.label, id = p.path })
+  end
+
+  return wezterm.action.InputSelector {
+    title = "Select Project",
+    choices = choices,
+    fuzzy = true,
+    action = wezterm.action_callback(function(window, pane, path, label)
+      if not path then return end -- User pressed Escape
+
+      window:perform_action(
+        wezterm.action.SwitchToWorkspace {
+          name = label, -- Use the label as the workspace name
+          spawn = { cwd = path },
+        },
+        pane
+      )
+    end),
+  }
 end
 
 -- config.color_scheme = 'Batman'
@@ -93,6 +117,16 @@ local my_keys = {
     key = "r",
     mods = "LEADER",
     action = wezterm.action.ReloadConfiguration,
+  },
+  {
+    key = "d",
+    mods = "LEADER",
+    action = wezterm.action.ShowDebugOverlay,
+  },
+  {
+    key = "w",
+    mods = "LEADER",
+    action = project_selector(),
   },
   -- splits
   --   key = "s", mods = "LEADER",action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
