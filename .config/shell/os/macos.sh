@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+export PATH="$PATH:/Applications/WezTerm.app/Contents/MacOS"
 
 # .zprofile content
 eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -22,6 +23,7 @@ source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 # bindkey '^G' list-expand prevents binding to work on mac, hence removing this here
 bindkey -r '^G'
 tmux-window-name() {
+  [[ -z "$TMUX" ]] && return
   ($TMUX_PLUGIN_MANAGER_PATH/tmux-window-name/scripts/rename_session_windows.py &)
 }
 
