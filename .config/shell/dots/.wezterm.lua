@@ -119,7 +119,7 @@ local my_keys = {
     action = wezterm.action.CopyTo "Clipboard",
   },
   {
-    key = "p",
+    key = "P",
     mods = "LEADER",
     action = wezterm.action.PasteFrom "Clipboard",
   },
