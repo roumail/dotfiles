@@ -194,11 +194,11 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
 end
 
 local my_keys = {
- -- {
-  --   key = "ENTER",
-  --   mods = "ALT",
-  --   action = wezterm.action.ToggleFullScreen
-  -- },
+ {
+    key = "ENTER",
+    mods = "ALT",
+    action = wezterm.action.ToggleFullScreen
+  },
   {
     key = "c",
     mods = "SHIFT|CTRL",
