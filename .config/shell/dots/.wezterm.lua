@@ -11,29 +11,6 @@ local function remove_key(keys, key, mods)
   return result
 end
 
--- on linux home and config dir can be the same
--- on windows home dir and config dir would be different
--- Specifically the config file is in the dotfiles directory and
--- local projects.lua can be in the same directory
-local projects = {
-  { label = "Dotfiles", path = wezterm.config_dir .. "/../../../" },
-}
-
--- -- local_projects.lua
--- -- return {
--- --   { label = "Top Secret Work", path = "~/work/classified-project" },
--- --   { label = "Side Hustle",     path = "~/projects/money-maker" },
--- -- }
-local local_projects_path = wezterm.config_dir .. "/../local/local_projects.lua"
-local ok, local_projects = pcall(dofile, local_projects_path)
-
-if ok and type(local_projects) == "table" then
-  for _, p in ipairs(local_projects) do
-    table.insert(projects, p)
-  end
-else
-  wezterm.log_warn("Could not load local projects from " .. local_projects_path .. ": " .. tostring(local_projects))
-end
 
 -- config.color_scheme = 'Batman'
 config.font_size = 12
@@ -48,6 +25,8 @@ local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
 local wez_sb_alert = wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
+local wez_projects = wezterm.plugin.require("https://github.com/roumail/wez-projects-source")
+local projects = wez_projects.load_projects()
 wez_tmux.apply_to_config(config)
 wez_ws_alt.apply_to_config(config)
 
@@ -67,23 +46,6 @@ tabline.apply_to_config(config)
 config.keys = remove_key(config.keys, "%", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "l", "LEADER")
-
-local function project_selector()
-  local choices = {}
-  for _, p in ipairs(projects) do
-    table.insert(choices, { label = p.label, id = p.path })
-  end
-
-  return wezterm.action.InputSelector {
-    title = "Select Project",
-    choices = choices,
-    fuzzy = true,
-    action = wez_ws_alt.switch_workspace(function(do_switch, path, label)
-      if not path then return end
-      do_switch(label, { cwd = path })
-    end),
-  }
-end
 
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.wsl_domains = {
@@ -141,11 +103,34 @@ local my_keys = {
     mods = "LEADER",
     action = wezterm.action.ShowDebugOverlay,
   },
+  -- {
+  --   key = "w",
+  --   mods = "LEADER",
+  --   action = wez_projects.project_selector({
+  --     projects = projects,
+  --     title = "Select Project",
+  --     action_builder = function(path, label)
+  --       return wezterm.action.SwitchToWorkspace({
+  --         name = label,
+  --         spawn = { cwd = path },
+  --       })
+  --     end,
+  --   }),
+  -- },
   {
     key = "w",
     mods = "LEADER",
-    action = project_selector(),
-  },
+    action = wez_projects.project_selector({
+      projects = projects,
+      title = "Select Project",
+      switch_workspace = wez_ws_alt.switch_workspace,
+    }),
+    },
+  -- {
+  --   key = "w",
+  --   mods = "LEADER",
+  --   action = project_selector(projects),
+  -- },
   -- splits
   --   key = "s", mods = "LEADER",action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
   {
