@@ -11,32 +11,6 @@ local function remove_key(keys, key, mods)
   return result
 end
 
-local temp_status = ""
-
-
-local function format_notification()
-  if temp_status == "" then
-      return ""
-  end
-
-  return wezterm.format({
-      { Attribute = { Intensity = 'Bold' } },
-      { Foreground = { AnsiColor = 'Fuchsia' } },
-      { Background = { Color = '#2b2042' } }, -- A subtle dark purple
-      { Text = '  󱐋 ' .. temp_status .. '  ' },
-      'ResetAttributes',
-  })
-end
-
--- There's an issue with notifications (windows)
--- Can't use tabline and set right status together
-wezterm.on("window-config-reloaded", function(window, pane)
-  temp_status ="Config reloaded"
-  wezterm.time.call_after(2, function()
-    temp_status = ""
-  end)
-end)
-
 -- on linux home and config dir can be the same
 -- on windows home dir and config dir would be different
 -- Specifically the config file is in the dotfiles directory and
@@ -73,13 +47,16 @@ config.disable_default_key_bindings = true
 local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
+local wez_sb_alert = wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
 wez_tmux.apply_to_config(config)
 wez_ws_alt.apply_to_config(config)
+
+wezterm.on("window-config-reloaded", function(window, pane)
+  wez_sb_alert.notify("Config reloaded")
+end)
 local status_sections = {
  tabline_x = {
-    -- This function checks if there is a temp message.
-    -- If yes, it displays it; if no, it displays nothing (or your usual segments).
-    format_notification
+    wez_sb_alert.component(),
  },
  tabline_y = {},
  tabline_z = { "datetime" },
