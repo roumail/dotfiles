@@ -37,68 +37,6 @@ wezterm.on("window-config-reloaded", function(window, pane)
   end)
 end)
 
-local workspace_cache
-
-local function track_workspace(name)
-  if name and name ~= "" then
-    workspace_cache.add_value(name)
-  end
-end
-
-local function perform_tracked_switch(window, pane, name, spawn)
-  if not name or name == "" then
-    return
-  end
-
-  local current = window:active_workspace()
-  track_workspace(current)
-  track_workspace(name)
-
-  local action = { name = name }
-  if spawn then
-    action.spawn = spawn
-  end
-
-  window:perform_action(wezterm.action.SwitchToWorkspace(action), pane)
-end
-
-local function switch_workspace(callback)
-  return wezterm.action_callback(function(window, pane, path, label)
-    local function do_switch(name, spawn)
-      perform_tracked_switch(window, pane, name, spawn)
-    end
-    callback(do_switch, path, label)
-  end)
-end
-
-
-local function switch_to_previous_workspace_action()
-  return wezterm.action_callback(function(window, pane)
-    track_workspace(window:active_workspace())
-    if not workspace_cache.is_ready() then
-      return
-    end
-
-    local history = workspace_cache.get_cache()
-    local current = window:active_workspace()
-    local first = history[1]
-    local second = history[2]
-
-    local target = first
-    if first == current then
-      target = second
-    end
-
-    if target and target ~= current then
-      perform_tracked_switch(window, pane, target)
-    end
-  end)
-end
--- 17:02:46.238  INFO   logging > lua: the focus state of  0 from  default  active tab is  MuxTab(tab_id:0, pid:25128)  last active workspace was  default
--- wezterm.on('update-status', function(window, pane)
---   sync_workspace_state(window)
---   wezterm.log_info('current=', current_workspace, ' last=', last_workspace)
--- end)
 -- on linux home and config dir can be the same
 -- on windows home dir and config dir would be different
 -- Specifically the config file is in the dotfiles directory and
@@ -123,25 +61,6 @@ else
   wezterm.log_warn("Could not load local projects from " .. local_projects_path .. ": " .. tostring(local_projects))
 end
 
-local function project_selector()
-  local choices = {}
-  for _, p in ipairs(projects) do
-    table.insert(choices, { label = p.label, id = p.path })
-  end
-
-  return wezterm.action.InputSelector {
-    title = "Select Project",
-    choices = choices,
-    fuzzy = true,
-    action = switch_workspace(function(do_switch, path, label)
-      if not path then
-        return
-      end
-      do_switch(label, { cwd = path })
-    end),
-  }
-end
-
 -- config.color_scheme = 'Batman'
 config.font_size = 12
 config.font = wezterm.font 'JetBrains Mono'
@@ -153,9 +72,9 @@ config.disable_default_key_bindings = true
 -- load plugin
 local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
-local fifo_cache = wezterm.plugin.require("https://github.com/roumail/fifo-cache")
-workspace_cache = fifo_cache.new(2)
+local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
 wez_tmux.apply_to_config(config)
+wez_ws_alt.apply_to_config(config)
 local status_sections = {
  tabline_x = {
     -- This function checks if there is a temp message.
@@ -171,6 +90,23 @@ tabline.apply_to_config(config)
 config.keys = remove_key(config.keys, "%", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "l", "LEADER")
+
+local function project_selector()
+  local choices = {}
+  for _, p in ipairs(projects) do
+    table.insert(choices, { label = p.label, id = p.path })
+  end
+
+  return wezterm.action.InputSelector {
+    title = "Select Project",
+    choices = choices,
+    fuzzy = true,
+    action = wez_ws_alt.switch_workspace(function(do_switch, path, label)
+      if not path then return end
+      do_switch(label, { cwd = path })
+    end),
+  }
+end
 
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.wsl_domains = {
@@ -246,10 +182,6 @@ local my_keys = {
     action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
   },
   { key = "b", mods = "LEADER", action = wezterm.action.ActivateLastTab },
-  {
-    key = "B", mods = "LEADER|SHIFT",
-    action = switch_to_previous_workspace_action(),
-  },
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },
