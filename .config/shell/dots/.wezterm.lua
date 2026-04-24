@@ -37,20 +37,12 @@ wezterm.on("window-config-reloaded", function(window, pane)
   end)
 end)
 
+local workspace_cache
+
 local function track_workspace(name)
   if name and name ~= "" then
     workspace_cache.add_value(name)
   end
-end
-
-local function switch_workspace(callback)
-  return wezterm.action_callback(function(window, pane, path, label)
-    track_workspace(window:active_workspace())
-    if label then
-      track_workspace(label)
-    end
-    callback(window, pane, path, label)
-  end)
 end
 
 local function perform_tracked_switch(window, pane, name, spawn)
@@ -70,6 +62,16 @@ local function perform_tracked_switch(window, pane, name, spawn)
   window:perform_action(wezterm.action.SwitchToWorkspace(action), pane)
 end
 
+local function switch_workspace(callback)
+  return wezterm.action_callback(function(window, pane, path, label)
+    local function do_switch(name, spawn)
+      perform_tracked_switch(window, pane, name, spawn)
+    end
+    callback(do_switch, path, label)
+  end)
+end
+
+
 local function switch_to_previous_workspace_action()
   return wezterm.action_callback(function(window, pane)
     track_workspace(window:active_workspace())
@@ -79,7 +81,13 @@ local function switch_to_previous_workspace_action()
 
     local history = workspace_cache.get_cache()
     local current = window:active_workspace()
-    local target = history[1]
+    local first = history[1]
+    local second = history[2]
+
+    local target = first
+    if first == current then
+      target = second
+    end
 
     if target and target ~= current then
       perform_tracked_switch(window, pane, target)
@@ -146,7 +154,7 @@ config.disable_default_key_bindings = true
 local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 local fifo_cache = wezterm.plugin.require("https://github.com/roumail/fifo-cache")
-local workspace_cache = fifo_cache.new(2)
+workspace_cache = fifo_cache.new(2)
 wez_tmux.apply_to_config(config)
 local status_sections = {
  tabline_x = {
@@ -242,15 +250,10 @@ local my_keys = {
     action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
   },
   { key = "b", mods = "LEADER", action = wezterm.action.ActivateLastTab },
-  -- {
-  --   key = "B", mods = "LEADER|SHIFT",
-  --   action = wezterm.action_callback(function(window, pane)
-  --   sync_workspace_state(window)
-  --   if last_workspace and last_workspace ~= current_workspace then
-  --     switch_workspace(window, pane, last_workspace)
-  --   end
-  -- end),
--- },
+  {
+    key = "B", mods = "LEADER|SHIFT",
+    action = switch_to_previous_workspace_action(),
+  },
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },
