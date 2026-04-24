@@ -94,6 +94,11 @@ local my_keys = {
     action = wezterm.action.PasteFrom "Clipboard",
   },
   {
+    key = "q",
+    mods = "LEADER",
+    action = wezterm.action.QuitApplication,
+  },
+  {
     key = "r",
     mods = "LEADER",
     action = wezterm.action.ReloadConfiguration,
