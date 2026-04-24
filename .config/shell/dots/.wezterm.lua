@@ -36,44 +36,31 @@ wezterm.on("window-config-reloaded", function(window, pane)
     temp_status = ""
   end)
 end)
--- 17:02:46.238  INFO   logging > lua: the focus state of  0 from  default  active tab is  MuxTab(tab_id:0, pid:25128)  last active workspace was  default
-local last_workspace = nil
-local current_workspace = nil
-local function remember_workspace(name)
-  if not name then
-    return
-  end
 
-  if current_workspace == nil then
-    current_workspace = name
-    return
+local function track_workspace(name)
+  if name and name ~= "" then
+    workspace_cache.add_value(name)
   end
-
-  if name == current_workspace then
-    return
-  end
-
-  if name == last_workspace then
-    current_workspace, last_workspace = last_workspace, current_workspace
-    return
-  end
-
-  last_workspace = current_workspace
-  current_workspace = name
 end
 
-local function sync_workspace_state(window)
-  remember_workspace(window:active_workspace())
+local function switch_workspace(callback)
+  return wezterm.action_callback(function(window, pane, path, label)
+    track_workspace(window:active_workspace())
+    if label then
+      track_workspace(label)
+    end
+    callback(window, pane, path, label)
+  end)
 end
 
-local function switch_workspace(window, pane, name, spawn)
-  sync_workspace_state(window)
-
-  if name == nil or name == current_workspace then
+local function perform_tracked_switch(window, pane, name, spawn)
+  if not name or name == "" then
     return
   end
 
-  remember_workspace(name)
+  local current = window:active_workspace()
+  track_workspace(current)
+  track_workspace(name)
 
   local action = { name = name }
   if spawn then
@@ -83,6 +70,23 @@ local function switch_workspace(window, pane, name, spawn)
   window:perform_action(wezterm.action.SwitchToWorkspace(action), pane)
 end
 
+local function switch_to_previous_workspace_action()
+  return wezterm.action_callback(function(window, pane)
+    track_workspace(window:active_workspace())
+    if not workspace_cache.is_ready() then
+      return
+    end
+
+    local history = workspace_cache.get_cache()
+    local current = window:active_workspace()
+    local target = history[1]
+
+    if target and target ~= current then
+      perform_tracked_switch(window, pane, target)
+    end
+  end)
+end
+-- 17:02:46.238  INFO   logging > lua: the focus state of  0 from  default  active tab is  MuxTab(tab_id:0, pid:25128)  last active workspace was  default
 -- wezterm.on('update-status', function(window, pane)
 --   sync_workspace_state(window)
 --   wezterm.log_info('current=', current_workspace, ' last=', last_workspace)
@@ -121,12 +125,11 @@ local function project_selector()
     title = "Select Project",
     choices = choices,
     fuzzy = true,
-    action = wezterm.action_callback(function(window, pane, path, label)
+    action = switch_workspace(function(do_switch, path, label)
       if not path then
         return
       end
-
-      switch_workspace(window, pane, label, { cwd = path })
+      do_switch(label, { cwd = path })
     end),
   }
 end
@@ -142,6 +145,8 @@ config.disable_default_key_bindings = true
 -- load plugin
 local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
+local fifo_cache = wezterm.plugin.require("https://github.com/roumail/fifo-cache")
+local workspace_cache = fifo_cache.new(2)
 wez_tmux.apply_to_config(config)
 local status_sections = {
  tabline_x = {
