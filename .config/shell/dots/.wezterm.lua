@@ -103,21 +103,7 @@ local my_keys = {
     mods = "LEADER",
     action = wezterm.action.ShowDebugOverlay,
   },
-  -- {
-  --   key = "w",
-  --   mods = "LEADER",
-  --   action = wez_projects.project_selector({
-  --     projects = projects,
-  --     title = "Select Project",
-  --     action_builder = function(path, label)
-  --       return wezterm.action.SwitchToWorkspace({
-  --         name = label,
-  --         spawn = { cwd = path },
-  --       })
-  --     end,
-  --   }),
-  -- },
-  {
+    {
     key = "w",
     mods = "LEADER",
     action = wez_projects.project_selector({
@@ -126,11 +112,6 @@ local my_keys = {
       switch_workspace = wez_ws_alt.switch_workspace,
     }),
     },
-  -- {
-  --   key = "w",
-  --   mods = "LEADER",
-  --   action = project_selector(projects),
-  -- },
   -- splits
   --   key = "s", mods = "LEADER",action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
   {
