@@ -46,6 +46,8 @@ tabline.apply_to_config(config)
 config.keys = remove_key(config.keys, "%", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "l", "LEADER")
+config.keys = remove_key(config.keys, "s", "LEADER")
+
 
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.wsl_domains = {
@@ -127,8 +129,12 @@ local my_keys = {
       switch_workspace = wez_ws_alt.switch_workspace,
     }),
     },
+  {
+    key = "s",
+    mods = "LEADER",
+    action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
+  },
   -- splits
-  --   key = "s", mods = "LEADER",action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
   {
     key = "|",
     mods = "LEADER|SHIFT",
