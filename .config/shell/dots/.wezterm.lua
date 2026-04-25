@@ -23,9 +23,11 @@ config.disable_default_key_bindings = true
 -- load plugin
 local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
-local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
-local wez_sb_alert = wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
-local wez_projects = wezterm.plugin.require("https://github.com/roumail/wez-projects-source")
+local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
+local wez_ws_alt = require("plugins.wez-workspace-alt.plugin")
+local wez_projects= require("plugins.wez-projects-source.plugin")
+local wez_ws = require("plugins.wez-workspace-switch.plugin")
+local fifo_cache = require("plugins.fifo-cache.plugin")
 local projects = wez_projects.load_projects()
 wez_tmux.apply_to_config(config)
 wez_ws_alt.apply_to_config(config)
@@ -108,7 +110,6 @@ local my_keys = {
     mods = "LEADER",
     action = wez_projects.project_selector({
       projects = projects,
-      title = "Select Project",
       switch_workspace = wez_ws_alt.switch_workspace,
     }),
     },
