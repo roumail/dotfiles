@@ -85,6 +85,16 @@ local my_keys = {
   },
   {
     key = "c",
+    mods = "CMD",
+    action = wezterm.action.CopyTo "Clipboard",
+  },
+  {
+    key = "v",
+    mods = "CMD",
+    action = wezterm.action.PasteFrom "Clipboard",
+  },
+  {
+    key = "c",
     mods = "SHIFT|CTRL",
     action = wezterm.action.CopyTo "Clipboard",
   },
