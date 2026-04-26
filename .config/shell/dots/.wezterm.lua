@@ -24,8 +24,8 @@ config.disable_default_key_bindings = true
 local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
-local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
--- local wez_ws_alt = require("plugins.wez-workspace-alt.plugin")
+-- local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
+local wez_ws_alt = require("plugins.wez-workspace-alt.plugin")
 -- local wez_projects= require("plugins.wez-projects-source.plugin")
 -- local fifo_cache = require("plugins.fifo-cache.plugin")
 local wez_projects = wezterm.plugin.require("https://github.com/roumail/wez-projects-source")
@@ -125,13 +125,43 @@ local my_keys = {
     mods = "LEADER",
     action = wezterm.action.ShowDebugOverlay,
   },
-    {
+  {
+    key = "N",
+    mods = "LEADER|SHIFT",
+    action = wezterm.action.SpawnCommandInNewWindow { domain = "CurrentPaneDomain" },
+  },
+  {
     key = "w",
     mods = "LEADER",
     action = wez_ws_alt.project_selector({
       projects = projects,
+      mode     = "workspace",
     }),
-    },
+  },
+  {
+    key    = "t",
+    mods   = "LEADER",
+    action = wez_ws_alt.project_selector({
+      projects = projects,
+      mode     = "tab",
+   }),
+  },
+  {
+    key    = "V",
+    mods   = "LEADER|SHIFT",
+    action = wez_ws_alt.project_selector({
+      projects = projects,
+      mode     = "split_v",
+   }),
+  },
+  {
+    key    = "H",
+    mods   = "LEADER|SHIFT",
+    action = wez_ws_alt.project_selector({
+      projects = projects,
+      mode     = "split_h",
+   }),
+  },
   {
     key = "s",
     mods = "LEADER",
