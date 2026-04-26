@@ -19,7 +19,12 @@ config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
 config.window_close_confirmation = 'NeverPrompt'
 config.automatically_reload_config = false
 config.disable_default_key_bindings = true
-
+-- https://wezterm.org/config/lua/config/visual_bell.html
+config.visual_bell = {
+  fade_in_duration_ms = 75,
+  fade_out_duration_ms = 75,
+  target = 'CursorColor',
+}
 -- load plugin
 local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
