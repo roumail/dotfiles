@@ -26,7 +26,6 @@ local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabl
 local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
 local wez_ws_alt = require("plugins.wez-workspace-alt.plugin")
 local wez_projects= require("plugins.wez-projects-source.plugin")
-local wez_ws = require("plugins.wez-workspace-switch.plugin")
 local fifo_cache = require("plugins.fifo-cache.plugin")
 local projects = wez_projects.load_projects()
 wez_tmux.apply_to_config(config)
@@ -47,6 +46,8 @@ tabline.apply_to_config(config)
 
 config.keys = remove_key(config.keys, "%", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
+-- Am I tracking ctrl b s between open workspaces?
+-- What about when I want to simply reopen in the same (not spawn a new window)
 config.keys = remove_key(config.keys, "l", "LEADER")
 
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
