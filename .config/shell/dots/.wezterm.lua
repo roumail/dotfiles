@@ -108,9 +108,8 @@ local my_keys = {
     {
     key = "w",
     mods = "LEADER",
-    action = wez_projects.project_selector({
+    action = wez_ws_alt.project_selector({
       projects = projects,
-      switch_workspace = wez_ws_alt.switch_workspace,
     }),
     },
   -- splits
