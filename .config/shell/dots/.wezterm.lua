@@ -135,6 +135,7 @@ local my_keys = {
     mods = "LEADER|SHIFT",
     action = wezterm.action.SpawnCommandInNewWindow { domain = "CurrentPaneDomain" },
   },
+  -- Keys from ws_alt
   {
     key = "w",
     mods = "LEADER",
