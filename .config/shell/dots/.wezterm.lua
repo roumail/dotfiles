@@ -64,20 +64,27 @@ local function shorten(path)
     table.insert(parts, part)
   end
 
-  -- If short already, return as-is
-  if #parts <= 2 then
+  if #parts == 0 then
     return path
   end
 
-  -- Keep last 2 parts
-  local last_two = table.concat(parts, "/", #parts - 1)
+  local leaf = parts[#parts]
+  local use_two_tail = #leaf > 12
+  local keep_segments = use_two_tail and 2 or 1
 
-  -- If it's under ~, keep that context
-  if parts[1] == "~" then
-    return "~/" .. "…/" .. last_two
+  -- short circuit based on dynamic tail size
+  if #parts <= keep_segments then
+    return path
   end
 
-  return "…/" .. last_two
+  local tail_start = #parts - keep_segments + 1
+  local tail = table.concat(parts, "/", tail_start)
+
+  if parts[1] == "~" then
+    return "~/" .. "…/" .. tail
+  end
+
+  return "…/" .. tail
 end
 
 local function processed_name(tab)
