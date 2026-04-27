@@ -12,6 +12,8 @@ nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
 nnoremap <leader>d "_dd
 nnoremap Y y$
+nnoremap gp =p
+nnoremap gP =P
 
 """"""""""""""""""""""""""
 """"" Paste mappings """""
