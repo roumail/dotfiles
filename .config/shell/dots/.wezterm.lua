@@ -42,11 +42,6 @@ wezterm.on("window-config-reloaded", function(window, pane)
   wez_sb_alert.notify("Config reloaded")
 end)
 
-
-fmt = function(s)
-  return (s or ""):gsub("%.exe$", "")
-end
-
 local icons =  {
     ['default'] = wezterm.nerdfonts.md_application,
     ['git'] = wezterm.nerdfonts.dev_git,
@@ -58,61 +53,44 @@ local icons =  {
     ['vim'] = wezterm.nerdfonts.dev_vim,
   }
 
+local function shorten(path)
+  local home = wezterm.home_dir
+  if path:sub(1, #home) == home then
+    path = "~" .. path:sub(#home + 1)
+  end
+  return path
+end
+
 local function processed_name(tab)
   local pane = tab.active_pane
-
-  local process = pane.foreground_process_name or ""
-  process = process:gsub("^.*/", ""):gsub("%.exe$", "")
-
-  -- cwd (shortened)
-  local cwd = pane.current_working_dir
-  if cwd then
-    cwd = cwd.file_path or cwd
-    cwd = cwd:gsub(os.getenv("HOME"), "~")
-    cwd = cwd:match("([^/]+)$") or cwd
-  else
-    cwd = ""
+  local vars = pane.user_vars
+  local process = vars and vars.WEZTERM_PROG
+  if not process or process == "" then
+    return wezterm.format({
+      { Text = icons.default }
+    })
   end
-
   local icon = icons[process] or icons.default
-
+  local cwd = pane.current_working_dir and pane.current_working_dir.file_path or ""
   if cwd ~= "" then
-    return string.format("%s %s", icon, cwd)
+    local shortened = shorten(cwd)
+    return wezterm.format({
+      { Text = icon .. " " .. shortened }
+    })
   end
 
-  return string.format("%s %s", icon, process)
+  return wezterm.format({
+    { Text = icon .. " " .. process }
+  })
 end
 
 local status_sections = {
-  tab_active = {
+ tab_active = {
       'index',
-      { 'cwd', padding = { left = 0, right = 1 } },
+       processed_name ,
       { 'zoomed', padding = 0 },
     },
-    tab_inactive = { 'index', { 'process', padding = { left = 0, right = 1 } } },
-
-  -- tab_inactive = {
-  --   {
-  --     'process',
-  --     fmt = fmt,
-  --   },
-  -- },
-  -- tab_active = {
-  --   {
-  --     'process',
-  --     fmt = fmt,
-  --     process_to_icon = {
-  --       ['default'] = wezterm.nerdfonts.md_application,
-  --       ['git'] = { wezterm.nerdfonts.dev_git },
-  --       ['lua'] = { wezterm.nerdfonts.seti_lua },
-  --       ['zsh'] = { wezterm.nerdfonts.dev_terminal },
-  --       ['bash'] = { wezterm.nerdfonts.cod_terminal_bash },
-  --       ['python'] = { wezterm.nerdfonts.dev_python },
-  --       ['tmux'] = { wezterm.nerdfonts.cod_terminal_tmux },
-  --       ['vim'] = { wezterm.nerdfonts.dev_vim },
-  --     },
-  --   },
-  -- },
+ tab_inactive = { 'index',  processed_name },
  tabline_x = {
     wez_sb_alert.component(),
  },
