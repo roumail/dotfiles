@@ -43,12 +43,31 @@ wezterm.on("window-config-reloaded", function(window, pane)
 end)
 
 
+fmt = function(s)
+  return (s or ""):gsub("%.exe$", "")
+end
 
 local status_sections = {
   tab_inactive = {
     {
       'process',
-      fmt = function(s) return (s or ""):gsub("%.exe$", "") end
+      fmt = fmt,
+    },
+  },
+  tab_active = {
+    {
+      'process',
+      fmt = fmt,
+      process_to_icon = {
+        ['default'] = wezterm.nerdfonts.md_application,
+        ['git'] = { wezterm.nerdfonts.dev_git },
+        ['lua'] = { wezterm.nerdfonts.seti_lua },
+        ['zsh'] = { wezterm.nerdfonts.dev_terminal },
+        ['bash'] = { wezterm.nerdfonts.cod_terminal_bash },
+        ['python'] = { wezterm.nerdfonts.dev_python },
+        ['tmux'] = { wezterm.nerdfonts.cod_terminal_tmux },
+        ['vim'] = { wezterm.nerdfonts.dev_vim },
+      },
     },
   },
  tabline_x = {
