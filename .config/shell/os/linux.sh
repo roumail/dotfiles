@@ -9,11 +9,40 @@ eval "$(starship init bash)"
 alias reload='source ~/.bashrc'
 source_if_exists /usr/share/bash-completion/completions/git
 
+_append_prompt_command_once() {
+  local fn="$1"
+  [[ "$PROMPT_COMMAND" == *"$fn"* ]] && return
+  if [[ -n "$PROMPT_COMMAND" ]]; then
+    PROMPT_COMMAND="$fn; $PROMPT_COMMAND"
+  else
+    PROMPT_COMMAND="$fn"
+  fi
+}
 
-# We check if the hooks are already in PROMPT_COMMAND to avoid double-printing
-# if you source your .bashrc multiple times.
-# Append the function to PROMPT_COMMAND this way anything directory changes, we execute this command
-if [[ ! "$PROMPT_COMMAND" =~ "_wezterm_osc7_hook" ]]; then
-  PROMPT_COMMAND="_wezterm_osc7_hook; $PROMPT_COMMAND"
-fi
+_wezterm_prompt_hook() {
+  # Runs when prompt is displayed
+  __wezterm_set_user_var WEZTERM_PROG "bash"
+  _wezterm_osc2_precmd
+  _wezterm_osc7_hook
+}
 
+_wezterm_preexec_trap() {
+  # Skip completion context
+  [[ -n "${COMP_LINE:-}" ]] && return
+
+  # Prevent recursion / hook noise
+  case "$BASH_COMMAND" in
+    _wezterm_preexec_trap*|_wezterm_prompt_hook*|_wezterm_osc2_preexec*|_wezterm_osc2_precmd*|_wezterm_osc7_hook*|__wezterm_set_user_var*)
+      return
+      ;;
+  esac
+
+  local cmd="${BASH_COMMAND%% *}"
+  cmd="${cmd##*/}"
+
+  __wezterm_set_user_var WEZTERM_PROG "$cmd"
+  _wezterm_osc2_preexec "$BASH_COMMAND"
+}
+
+_append_prompt_command_once "_wezterm_prompt_hook"
+trap '_wezterm_preexec_trap' DEBUG
