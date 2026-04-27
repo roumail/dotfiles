@@ -41,7 +41,16 @@ wez_ws_alt.apply_to_config(config)
 wezterm.on("window-config-reloaded", function(window, pane)
   wez_sb_alert.notify("Config reloaded")
 end)
+
+
+
 local status_sections = {
+  tab_inactive = {
+    {
+      'process',
+      fmt = function(s) return (s or ""):gsub("%.exe$", "") end
+    },
+  },
  tabline_x = {
     wez_sb_alert.component(),
  },
@@ -90,6 +99,11 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
 end
 
 local my_keys = {
+  {
+    key = "p",
+    mods = "ALT",
+    action = wezterm.action.ActivateCommandPalette,
+  },
   {
     key = "Enter",
     mods = "ALT",
