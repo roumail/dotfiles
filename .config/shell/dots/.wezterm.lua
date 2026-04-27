@@ -69,16 +69,33 @@ local function shorten(path)
   end
 
   local leaf = parts[#parts]
-  local use_two_tail = #leaf > 12
-  local keep_segments = use_two_tail and 2 or 1
+  local special = {
+    main = { depth = 3, label = "m" },
+    master = { depth = 3, label = "m" },
+  }
 
-  -- short circuit based on dynamic tail size
+  local config = special[leaf]
+
+  local keep_segments = (config and config.depth)
+      or (#leaf > 12 and 2 or 1)
   if #parts <= keep_segments then
+    if config then
+      parts[#parts] = config.label
+      return table.concat(parts, "/")
+    end
     return path
   end
 
   local tail_start = #parts - keep_segments + 1
-  local tail = table.concat(parts, "/", tail_start)
+  local tail_parts = {}
+  for i = tail_start, #parts do
+     table.insert(tail_parts, parts[i])
+  end
+  if config then
+     tail_parts[#tail_parts] = config.label
+   end
+
+  local tail = table.concat(tail_parts, "/")
 
   if parts[1] == "~" then
     return "~/" .. "…/" .. tail
