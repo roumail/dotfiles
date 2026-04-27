@@ -54,11 +54,30 @@ local icons =  {
   }
 
 local function shorten(path)
+  path = path:gsub("^file://", "")
   local home = wezterm.home_dir
   if path:sub(1, #home) == home then
     path = "~" .. path:sub(#home + 1)
   end
-  return path
+  local parts = {}
+  for part in path:gmatch("[^/]+") do
+    table.insert(parts, part)
+  end
+
+  -- If short already, return as-is
+  if #parts <= 2 then
+    return path
+  end
+
+  -- Keep last 2 parts
+  local last_two = table.concat(parts, "/", #parts - 1)
+
+  -- If it's under ~, keep that context
+  if parts[1] == "~" then
+    return "~/" .. "…/" .. last_two
+  end
+
+  return "…/" .. last_two
 end
 
 local function processed_name(tab)
