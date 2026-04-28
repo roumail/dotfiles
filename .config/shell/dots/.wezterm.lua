@@ -43,15 +43,15 @@ wezterm.on("window-config-reloaded", function(window, pane)
 end)
 
 local icons =  {
-    ['default'] = wezterm.nerdfonts.md_application,
-    ['git'] = wezterm.nerdfonts.dev_git,
-    ['lua'] = wezterm.nerdfonts.seti_lua,
-    ['zsh'] = wezterm.nerdfonts.dev_terminal,
-    ['bash'] = wezterm.nerdfonts.cod_terminal_bash,
-    ['python'] = wezterm.nerdfonts.dev_python,
-    ['tmux'] = wezterm.nerdfonts.cod_terminal_tmux,
-    ['vim'] = wezterm.nerdfonts.dev_vim,
-  }
+  ['default'] = wezterm.nerdfonts.md_application,
+  ['git'] = wezterm.nerdfonts.dev_git,
+  ['lua'] = wezterm.nerdfonts.seti_lua,
+  ['zsh'] = wezterm.nerdfonts.dev_terminal,
+  ['bash'] = wezterm.nerdfonts.cod_terminal_bash,
+  ['python'] = wezterm.nerdfonts.dev_python,
+  ['tmux'] = wezterm.nerdfonts.cod_terminal_tmux,
+  ['vim'] = wezterm.nerdfonts.dev_vim,
+}
 
 local function shorten(path)
   path = path:gsub("^file://", "")
@@ -77,7 +77,7 @@ local function shorten(path)
   local config = special[leaf]
 
   local keep_segments = (config and config.depth)
-      or (#leaf > 12 and 2 or 1)
+  or (#leaf > 12 and 2 or 1)
   if #parts <= keep_segments then
     if config then
       parts[#parts] = config.label
@@ -89,11 +89,11 @@ local function shorten(path)
   local tail_start = #parts - keep_segments + 1
   local tail_parts = {}
   for i = tail_start, #parts do
-     table.insert(tail_parts, parts[i])
+    table.insert(tail_parts, parts[i])
   end
   if config then
-     tail_parts[#tail_parts] = config.label
-   end
+    tail_parts[#tail_parts] = config.label
+  end
 
   local tail = table.concat(tail_parts, "/")
 
@@ -128,17 +128,17 @@ local function processed_name(tab)
 end
 
 local status_sections = {
- tab_active = {
-      'index',
-       processed_name ,
-      { 'zoomed', padding = 0 },
-    },
- tab_inactive = { 'index',  processed_name },
- tabline_x = {
+  tab_active = {
+    'index',
+    processed_name ,
+    { 'zoomed', padding = 0 },
+  },
+  tab_inactive = { 'index',  processed_name },
+  tabline_x = {
     wez_sb_alert.component(),
- },
- tabline_y = {},
- tabline_z = { "datetime" },
+  },
+  tabline_y = {},
+  tabline_z = { "datetime" },
 }
 tabline.setup({sections=status_sections})
 tabline.apply_to_config(config)
@@ -149,7 +149,11 @@ config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
 -- What about when I want to simply reopen in the same (not spawn a new window)
 config.keys = remove_key(config.keys, "l", "LEADER")
 config.keys = remove_key(config.keys, "s", "LEADER")
-
+-- Select output of entire command when triple-clicking
+config.mouse_bindings =  {
+  event = { Down = { streak = 3, button = 'Left' } },
+  action = wezterm.action.SelectTextAtMouseCursor 'SemanticZone',
+}
 
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.wsl_domains = {
@@ -233,6 +237,15 @@ local my_keys = {
     action = wezterm.action.SpawnCommandInNewWindow { domain = "CurrentPaneDomain" },
   },
   -- Keys from ws_alt
+  -- Scroll up/down to previous/next prompt
+  {
+    key = 'UpArrow', mods = 'LEADER',
+    action = wezterm.action.ScrollToPrompt(-1)
+  },
+  {
+    key = 'DownArrow', mods = 'LEADER',
+    action = wezterm.action.ScrollToPrompt(1)
+  },
   {
     key = "w",
     mods = "LEADER",
@@ -247,7 +260,7 @@ local my_keys = {
     action = wez_ws_alt.project_selector({
       projects = projects,
       mode     = "tab",
-   }),
+    }),
   },
   {
     key    = "V",
@@ -255,7 +268,7 @@ local my_keys = {
     action = wez_ws_alt.project_selector({
       projects = projects,
       mode     = "split_v",
-   }),
+    }),
   },
   {
     key    = "H",
@@ -263,7 +276,7 @@ local my_keys = {
     action = wez_ws_alt.project_selector({
       projects = projects,
       mode     = "split_h",
-   }),
+    }),
   },
   {
     key = "s",
