@@ -1,6 +1,6 @@
 alias pp import rich; rich.print(%*)
 alias yank import subprocess; subprocess.run('win32yank.exe -i --crlf', input=str(%1).encode(), check=True, shell=True)
-alias pank import subprocess; from rich.console import Console; c=Console(record=True, color_system=None); c.print(%1); subprocess.run(['win32yank.exe', '-i', '--crlf'], input=c.export_text().encode())
+alias pank import subprocess; from rich.console import Console; c=Console(record=True, color_system=None); c.print(%1); subprocess.run(['win32yank.exe', '-i', '--crlf'], input=c.export_text().replace('\r', '').encode())
 alias dir import rich; rich.print([x for x in dir(%1) if not x.startswith('__')])
 alias quit exit()
 alias diffyank import difflib, subprocess; d="\n".join(difflib.unified_diff(str(%1).splitlines(), str(%2).splitlines(), fromfile="expected", tofile="actual", lineterm="")); print(d); subprocess.run(['win32yank.exe', '-i', '--crlf'], input=d.encode(), check=True)
