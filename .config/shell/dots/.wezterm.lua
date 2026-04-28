@@ -329,8 +329,9 @@ local my_keys = {
     }
   },
 }
-
-config.key_tables = {
+config.key_tables = config.key_tables or {}
+config.key_tables.copy_mode = config.key_tables.copy_mode or {}
+table.insert(config.key_tables, {
   resize_panes = {
     resize_pane('j', 'Down'),
     resize_pane('k', 'Up'),
@@ -338,6 +339,12 @@ config.key_tables = {
     resize_pane('l', 'Right'),
   },
 }
+
+table.insert(config.key_tables.copy_mode, {
+  key = 'x',
+  mods = 'None',
+  action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' },
+})
 
 for _, key in ipairs(my_keys) do
   table.insert(config.keys, key)
