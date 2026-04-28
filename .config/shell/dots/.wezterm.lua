@@ -150,9 +150,12 @@ config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "l", "LEADER")
 config.keys = remove_key(config.keys, "s", "LEADER")
 -- Select output of entire command when triple-clicking
-config.mouse_bindings =  {
-  event = { Down = { streak = 3, button = 'Left' } },
-  action = wezterm.action.SelectTextAtMouseCursor 'SemanticZone',
+config.mouse_bindings = {
+  {
+    event = { Down = { streak = 3, button = 'Left' } },
+    action = wezterm.action.SelectTextAtMouseCursor 'SemanticZone',
+    mods = 'NONE',
+  },
 }
 
 if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
@@ -183,6 +186,13 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
     },
   }
   config.default_domain = "WSL:Debian"
+end
+
+local function resize_pane(key, direction)
+  return {
+    key = key,
+    action = wezterm.action.AdjustPaneSize { direction, 3 }
+  }
 end
 
 local my_keys = {
@@ -304,7 +314,29 @@ local my_keys = {
 
   -- Swapping Windows: https://github.com/sei40kr/wez-pain-control/blob/main/plugin/init.lua
   { key = "<", mods = "LEADER|SHIFT", action = wezterm.action.MoveTabRelative(-1) },
-  { key = ">", mods = "LEADER|SHIFT", action = wezterm.action.MoveTabRelative(1) }
+  { key = ">", mods = "LEADER|SHIFT", action = wezterm.action.MoveTabRelative(1) },
+  {
+    key = 'Z',
+    mods = 'LEADER|SHIFT',
+    -- Activate the `resize_panes` keytable
+    action = wezterm.action.ActivateKeyTable {
+      name = 'resize_panes',
+      -- Ensures the keytable stays active after it handles its
+      -- first keypress.
+      one_shot = false,
+      -- Deactivate the keytable after a timeout.
+      timeout_milliseconds = 1000,
+    }
+  },
+}
+
+config.key_tables = {
+  resize_panes = {
+    resize_pane('j', 'Down'),
+    resize_pane('k', 'Up'),
+    resize_pane('h', 'Left'),
+    resize_pane('l', 'Right'),
+  },
 }
 
 for _, key in ipairs(my_keys) do
