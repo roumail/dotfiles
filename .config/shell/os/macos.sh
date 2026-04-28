@@ -20,6 +20,8 @@ eval "$(starship init zsh)"
 # brew install zsh-vi-mode
 source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
+source_if_exists /etc/zsh/zprofile/wezterm.sh
+
 # bindkey '^G' list-expand prevents binding to work on mac, hence removing this here
 bindkey -r '^G'
 
