@@ -26,6 +26,7 @@ _wezterm_prompt_hook() {
   _wezterm_osc7_hook
 }
 
+# preexec runs before a command executes, thanks to trap DEBUG
 _wezterm_preexec_trap() {
   # Skip completion context
   [[ -n "${COMP_LINE:-}" ]] && return
@@ -44,5 +45,6 @@ _wezterm_preexec_trap() {
   _wezterm_osc2_preexec "$BASH_COMMAND"
 }
 
+# Runs before prompt is shown
 _append_prompt_command_once "_wezterm_prompt_hook"
 trap '_wezterm_preexec_trap' DEBUG
