@@ -3,11 +3,19 @@ if exists('b:loaded_md_keymaps_ftplugin')
 endif
 let b:loaded_md_keymaps_ftplugin = 1
 
-function! TestSplit()
-  call job_start([
-        \ 'wezterm', 'cli', 'split-pane', '--right', '--',
-        \ 'bash', '-c', 'ls; exec bash'
-        \ ],
+function! LiveGlowSplit()
+  let l:current_pane = $WEZTERM_PANE
+  let l:filename = expand('%:p')
+
+  " 1. Splits the pane and runs entr/glow
+  " 2. Uses the captured ID to jump back to Vim
+  let l:cmd = printf(
+        \ 'wezterm cli split-pane --right -- bash -c "echo %s | entr -c glow -t -l /_" && wezterm cli activate-pane --pane-id %s',
+        \ l:filename,
+        \ l:current_pane
+        \ )
+
+  call job_start(['bash', '-c', l:cmd],
         \ {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'})
 endfunction
 
@@ -28,7 +36,6 @@ if executable('glow') && executable('entr')
     nnoremap <buffer> <localleader>p :Tmux split-window -d -h 'echo <C-r>=expand('%')<CR> \\| entr -c glow -t -l /_'<CR>
   " If in wezterm (and not in tmux)
   elseif s:is_wezterm
-    " execute 'nnoremap <buffer> <localleader>p :silent! !' . s:wezterm_bin . ' cli split-pane --right -- bash -c "echo <C-r>=expand('."'%'".')<CR> \| entr -c glow -t -l /_ ; read"' . "\r"
-    nnoremap <buffer> <localleader>p :call TestSplit()<CR>
+    nnoremap <buffer> <localleader>p :call LiveGlowSplit()<CR>
   endif
 endif
