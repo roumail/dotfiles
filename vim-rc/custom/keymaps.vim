@@ -87,7 +87,8 @@ vnoremap <leader>c "_c
 " vnoremap p "0p gv"
 "Search inside visual selection
 "for example to search for the in selection, complete the command /%Vthe
-vnoremap / <Esc>/\%V
+" g/ allows retaining v/term motion
+vnoremap g/ <Esc>/\%V
 "Search & replace inside visual selection
 "for example to replace the with THE in selection, complete the command :%s/\%Vthe/THE/g
 vnoremap <leader>r :s/
