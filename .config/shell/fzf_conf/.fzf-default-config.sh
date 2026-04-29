@@ -30,6 +30,13 @@ export FZF_ALT_C_COMMAND='fd --type d --strip-cwd-prefix --hidden --follow --exc
 
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | bat --line-range :100'"
 
+export FZF_CTRL_R_OPTS="
+--bind 'ctrl-y:execute-silent(echo -n {2..} |
+   (command -v pbcopy >/dev/null && pbcopy ||
+   command -v wl-copy >/dev/null && yank))+abort'
+--color header:italic
+--header 'Press CTRL-Y to copy command into clipboard'"
+
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 
 # Options to fzf command
