@@ -330,19 +330,17 @@ local my_keys = {
   },
 }
 config.key_tables = config.key_tables or {}
-config.key_tables.copy_mode = config.key_tables.copy_mode or {}
-table.insert(config.key_tables, {
-  resize_panes = {
+config.key_tables.resize_panes = {
     resize_pane('j', 'Down'),
     resize_pane('k', 'Up'),
     resize_pane('h', 'Left'),
     resize_pane('l', 'Right'),
-  },
 }
 
+config.key_tables.copy_mode = config.key_tables.copy_mode or {}
 table.insert(config.key_tables.copy_mode, {
   key = 'x',
-  mods = 'None',
+  mods = 'NONE',
   action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' },
 })
 
