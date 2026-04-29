@@ -23,14 +23,22 @@ function! SmartFilterClose()
   execute 'silent! bdelete! ' . l:current
 endfunction
 
-function! s:Scratch()
-  split
+function! s:Scratch(bang)
+  if a:bang
+    split
+  else
+    vsplit
+  endif
   noswapfile hide enew
   setlocal buftype=nofile bufhidden=wipe
-  file scratch
+  let l:idx = 1
+  while bufexists('scratch' . l:idx)
+    let l:idx += 1
+  endwhile
+  execute 'file scratch' . l:idx
 endfunction
 
-command! Scratch call s:Scratch()
+command! -bang Scratch call s:Scratch(<bang>0)
 
 function! s:ScratchFrom(cmd)
   enew
