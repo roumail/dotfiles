@@ -15,6 +15,7 @@ end
 -- config.color_scheme = 'Batman'
 config.font_size = 12
 config.font = wezterm.font 'JetBrains Mono'
+-- leader a perhaps so it doesn't clash with tmux
 config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
 config.window_close_confirmation = 'NeverPrompt'
 config.automatically_reload_config = false
