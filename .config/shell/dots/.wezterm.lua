@@ -338,12 +338,21 @@ config.key_tables.resize_panes = {
     resize_pane('l', 'Right'),
 }
 
-config.key_tables.copy_mode = config.key_tables.copy_mode or {}
-table.insert(config.key_tables.copy_mode, {
-  key = 'x',
-  mods = 'NONE',
-  action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' },
-})
+-- config.key_tables.copy_mode = config.key_tables.copy_mode or {}
+-- table.insert(config.key_tables.copy_mode, {
+--   key = 'x',
+--   mods = 'NONE',
+--   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Prompt' },
+--   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Output' },
+--   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Input' },
+--   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Prompt' },
+--   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Output' },
+--   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Input' },
+--   action = wezterm.action.CopyMode { SetSelectionMode = 'Cell' },
+--   action = wezterm.action.CopyMode 'MoveBackwardSemanticZone'
+--   action = wezterm.action.CopyMode 'MoveForwardSemanticZone'
+--   -- action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' },
+-- })
 
 for _, key in ipairs(my_keys) do
   table.insert(config.keys, key)
