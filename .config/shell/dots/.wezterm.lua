@@ -150,6 +150,8 @@ config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
 -- What about when I want to simply reopen in the same (not spawn a new window)
 config.keys = remove_key(config.keys, "l", "LEADER")
 config.keys = remove_key(config.keys, "s", "LEADER")
+config.keys = remove_key(config.keys, "x", "LEADER")
+config.keys = remove_key(config.keys, "&", "LEADER|SHIFT")
 -- Select output of entire command when triple-clicking
 config.mouse_bindings = {
   {
@@ -294,7 +296,9 @@ local my_keys = {
     mods = "LEADER",
     action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
   },
-  -- splits
+  {key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = false })},
+  { key = "&", mods = "LEADER|SHIFT", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
+   -- splits
   {
     key = "|",
     mods = "LEADER|SHIFT",
