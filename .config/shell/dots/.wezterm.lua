@@ -37,7 +37,7 @@ local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-worksp
 local wez_projects = wezterm.plugin.require("https://github.com/roumail/wez-projects-source")
 local projects = wez_projects.load_projects()
 wez_tmux.apply_to_config(config)
-wez_ws_alt.apply_to_config(config)
+wez_ws_alt.apply_to_config(config, {projects=projects})
 
 wezterm.on("window-config-reloaded", function(window, pane)
   wez_sb_alert.notify("Config reloaded")
@@ -146,8 +146,6 @@ tabline.apply_to_config(config)
 
 config.keys = remove_key(config.keys, "%", "LEADER|SHIFT")
 config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
--- Am I tracking ctrl b s between open workspaces?
--- What about when I want to simply reopen in the same (not spawn a new window)
 config.keys = remove_key(config.keys, "l", "LEADER")
 config.keys = remove_key(config.keys, "s", "LEADER")
 config.keys = remove_key(config.keys, "x", "LEADER")
@@ -249,7 +247,6 @@ local my_keys = {
     mods = "LEADER|SHIFT",
     action = wezterm.action.SpawnCommandInNewWindow { domain = "CurrentPaneDomain" },
   },
-  -- Keys from ws_alt
   -- Scroll up/down to previous/next prompt
   {
     key = 'UpArrow', mods = 'LEADER',
@@ -258,43 +255,6 @@ local my_keys = {
   {
     key = 'DownArrow', mods = 'LEADER',
     action = wezterm.action.ScrollToPrompt(1)
-  },
-  {
-    key = "w",
-    mods = "LEADER",
-    action = wez_ws_alt.project_selector({
-      projects = projects,
-      mode     = "workspace",
-    }),
-  },
-  {
-    key    = "t",
-    mods   = "LEADER",
-    action = wez_ws_alt.project_selector({
-      projects = projects,
-      mode     = "tab",
-    }),
-  },
-  {
-    key    = "V",
-    mods   = "LEADER|SHIFT",
-    action = wez_ws_alt.project_selector({
-      projects = projects,
-      mode     = "split_v",
-    }),
-  },
-  {
-    key    = "H",
-    mods   = "LEADER|SHIFT",
-    action = wez_ws_alt.project_selector({
-      projects = projects,
-      mode     = "split_h",
-    }),
-  },
-  {
-    key = "s",
-    mods = "LEADER",
-    action = wezterm.action.ShowLauncherArgs {flags = "FUZZY|WORKSPACES"}
   },
   {key = "x", mods = "LEADER", action = wezterm.action.CloseCurrentPane({ confirm = false })},
   { key = "&", mods = "LEADER|SHIFT", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
