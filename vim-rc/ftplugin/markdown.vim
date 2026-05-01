@@ -5,6 +5,8 @@ let b:loaded_md_keymaps_ftplugin = 1
 
 function! LiveGlowSplit()
   let l:current_pane = $WEZTERM_PANE
+  if empty(l:current_pane)
+    let l:current_pane = system(s:wezterm_bin . ' cli get-pane-direction Left')
   let l:filename = expand('%:p')
 
   " 1. Splits the pane and runs entr/glow
