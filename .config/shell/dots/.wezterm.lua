@@ -32,12 +32,9 @@ local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabl
 local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
 local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
 -- local wez_ws_alt = require("plugins.wez-workspace-alt.plugin")
--- local wez_projects= require("plugins.wez-projects-source.plugin")
 -- local fifo_cache = require("plugins.fifo-cache.plugin")
-local wez_projects = wezterm.plugin.require("https://github.com/roumail/wez-projects-source")
-local projects = wez_projects.load_projects()
 wez_tmux.apply_to_config(config)
-wez_ws_alt.apply_to_config(config, {projects=projects})
+wez_ws_alt.apply_to_config(config)
 
 wezterm.on("window-config-reloaded", function(window, pane)
   wez_sb_alert.notify("Config reloaded")
