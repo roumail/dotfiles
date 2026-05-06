@@ -1,3 +1,14 @@
+let s:last_bang = 0
+let s:last_args = []
+
+function! fzf_utils#live_grep#replay() abort
+  if empty(s:last_args)
+    echoerr "No previous search to replay"
+    return
+  endif
+  call call('fzf_utils#live_grep#interactive', [s:last_bang] + s:last_args)
+endfunction
+
 function! fzf_utils#live_grep#parse_args(arg_list) abort
   let sep = index(a:arg_list, '--')
 
@@ -37,7 +48,14 @@ endfunction
 
 
 function! fzf_utils#live_grep#interactive(bang, ...) abort
+  " Save state for replay
+  let s:last_bang = a:bang
+  let s:last_args = a:000
+
   let [l:options, l:pattern] = fzf_utils#live_grep#parse_args(a:000)
+
+  " Set @/ register for vim search integration
+  call setreg('/', l:pattern)
 
   let l:prefix = fzf_utils#ripgrep#command_factory(l:options)
 
