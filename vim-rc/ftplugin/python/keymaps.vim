@@ -43,6 +43,19 @@ endfunction
 
 let maplocalleader = "_"
 
+" TODO: Enable this registry on BufEnter
+function! s:SetupGrepKeymaps() abort
+  if !exists('g:project_name')
+    return
+  endif
+
+  " TODO: add rerun last search
+  " TODO: Add short circuit versions that directly select the appropriate
+  " scopes and call Grep
+  " nnoremap <buffer> <leader>rp :YankTestFile<CR>
+  " nnoremap <buffer> <leader>rt :YankTestFile<CR>
+endfunction
+
 augroup python_pytest_keymaps
   autocmd!
   autocmd BufEnter <buffer> call s:SetupPytestKeymaps()
