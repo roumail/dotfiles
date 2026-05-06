@@ -6,18 +6,28 @@ let b:loaded_md_keymaps_ftplugin = 1
 function! LiveGlowSplit()
   " unreliable in wsl
   let l:current_pane = $WEZTERM_PANE
-  if empty(l:current_pane)
-    let l:current_pane = system(s:wezterm_bin . ' cli get-pane-direction Left')
+  " This approach doesn't work because we take the get-pane-direction before
+  " having the pane created
+  " if empty(l:current_pane)
+  "   let l:current_pane = system(s:wezterm_bin . ' cli get-pane-direction Left')
+  " endif
   let l:filename = expand('%:p')
 
   " 1. Splits the pane and runs entr/glow
   " 2. Uses the captured ID to jump back to Vim
   let l:cmd = printf(
-        \ '%s cli split-pane --right -- bash -c "echo %s | entr -c glow -t -l /_" && wezterm cli activate-pane --pane-id %s',
+        \ '%s cli split-pane --right -- bash -c "echo %s | entr -c glow -t -l /_"',
         \ s:wezterm_bin,
         \ l:filename,
-        \ l:current_pane
         \ )
+
+  " let l:cmd = printf(
+  "       \ '%s cli split-pane --right -- bash -c "echo %s | entr -c glow -t -l /_" && %s cli activate-pane --pane-id %s',
+  "       \ s:wezterm_bin,
+  "       \ l:filename,
+  "       \ s:wezterm_bin,
+  "       \ l:current_pane
+  "       \ )
 
   call job_start(['bash', '-c', l:cmd],
         \ {'in_io': 'null', 'out_io': 'null', 'err_io': 'null'})
