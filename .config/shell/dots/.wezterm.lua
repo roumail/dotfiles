@@ -30,7 +30,7 @@ config.visual_bell = {
 local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
-local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
+local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-project-spaces")
 -- local wez_ws_alt = wezterm.plugin.require("file:///Users/rohailtaimour/.config/wezterm/plugins/wez-project-spaces")
 -- local wez_ws_alt = require("plugins.wez-project-spaces.plugin")
 wez_tmux.apply_to_config(config)
