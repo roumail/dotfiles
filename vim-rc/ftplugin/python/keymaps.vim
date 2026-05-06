@@ -48,7 +48,7 @@ function! s:SetupGrepKeymaps() abort
     return
   endif
 
-  " TODO: add rerun last search
+  nnoremap <buffer> <leader>rr <Cmd>call fzf_utils#live_grep#replay()<CR>
   nnoremap <buffer> <leader>rp <Cmd>call fzf_utils#rg_scope#invoke('project python')<CR>
   nnoremap <buffer> <leader>rt <Cmd>call fzf_utils#rg_scope#invoke('tests python')<CR>
 endfunction
