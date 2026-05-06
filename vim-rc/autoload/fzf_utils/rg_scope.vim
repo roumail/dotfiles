@@ -15,7 +15,7 @@ endfunction
 function! fzf_utils#rg_scope#run(...) abort
   " Validate arguments - only accept 0 or 1 argument
   if a:0 > 1
-    echoerr 'RGScopePicker: Too many arguments. Usage: :GrepScope [pattern]'
+    echoerr 'Too many arguments. Usage: :GrepScope [pattern]'
     echoerr 'Did you mean to use :Grep instead? (supports -- separator and options)'
     return
   endif
@@ -31,7 +31,7 @@ function! fzf_utils#rg_scope#run(...) abort
 
 
   let s:current_search_pattern = a:0 > 0 ? a:1 : '--'
-
+  " TODO: avoid spaces in the keys
   let s:rg_scopes = {
         \ 'all': [],
         \ 'project': [g:project_name . '/'],

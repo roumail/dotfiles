@@ -48,7 +48,7 @@ function! fzf_utils#live_grep#interactive(bang, ...) abort
   let l:preview_opts = fzf#vim#with_preview({
         \ 'options': [
         \   '--delimiter', ':', '--nth', '4..', '--with-nth', '1,2',
-        \   '--phony', 
+        \   '--phony',
         \   '--prompt', 'Regex> ',
         \   '--header', 'C-r (regex) | C-f (fixed) | C-w (word)',
         \   '--bind', 'ctrl-f:change-prompt(Fixed> )+reload(' . l:cmd_fixed . ' {q})',
@@ -57,6 +57,7 @@ function! fzf_utils#live_grep#interactive(bang, ...) abort
         \ ]
         \ }, 'right,70%,border-left,+{2}+4/3,~4', 'ctrl-p')
 
+  " TODO: add to @/ register
   call fzf#vim#grep2(l:prefix, l:pattern, l:preview_opts, a:bang)
 endfunction
 
