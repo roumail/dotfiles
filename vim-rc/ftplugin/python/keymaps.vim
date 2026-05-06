@@ -43,18 +43,20 @@ endfunction
 
 let maplocalleader = "_"
 
-" TODO: Enable this registry on BufEnter
 function! s:SetupGrepKeymaps() abort
   if !exists('g:project_name')
     return
   endif
 
   " TODO: add rerun last search
-  " TODO: Add short circuit versions that directly select the appropriate
-  " scopes and call Grep
-  " nnoremap <buffer> <leader>rp :YankTestFile<CR>
-  " nnoremap <buffer> <leader>rt :YankTestFile<CR>
+  nnoremap <buffer> <leader>rp <Cmd>call fzf_utils#rg_scope#invoke('project python')<CR>
+  nnoremap <buffer> <leader>rt <Cmd>call fzf_utils#rg_scope#invoke('tests python')<CR>
 endfunction
+
+augroup python_grep_keymaps
+  autocmd!
+  autocmd BufEnter <buffer> call s:SetupGrepKeymaps()
+augroup END
 
 augroup python_pytest_keymaps
   autocmd!
