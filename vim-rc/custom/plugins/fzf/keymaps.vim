@@ -21,7 +21,7 @@ nnoremap <leader>r: :Grep
 " Prefilled to type pattern
 nnoremap <leader>gr: :GrepScope
 
-" Scoped searaches (Standard)
+" Scoped searches (Standard)
 nnoremap <leader>r <Cmd>GrepScope<CR>
 " Search for word under cursor
 " Word with boundaries
