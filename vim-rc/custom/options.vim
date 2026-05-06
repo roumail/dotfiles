@@ -44,7 +44,7 @@ set grepformat=%f:%l:%c:%m,%f:%l:%m
 " set tabline=%!MyTabLine()
 " set showtabline=2
 set signcolumn=yes
-set number relativenumber
+set number " relativenumber
 set hlsearch              " Highlight search results
 set incsearch             " Incremental search (highlight as you type)
 " set nohlsearch
