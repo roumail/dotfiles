@@ -31,13 +31,10 @@ local wez_tmux = require("plugins.wez-tmux.plugin")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
 local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-workspace-alt")
--- local wez_ws_alt = require("plugins.wez-workspace-alt.plugin")
--- local wez_projects= require("plugins.wez-projects-source.plugin")
--- local fifo_cache = require("plugins.fifo-cache.plugin")
-local wez_projects = wezterm.plugin.require("https://github.com/roumail/wez-projects-source")
-local projects = wez_projects.load_projects()
+-- local wez_ws_alt = wezterm.plugin.require("file:///Users/rohailtaimour/.config/wezterm/plugins/wez-project-spaces")
+-- local wez_ws_alt = require("plugins.wez-project-spaces.plugin")
 wez_tmux.apply_to_config(config)
-wez_ws_alt.apply_to_config(config, {projects=projects})
+wez_ws_alt.apply_to_config(config)
 
 wezterm.on("window-config-reloaded", function(window, pane)
   wez_sb_alert.notify("Config reloaded")
@@ -302,21 +299,59 @@ config.key_tables.resize_panes = {
     resize_pane('l', 'Right'),
 }
 
--- config.key_tables.copy_mode = config.key_tables.copy_mode or {}
--- table.insert(config.key_tables.copy_mode, {
---   key = 'x',
---   mods = 'NONE',
---   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Prompt' },
---   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Output' },
---   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Input' },
---   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Prompt' },
---   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Output' },
---   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Input' },
---   action = wezterm.action.CopyMode { SetSelectionMode = 'Cell' },
---   action = wezterm.action.CopyMode 'MoveBackwardSemanticZone'
---   action = wezterm.action.CopyMode 'MoveForwardSemanticZone'
---   -- action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' },
--- })
+-- local function make_typed_zone(pair, direction, zone_key, zone_type)
+--   local action = {}
+
+--   if direction == "forward" then
+--     action = { MoveForwardZoneOfType = zone_type }
+--   else
+--     action = { MoveBackwardZoneOfType = zone_type }
+--   end
+
+--   return {
+--     key = zone_key,
+--     mods = pair,
+--     action = wezterm.action.CopyMode(action),
+--   }
+-- end
+-- -- config.key_tables.copy_mode = config.key_tables.copy_mode or {}
+-- local mappings = {
+
+--   -- Typed zones: [ ] layer
+--   make_typed_zone("[", "backward", "p", "Prompt"),
+--   make_typed_zone("]", "forward",  "p", "Prompt"),
+
+--   make_typed_zone("[", "backward", "i", "Input"),
+--   make_typed_zone("]", "forward",  "i", "Input"),
+
+--   make_typed_zone("[", "backward", "o", "Output"),
+--   make_typed_zone("]", "forward",  "o", "Output"),
+
+-- }
+-- -- table.insert(config.key_tables.copy_mode, {
+-- --   key = 'x',
+-- --   mods = 'NONE',
+-- --   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Prompt' },
+-- --   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Output' },
+-- --   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Input' },
+-- --   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Prompt' },
+-- --   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Output' },
+-- --   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Input' },
+-- --
+-- --           Semantic zones: { } layer
+-- --           simple("(", "s", "MoveBackwardSemanticZone"),
+-- --           simple(")", "s", "MoveForwardSemanticZone"),
+-- --           {
+-- --               key = key,
+-- --               mods = pair,
+-- --               action = wezterm.action.CopyMode(action_name),
+-- --             }
+-- --   action = wezterm.action.CopyMode 'MoveBackwardSemanticZone'
+-- --   action = wezterm.action.CopyMode 'MoveForwardSemanticZone'
+-- --
+-- --   action = wezterm.action.CopyMode { SetSelectionMode = 'Cell' },
+-- --   -- action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' },
+-- -- })
 
 for _, key in ipairs(my_keys) do
   table.insert(config.keys, key)
