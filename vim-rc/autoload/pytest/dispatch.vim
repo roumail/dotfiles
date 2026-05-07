@@ -10,6 +10,10 @@ function! pytest#dispatch#Dispatch(bang, args) abort
   execute 'Dispatch' . a:bang . ' -compiler=pytest -- ' . a:args
 endfunction
 
+function! pytest#dispatch#StartPytest(args) abort
+  execute 'Start! -strategy=terminal pytest ' . a:args
+endfunction
+
 function! pytest#dispatch#WithScope(scope, bang) abort
   let test_path = pytest#common#GetTestPath(a:scope)
 

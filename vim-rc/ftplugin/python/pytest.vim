@@ -11,6 +11,8 @@ command! -buffer YankTestFile call pytest#common#YankTestPath('file')
 
 " Direct Pytest dispatch with custom args, to run all tests for example
 command! -buffer -bang -nargs=* RunPytest call pytest#dispatch#Dispatch("<bang>", <q-args>)
+" TracePytest - automatically adds --trace for interactive debugging with custom args
+command! -buffer -bang -nargs=* TracePytest call pytest#dispatch#StartPytest(<q-args> . ' --trace')
 " Scope-based shortcuts
 command! -buffer -bang -nargs=1 RunPytestScope call pytest#dispatch#WithScope(<q-args>, "<bang>")
 command! -buffer -nargs=1 -bang RunPytestScopeTrace call pytest#dispatch#WithScopeAndTrace(<q-args>, "<bang>")
