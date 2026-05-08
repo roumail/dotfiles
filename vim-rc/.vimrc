@@ -22,7 +22,7 @@ if g:os ==# 'Windows'
         let $CMDER_ROOT= "C:\cmder"
     endif
 
-    if !empty($CMDER_ROOT) 
+    if !empty($CMDER_ROOT)
         set shell=$CMDER_ROOT\\cmder_wrapper.cmd
         " set shell=$CMDER_ROOT\vendor\bin\vscode_init.cmd
         set shellcmdflag=/c  " Ensures :!commands work properly
@@ -71,7 +71,6 @@ let mapleader = " "
 " Load general configurations """
 """""""""""""""""""""""""""""""""
 call MySource('custom/options.vim')
-call MySource('custom/keymaps.vim')
 call MySource('custom/autocommands.vim')
 call MySource('custom/clipboard.vim')
 
@@ -89,11 +88,11 @@ endif
 call MySource('custom/plugins/airline/options.vim')
 call MySource('custom/plugins/fzf/options.vim')
 call MySource('custom/plugins/fzf/commands.vim')
-call MySource('custom/plugins/fzf/keymaps.vim')
 call MySource('custom/plugins/lsp/options.vim')
 call MySource('custom/plugins/lsp/commands.vim')
-call MySource('custom/plugins/lsp/keymaps.vim')
 
+" Load my keymaps last
+call MySource('custom/keymaps.vim')
 """"""""""""""""""""""""""""""""""""""
 " Load project local configuration """
 """"""""""""""""""""""""""""""""""""""
