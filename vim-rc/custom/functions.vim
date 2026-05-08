@@ -24,9 +24,7 @@ function! SmartFilterClose()
 endfunction
 
 function! s:Scratch(bang)
-  if a:bang
-    split
-  else
+  if !a:bang
     vsplit
   endif
   noswapfile hide enew
