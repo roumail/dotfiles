@@ -48,6 +48,8 @@ function! s:SetupGrepKeymaps() abort
     return
   endif
 
+  " _ for tests and r is the verb for running
+  " g for going to words
   nnoremap <buffer> <leader>rr <Cmd>call fzf_utils#live_grep#replay()<CR>
   nnoremap <buffer> <leader>rp <Cmd>call fzf_utils#rg_scope#invoke('project python')<CR>
   nnoremap <buffer> <leader>rt <Cmd>call fzf_utils#rg_scope#invoke('tests python')<CR>
