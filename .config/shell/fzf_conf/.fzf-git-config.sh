@@ -7,6 +7,7 @@ fzf_git_log() {
   local root_dir
   local default_branch
   local tmpfile
+  local log_cmd
 
   # Detect clipboard command
   local copy_cmd
@@ -22,7 +23,8 @@ fzf_git_log() {
   fi
   tmpfile=$(mktemp)
 
-  git log --oneline --color=always "$@" > "$tmpfile"
+  log_cmd=(git log --oneline --color=always "$@")
+  eval "$log_cmd" > "$tmpfile"
 
   selection=$(
     fzf \
@@ -45,6 +47,7 @@ fzf_git_log() {
               ' \
     --bind "enter:become(vim -c 'Git difftool -y {1}^ {1}' < /dev/tty > /dev/tty)" \
     --bind "ctrl-o:become(vim -c 'Gedit {1}' < /dev/tty > /dev/tty)" \
+    --bind "alt-r:reload(eval '$log_cmd' | tee '$tmpfile')" \
     --preview-window='right:60%:wrap' \
     < "$tmpfile"
   )
