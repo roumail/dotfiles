@@ -18,8 +18,6 @@ nnoremap <silent> <leader>r. <Cmd>execute 'Grep -- ' . expand('%:.:h') . '/'<CR>
 nnoremap <silent> <leader>r/ <Cmd>Grep<CR>
 " Prefilled to type pattern/scope
 nnoremap <leader>r: :Grep
-" Prefilled to type pattern
-nnoremap <leader>gr: :GrepScope
 
 " Scoped searches (Standard)
 nnoremap <leader>r <Cmd>GrepScope<CR>
@@ -27,7 +25,7 @@ nnoremap <leader>r <Cmd>GrepScope<CR>
 " Word with boundaries
 nnoremap <silent> <leader>rw <Cmd>execute 'GrepScope' '\b' . expand('<cword>') . '\b'<CR>
 " Word without boundaries
-nnoremap <silent> <leader>rW <Cmd>execute 'GrepScope' expand('<cword>')<CR>
+" nnoremap <silent> <leader>rW <Cmd>execute 'GrepScope' expand('<cword>')<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
@@ -48,4 +46,4 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " Bcommits --> current buffer
 " nnoremap <silent> <leader>c <Cmd>BCommits<CR>
 xnoremap <silent> <leader>rw y:<C-u>execute 'GrepScope' '\b' . getreg('"') . '\b'<CR>
-xnoremap <silent> <leader>rW y:<C-u>execute 'GrepScope' getreg('"')<CR>
+" xnoremap <silent> <leader>rW y:<C-u>execute 'GrepScope' getreg('"')<CR>

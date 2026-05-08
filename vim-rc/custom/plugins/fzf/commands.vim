@@ -65,6 +65,7 @@ command! -bang -nargs=* Grep call fzf_utils#live_grep#interactive(<bang>0, <f-ar
 " Bang modifier:
 "   :Rg!  → Fullscreen mode
 "   :Rg   → Normal mode (windowed)
+" https://github.com/junegunn/fzf.vim/issues/1533#issuecomment-2015075571
 command! -bang -nargs=* Rg call fzf#vim#grep(
       \ fzf_utils#ripgrep#get_command() . " " . <q-args>,
       \ fzf#vim#with_preview({
