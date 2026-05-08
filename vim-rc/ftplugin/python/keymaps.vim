@@ -52,19 +52,19 @@ function! s:SetupGrepKeymaps() abort
   nnoremap <buffer> <leader>rp <Cmd>call fzf_utils#rg_scope#invoke('project python')<CR>
   nnoremap <buffer> <leader>rt <Cmd>call fzf_utils#rg_scope#invoke('tests python')<CR>
   " by prefixing with in projects with w or tests with W
-  nnoremap <buffer> <leader>grw <Cmd>call fzf_utils#rg_scope#invoke(
+  nnoremap <buffer> gw <Cmd>call fzf_utils#rg_scope#invoke(
         \ 'project python',
         \ '\b' . expand('<cword>') . '\b'
         \ )<CR>
-  nnoremap <buffer> <leader>grW <Cmd>call fzf_utils#rg_scope#invoke(
+  nnoremap <buffer> gW <Cmd>call fzf_utils#rg_scope#invoke(
         \ 'tests python',
         \ '\b' . expand('<cword>') . '\b'
         \ )<CR>
-  xnoremap <silent> <buffer> <leader>grw y<Cmd>call fzf_utils#rg_scope#invoke(
+  xnoremap <silent> <buffer> gw y<Cmd>call fzf_utils#rg_scope#invoke(
         \ 'project python',
         \ '\b' . escape(getreg('"'), '\') . '\b'
         \ )<CR>
-  xnoremap <silent> <buffer> <leader>grW y<Cmd>call fzf_utils#rg_scope#invoke(
+  xnoremap <silent> <buffer> gW y<Cmd>call fzf_utils#rg_scope#invoke(
         \ 'tests python',
         \ '\b' . escape(getreg('"'), '\') . '\b'
         \ )<CR>
