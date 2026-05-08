@@ -56,7 +56,7 @@ endfunction
 " Git bash (C:\Program Files\Git\bin\bash.exe) is available.
 " If you want it to use a different bash, set this variable.
 "   let g:fzf_vim = {}
-"   let g:fzf_vim.preview_bash = 'C:\Git\bin\bash.exe'   
+"   let g:fzf_vim.preview_bash = 'C:\Git\bin\bash.exe'
 
 " [Tags] Command to generate tags file
 " let g:fzf_vim.tags_command = 'ctags -R'
