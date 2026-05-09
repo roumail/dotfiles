@@ -1,3 +1,12 @@
+" Set @/ register for vim search integration
+function! s:fzf_query_to_search() abort
+  let pattern = fzf#vim#get_event().query
+
+  call setreg('/', pattern)
+  call histadd('/', pattern)
+endfunction
+
+autocmd User FzfQuery call s:fzf_query_to_search()
 
 " Understand jsconc
 autocmd FileType json syntax match Comment +\/\/.\+$+
