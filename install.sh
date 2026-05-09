@@ -34,6 +34,7 @@ install_local_file_from_example() {
 install_dotconfig_dirs() {
   echo "Symlinking .config app directories..."
 
+  # TODO: disable alacritty?
   # alacritty (platform-specific)
   mkdir -p "$DOT_CONFIG_DST/alacritty"
   case "$(uname)" in
@@ -49,9 +50,13 @@ install_dotconfig_dirs() {
       ;;
   esac
 
-  # bat 
+  # bat
   mkdir -p "$DOT_CONFIG_DST/bat"
   link_tree "$DOT_CONFIG_SRC/bat" "$DOT_CONFIG_DST/bat"
+
+  # wezterm
+  mkdir -p "$DOT_CONFIG_DST/wezterm"
+  link_tree "$DOT_CONFIG_SRC/wezterm" "$DOT_CONFIG_DST/wezterm"
 }
 #
 # Create ~/.config if it doesn't exist
@@ -86,7 +91,7 @@ if [ -f "$RC_FILE" ] && [ ! -L "$RC_FILE" ]; then
   echo "✓ Backed up existing $RC_FILE"
 fi
 
-# Write new RC 
+# Write new RC
 cat > "$RC_FILE" <<EOF
 #!/usr/bin/env $SHELL_NAME
 # Managed by dotfiles - do not edit
