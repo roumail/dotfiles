@@ -2,11 +2,12 @@ let s:last_bang = 0
 let s:last_args = []
 
 function! fzf_utils#live_grep#replay() abort
-  if empty(s:last_args)
-    echoerr "No previous search to replay"
-    return
-  endif
-  call call('fzf_utils#live_grep#interactive', [s:last_bang] + s:last_args)
+  " Injected via autocommand from maintained fzf fork
+  let l:query = getreg('/')
+  call call(
+        \ 'fzf_utils#live_grep#interactive',
+        \ [s:last_bang, l:query] + s:last_args
+        \ )
 endfunction
 
 function! fzf_utils#live_grep#parse_args(arg_list) abort
@@ -54,10 +55,6 @@ function! fzf_utils#live_grep#interactive(bang, ...) abort
 
   let [l:options, l:pattern] = fzf_utils#live_grep#parse_args(a:000)
 
-  " Set @/ register for vim search integration
-  call setreg('/', l:pattern)
-  call histadd('/', l:pattern)
-
   let l:prefix = fzf_utils#ripgrep#command_factory(l:options)
 
   let l:cmd_regex = fzf_utils#ripgrep#mode(l:prefix, '')
@@ -76,7 +73,6 @@ function! fzf_utils#live_grep#interactive(bang, ...) abort
         \ ]
         \ }, 'right,70%,border-left,+{2}+4/3,~4', 'ctrl-p')
 
-  " TODO: add to @/ register
   call fzf#vim#grep2(l:prefix, l:pattern, l:preview_opts, a:bang)
 endfunction
 
