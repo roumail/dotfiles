@@ -68,7 +68,7 @@ opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
 
 while true; do
     if [ "$key" = ctrl-l ]; then
-        out=$(list_notes | fzf $opts --prompt="list> " --expect=ctrl-f,alt-d,alt-n --query="$query" \
+        out=$(list_notes | fzf $opts  --delimiter=$'\t' --prompt="list> " --expect=ctrl-f,alt-d,alt-n --query="$query" \
             --preview "bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
             --no-clear --header=$'\nCTRL-F: find / ALT-N: new / ALT-D: delete\n\n')
     else
