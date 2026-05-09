@@ -56,6 +56,7 @@ function! fzf_utils#live_grep#interactive(bang, ...) abort
 
   " Set @/ register for vim search integration
   call setreg('/', l:pattern)
+  call histadd('/', l:pattern)
 
   let l:prefix = fzf_utils#ripgrep#command_factory(l:options)
 
