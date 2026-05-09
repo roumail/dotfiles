@@ -26,7 +26,8 @@ Plug 'junegunn/vim-easy-align'
 " Plug 'shime/vim-livedown'
 " Use rg integration with fzf
 Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
+Plug 'roumail/fzf.vim'
+" Plug 'junegunn/fzf.vim'
 " Plug 'drewtempelmeyer/palenight.vim'
 Plug 'danilo-augusto/vim-afterglow'
 call plug#end()
