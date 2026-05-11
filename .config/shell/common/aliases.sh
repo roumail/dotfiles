@@ -17,6 +17,10 @@ alias Sa='source ../.venv/bin/activate'
 alias c='clear'
 alias mkdir='mkdir -p'
 alias path='echo -e ${PATH//:/\\n}'
+# Check if notes.sh is available in the system PATH
+if command -v notes.sh >/dev/null 2>&1; then
+    alias n='notes.sh'
+fi
 
 # ls aliases
 alias l='ls $LS_OPTIONS -lA'
