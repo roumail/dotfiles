@@ -58,9 +58,11 @@ nnoremap <silent> <leader>tt :tab split<CR>
 nnoremap c "_c
 nnoremap C "_C
 " Navigate folds
+" \@! is a negative lookahead operator, only matching {{{ if there isn't a \d
+" after it
+nnoremap ]s /{{{\d\@!<CR>
+nnoremap [s ?{{{\d\@!<CR>
 
-nnoremap ]s /{{{<CR>
-nnoremap [s ?{{{<CR>
 nnoremap ]1 /\V{{{1<CR>
 nnoremap [1 ?\V{{{1<CR>
 nnoremap ]2 /\V{{{2<CR>
@@ -193,9 +195,8 @@ augroup END
 vmap < <gv
 vmap > >gv
 
-" Move Visual blocks with J and K
-vnoremap <leader>d "_d
-vnoremap <leader>c "_c
+" vnoremap d "_d
+vnoremap c "_c
 
 " vnoremap p "0p gv"
 "Search inside visual selection
@@ -206,6 +207,7 @@ vnoremap g/ <Esc>/\%V
 "for example to replace the with THE in selection, complete the command :%s/\%Vthe/THE/g
 vnoremap <leader>r :s/
 " vnoremap <leader>r <Esc>:%s/\%V
+" Move Visual blocks with J and K
 vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 " Start interactive EasyAlign in visual mode (e.g. vipga)
