@@ -36,7 +36,7 @@ set diffopt=filler,internal,algorithm:histogram,indent-heuristic
 set diffopt+=iwhiteall
 if has('patch-9.2')
   set diffopt-=inline:simple
-  set diffopt+=inline:char
+  " set diffopt+=inline:char
   set diffopt+=inline:word
   set diffopt+=linematch:60
 endif
