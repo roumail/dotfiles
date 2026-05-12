@@ -27,37 +27,37 @@ augroup END
 "  This works but not as a function due to escaping
 "  :%!python3 -c "import ast,json,sys;obj=ast.literal_eval(sys.stdin.read());print(json.dumps(obj,sort_keys=True,indent=2))"
 function! NormalizePythonDict() abort
-    %!python3 -c "
-import ast,json,sys
+  let l:script = join([
+        \ 'import ast, json, sys',
+        \ 'obj = ast.literal_eval(sys.stdin.read())',
+        \ 'print(json.dumps(',
+        \ '    obj,',
+        \ '    sort_keys=True,',
+        \ '    indent=2,',
+        \ '    ensure_ascii=False',
+        \ '))',
+        \ ], "\n")
 
-obj = ast.literal_eval(sys.stdin.read())
-
-print(json.dumps(
-    obj,
-    sort_keys=True,
-    indent=2,
-    ensure_ascii=False
-))
-"
+  execute '%!python3 -c ' . shellescape(l:script)
 endfunction
 
 " handles '{"foo": true, "bar": null}'
 "  This works but not as a function due to escaping
 "  :%!python3 -c "import ast,json,sys;s=ast.literal_eval(sys.stdin.read());obj=json.loads(s);print(json.dumps(obj,sort_keys=True,indent=2))"
 function! NormalizeJsonString() abort
-    %!python3 -c "
-import ast,json,sys
+  let l:script = join([
+        \ 'import ast, json, sys',
+        \ 's = ast.literal_eval(sys.stdin.read())',
+        \ 'obj = json.loads(s)',
+        \ 'print(json.dumps(',
+        \ '    obj,',
+        \ '    sort_keys=True,',
+        \ '    indent=2,',
+        \ '    ensure_ascii=False',
+        \ '))',
+        \ ], "\n")
 
-s = ast.literal_eval(sys.stdin.read())
-obj = json.loads(s)
-
-print(json.dumps(
-    obj,
-    sort_keys=True,
-    indent=2,
-    ensure_ascii=False
-))
-"
+  execute '%!python3 -c ' . shellescape(l:script)
 endfunction
 
 command! NormalizeJsonString call NormalizeJsonString()
