@@ -24,7 +24,9 @@ fzf_git_log() {
   tmpfile=$(mktemp)
 
   log_cmd=(git log --oneline --color=always "$@")
-  eval "$log_cmd" > "$tmpfile"
+  "${log_cmd[@]}" > "$tmpfile"
+  local reload_cmd
+  reload_cmd=$(printf '%q ' "${log_cmd[@]}")
 
   selection=$(
     fzf \
@@ -47,7 +49,7 @@ fzf_git_log() {
               ' \
     --bind "enter:become(vim -c 'Git difftool -y {1}^ {1}' < /dev/tty > /dev/tty)" \
     --bind "ctrl-o:become(vim -c 'Gedit {1}' < /dev/tty > /dev/tty)" \
-    --bind "alt-r:reload(eval '$log_cmd' | tee '$tmpfile')" \
+    --bind "alt-r:reload($reload_cmd | tee '$tmpfile')" \
     --preview-window='right:60%:wrap' \
     < "$tmpfile"
   )
