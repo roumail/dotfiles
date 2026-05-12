@@ -34,10 +34,12 @@ set completeopt=menuone,noselect
 " Diff options
 set diffopt=filler,internal,algorithm:histogram,indent-heuristic
 set diffopt+=iwhiteall
-" set diffopt-=inline:simple
-" set diffopt+=inline:char
-" set diffopt+=inline:word
-" set diffopt+=linematch:60
+if has('patch-9.2')
+  set diffopt-=inline:simple
+  set diffopt+=inline:char
+  set diffopt+=inline:word
+  set diffopt+=linematch:60
+endif
 
 " set timeoutlen=300    " Mapped key sequence duration (1000 ms default)
 set grepprg=rg\ --vimgrep
