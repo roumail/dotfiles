@@ -1,17 +1,6 @@
 local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
-local function remove_key(keys, key, mods)
-  local result = {}
-  for _, k in ipairs(keys) do
-    if not (k.key == key and k.mods == mods) then
-      table.insert(result, k)
-    end
-  end
-  return result
-end
-
-
 -- config.color_scheme = 'Batman'
 config.font_size = 12
 config.font = wezterm.font 'JetBrains Mono'
@@ -28,6 +17,7 @@ config.visual_bell = {
 }
 -- load plugin
 local wez_tmux = require("plugins.wez-tmux.plugin")
+local helpers = require("helpers")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
 local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-project-spaces")
@@ -40,98 +30,13 @@ wezterm.on("window-config-reloaded", function(window, pane)
   wez_sb_alert.notify("Config reloaded")
 end)
 
-local icons =  {
-  ['default'] = wezterm.nerdfonts.md_application,
-  ['git'] = wezterm.nerdfonts.dev_git,
-  ['lua'] = wezterm.nerdfonts.seti_lua,
-  ['zsh'] = wezterm.nerdfonts.dev_terminal,
-  ['bash'] = wezterm.nerdfonts.cod_terminal_bash,
-  ['python'] = wezterm.nerdfonts.dev_python,
-  ['tmux'] = wezterm.nerdfonts.cod_terminal_tmux,
-  ['vim'] = wezterm.nerdfonts.dev_vim,
-}
-
-local function shorten(path)
-  path = path:gsub("^file://", "")
-  local home = wezterm.home_dir
-  if path:sub(1, #home) == home then
-    path = "~" .. path:sub(#home + 1)
-  end
-  local parts = {}
-  for part in path:gmatch("[^/]+") do
-    table.insert(parts, part)
-  end
-
-  if #parts == 0 then
-    return path
-  end
-
-  local leaf = parts[#parts]
-  local special = {
-    main = { depth = 3, label = "m" },
-    master = { depth = 3, label = "m" },
-  }
-
-  local config = special[leaf]
-
-  local keep_segments = (config and config.depth)
-  or (#leaf > 12 and 2 or 1)
-  if #parts <= keep_segments then
-    if config then
-      parts[#parts] = config.label
-      return table.concat(parts, "/")
-    end
-    return path
-  end
-
-  local tail_start = #parts - keep_segments + 1
-  local tail_parts = {}
-  for i = tail_start, #parts do
-    table.insert(tail_parts, parts[i])
-  end
-  if config then
-    tail_parts[#tail_parts] = config.label
-  end
-
-  local tail = table.concat(tail_parts, "/")
-
-  if parts[1] == "~" then
-    return "~/" .. "…/" .. tail
-  end
-
-  return "…/" .. tail
-end
-
-local function processed_name(tab)
-  local pane = tab.active_pane
-  local vars = pane.user_vars
-  local process = vars and vars.WEZTERM_PROG
-  if not process or process == "" then
-    return wezterm.format({
-      { Text = icons.default }
-    })
-  end
-  local icon = icons[process] or icons.default
-  local cwd = pane.current_working_dir and pane.current_working_dir.file_path or ""
-  if cwd ~= "" then
-    local shortened = shorten(cwd)
-    return wezterm.format({
-      { Text = icon .. " " .. shortened }
-    })
-  end
-
-  return wezterm.format({
-    { Text = icon .. " " .. process }
-  })
-end
-
 local status_sections = {
   tab_active = {
     'index',
-    processed_name ,
+    helpers.processed_name ,
     { 'zoomed', padding = 0 },
   },
-  tab_inactive = { 'index',  processed_name },
+  tab_inactive = { 'index',  helpers.processed_name },
   tabline_x = {
     wez_sb_alert.component(),
   },
@@ -141,12 +46,12 @@ local status_sections = {
 tabline.setup({sections=status_sections})
 tabline.apply_to_config(config)
 
-config.keys = remove_key(config.keys, "%", "LEADER|SHIFT")
-config.keys = remove_key(config.keys, "\"", "LEADER|SHIFT")
-config.keys = remove_key(config.keys, "l", "LEADER")
-config.keys = remove_key(config.keys, "s", "LEADER")
-config.keys = remove_key(config.keys, "x", "LEADER")
-config.keys = remove_key(config.keys, "&", "LEADER|SHIFT")
+config.keys = helpers.remove_key(config.keys, "%", "LEADER|SHIFT")
+config.keys = helpers.remove_key(config.keys, "\"", "LEADER|SHIFT")
+config.keys = helpers.remove_key(config.keys, "l", "LEADER")
+config.keys = helpers.remove_key(config.keys, "s", "LEADER")
+config.keys = helpers.remove_key(config.keys, "x", "LEADER")
+config.keys = helpers.remove_key(config.keys, "&", "LEADER|SHIFT")
 -- Select output of entire command when triple-clicking
 config.mouse_bindings = {
   {
@@ -184,13 +89,6 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
     },
   }
   config.default_domain = "WSL:Debian"
-end
-
-local function resize_pane(key, direction)
-  return {
-    key = key,
-    action = wezterm.action.AdjustPaneSize { direction, 3 }
-  }
 end
 
 local my_keys = {
@@ -293,10 +191,10 @@ local my_keys = {
 }
 config.key_tables = config.key_tables or {}
 config.key_tables.resize_panes = {
-    resize_pane('j', 'Down'),
-    resize_pane('k', 'Up'),
-    resize_pane('h', 'Left'),
-    resize_pane('l', 'Right'),
+    helpers.resize_pane('j', 'Down'),
+    helpers.resize_pane('k', 'Up'),
+    helpers.resize_pane('h', 'Left'),
+    helpers.resize_pane('l', 'Right'),
 }
 
 -- local function make_typed_zone(pair, direction, zone_key, zone_type)
