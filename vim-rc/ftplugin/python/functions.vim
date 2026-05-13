@@ -27,17 +27,7 @@ augroup END
 "  This works but not as a function due to escaping
 "  :%!python3 -c "import ast,json,sys;obj=ast.literal_eval(sys.stdin.read());print(json.dumps(obj,sort_keys=True,indent=2))"
 function! NormalizePythonDict() abort
-  let l:script = join([
-        \ 'import ast, json, sys',
-        \ 'obj = ast.literal_eval(sys.stdin.read())',
-        \ 'print(json.dumps(',
-        \ '    obj,',
-        \ '    sort_keys=True,',
-        \ '    indent=2,',
-        \ '    ensure_ascii=False',
-        \ '))',
-        \ ], "\n")
-
+  let l:script = 'import ast,json,sys;obj=ast.literal_eval(sys.stdin.read());print(json.dumps(obj,sort_keys=True,indent=2,ensure_ascii=False))'
   execute '%!python3 -c ' . shellescape(l:script)
 endfunction
 
@@ -45,20 +35,38 @@ endfunction
 "  This works but not as a function due to escaping
 "  :%!python3 -c "import ast,json,sys;s=ast.literal_eval(sys.stdin.read());obj=json.loads(s);print(json.dumps(obj,sort_keys=True,indent=2))"
 function! NormalizeJsonString() abort
-  let l:script = join([
-        \ 'import ast, json, sys',
-        \ 's = ast.literal_eval(sys.stdin.read())',
-        \ 'obj = json.loads(s)',
-        \ 'print(json.dumps(',
-        \ '    obj,',
-        \ '    sort_keys=True,',
-        \ '    indent=2,',
-        \ '    ensure_ascii=False',
-        \ '))',
-        \ ], "\n")
-
+  let l:script = 'import ast,json,sys;s=ast.literal_eval(sys.stdin.read());obj=json.loads(s);print(json.dumps(obj,sort_keys=True,indent=2,ensure_ascii=False))'
   execute '%!python3 -c ' . shellescape(l:script)
 endfunction
 
 command! NormalizeJsonString call NormalizeJsonString()
 command! NormalizePythonDict call NormalizePythonDict()
+
+function! NormalizeSplitDiff() abort
+  if winnr('$') < 2
+    echoerr 'NormalizeSplitDiff needs at least 2 windows'
+    return
+  endif
+
+  let l:cur = winnr()
+
+  " Left window: JSON string
+  execute '1wincmd w'
+  call NormalizeJsonString()
+  setlocal filetype=python
+
+  " Right window: Python dict
+  execute '2wincmd w'
+  call NormalizePythonDict()
+  setlocal filetype=python
+
+  " Diff mode in both
+  execute '1wincmd w'
+  diffthis
+  execute '2wincmd w'
+  diffthis
+
+  execute l:cur . 'wincmd w'
+endfunction
+
+command! NormalizeSplitDiff call NormalizeSplitDiff()
