@@ -16,7 +16,8 @@ config.visual_bell = {
   target = 'CursorColor',
 }
 -- load plugin
-local wez_tmux = require("plugins.wez-tmux.plugin")
+local wez_tmux = wezterm.plugin.require("https://github.com/sei40kr/wez-tmux")
+-- local wez_tmux = require("plugins.wez-tmux.plugin")
 local helpers = require("helpers")
 local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
 local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-status-bar-alert")
