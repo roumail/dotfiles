@@ -58,7 +58,7 @@ nnoremap <silent> <leader>tt :tab split<CR>
 nnoremap c "_c
 nnoremap C "_C
 " Navigate folds
-" \@! is a negative lookahead operator, only matching {{{ if there isn't a \d
+" \@! is a negative lookahead operator, only matching {'s if there isn't a \d
 " after it
 nnoremap ]s /{{{\d\@!<CR>
 nnoremap [s ?{{{\d\@!<CR>
@@ -243,5 +243,17 @@ tnoremap <Esc>h <C-w>h
 tnoremap <Esc>j <C-w>j
 tnoremap <Esc>k <C-w>k
 tnoremap <Esc>l <C-w>l
+
+" }}}
+
+" ============================================================
+" Command mode {{{
+" ============================================================
+
+cnoreabbrev WQ wq
+cnoreabbrev Wq wq
+cnoreabbrev Q q
+cnoreabbrev Qa qa
+cnoreabbrev QA qa
 
 " }}}
