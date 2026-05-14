@@ -249,7 +249,7 @@ tnoremap <Esc>l <C-w>l
 " ============================================================
 " Command mode {{{
 " ============================================================
-
+cnoremap <C-K> <C-\>e{-> slice(getcmdline(), 0, getcmdpos() - 1)}()<CR>
 cnoreabbrev WQ wq
 cnoreabbrev Wq wq
 cnoreabbrev Q q
