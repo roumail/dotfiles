@@ -72,6 +72,8 @@ syntax on
 filetype plugin indent on
 
 " Set netrw config
+let g:goyo_width = 95
+let g:goyo_height = 95
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
 " enable numbering
