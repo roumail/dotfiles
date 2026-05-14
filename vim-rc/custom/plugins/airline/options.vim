@@ -11,6 +11,8 @@ let g:airline#extensions#hunks#enabled = 0
 " let g:airline_stl_path_style = 'short'
 " let g:airline_section_c_only_filename = 1
 " let g:airline_section_z = '%p%% %l/%L:%v'
-" let g:airline_section_y='%{airline#util#wrap(airline#parts#ffenc(),0)}'
-let g:airline_section_y=''
+let g:airline#extensions#default#layout = [
+    \ [ 'a', 'b', 'c' ],
+    \ [ 'x', 'z' ]
+    \ ]
 let g:airline_section_z = '%p%%%#__accent_bold#%{g:airline_symbols.linenr}%2l%#__restore__#%#__accent_bold#/%L%{g:airline_symbols.maxlinenr}%#__restore__#%#__accent_bold'
