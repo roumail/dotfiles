@@ -19,7 +19,7 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " ============================================================
 " Normal mode {{{
 " ============================================================
-"nnoremap <leader>q :wq<CR>
+nnoremap <leader>zm :Goyo<CR>
 nnoremap K i<CR><Esc>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
