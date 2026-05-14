@@ -10,6 +10,7 @@ export XDG_CONFIG_HOME="$HOME/.config/"
 # #export TERM=xterm-256color-italic
 export EDITOR="vim"
 export SHELL=/bin/bash
+export NOTE_EXT=md
 
 # Set BROWSER based on platform
 if [ "$IS_WSL" -eq 1 ]; then
