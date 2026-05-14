@@ -49,8 +49,10 @@ set grepformat=%f:%l:%c:%m,%f:%l:%m
 " UI and appearance
 """"""""""""""""""""""""""""""""""""
 " set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
-" set tabline=%!MyTabLine()
-" set showtabline=2
+set laststatus=2
+set showtabline=2
+set guioptions-=e
+let g:netrw_altfile = 1
 set signcolumn=yes
 set number " relativenumber
 set hlsearch              " Highlight search results
