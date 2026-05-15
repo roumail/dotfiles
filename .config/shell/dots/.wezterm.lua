@@ -91,6 +91,32 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.default_domain = "WSL:Debian"
 end
 
+-- capture last command and working directory
+local latest = {
+  cwd = nil,
+  cmd = nil,
+}
+
+wezterm.on('user-var-changed', function(window, pane, name, value)
+  if name == 'WEZTERM_CWD' then
+    latest.cwd = value
+  elseif name == 'WEZTERM_CMD' then
+    latest.cmd = value
+  end
+end)
+
+wezterm.on('copy-cwd', function(window, pane)
+  if latest.cwd then
+    window:copy_to_clipboard(latest.cwd)
+  end
+end)
+
+wezterm.on('copy-cmd', function(window, pane)
+  if latest.cmd then
+    window:copy_to_clipboard(latest.cmd)
+  end
+end)
+
 local my_keys = {
   {
     key = "p",
@@ -165,6 +191,9 @@ local my_keys = {
     action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
   },
   { key = "b", mods = "LEADER", action = wezterm.action.ActivateLastTab },
+  { key = "f", mods = "LEADER", action = wezterm.action.Search("CurrentSelectionOrEmptyString") },
+  { key = "y", mods = "LEADER", action = wezterm.action.EmitEvent 'copy-cmd' },
+  { key = "Y", mods = "LEADER|SHIFT", action = wezterm.action.EmitEvent 'copy-cwd'},
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },

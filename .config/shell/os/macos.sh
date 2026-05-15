@@ -29,6 +29,7 @@ _wezterm_zsh_preexec() {
   local cmd="${1%% *}"
   cmd="${cmd##*/}"
   __wezterm_set_user_var WEZTERM_PROG "$cmd"
+  __wezterm_set_user_var WEZTERM_CMD "$1"
   _wezterm_osc2_preexec "$1"
 }
 

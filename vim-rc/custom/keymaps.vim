@@ -90,6 +90,8 @@ nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
+" inverse of terminal mode
+nnoremap <S-Tab> :tabnext<CR>
 
 nnoremap <silent> yoq :call ToggleQuickfix()<CR>
 
