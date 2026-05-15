@@ -21,6 +21,7 @@ __wezterm_set_user_var() {
 
 _wezterm_osc7_hook() {
     printf "\033]7;file://%s%s\a" "$HOSTNAME" "$PWD"
+    __wezterm_set_user_var WEZTERM_CWD "$PWD"
 }
 
 _wezterm_osc2_preexec() {
