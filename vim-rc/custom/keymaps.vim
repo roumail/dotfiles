@@ -14,7 +14,7 @@ imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 "imap <c-x><c-k> <plug>(fzf-complete-word)
 
-" }}}
+" }}}1
 
 " ============================================================
 " Normal mode {{{
@@ -27,10 +27,6 @@ nnoremap <leader>d "_dd
 nnoremap Y y$
 nnoremap gp =p
 nnoremap gP =P
-
-"""""""""""""""""""
-" Paste {{{1
-"""""""""""""""""""
 
 " Cursor at end of pasted chars
 nnoremap p ]p
@@ -130,6 +126,8 @@ nnoremap <silent> <leader>rw <Cmd>execute 'GrepScope' '\b' . expand('<cword>') .
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 
+" }}}1
+
 """""""""""""""""""
 " lsp {{{1
 """""""""""""""""""
@@ -186,6 +184,7 @@ augroup lsp_install
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
+" }}}1
 " }}}
 
 " ============================================================
@@ -232,6 +231,8 @@ xnoremap p "_dP<Esc>
 xnoremap <silent> <leader>rw y:<C-u>execute 'GrepScope' '\b' . getreg('"') . '\b'<CR>
 " xnoremap <silent> <leader>rW y:<C-u>execute 'GrepScope' getreg('"')<CR>
 xmap <leader><tab> <plug>(fzf-maps-x)
+
+" }}}1
 " }}}
 
 " ============================================================
@@ -249,6 +250,7 @@ tnoremap <Esc>l <C-w>l
 " ============================================================
 " Command mode {{{
 " ============================================================
+
 cnoremap <C-K> <C-\>e{-> slice(getcmdline(), 0, getcmdpos() - 1)}()<CR>
 cnoreabbrev WQ wq
 cnoreabbrev Wq wq
