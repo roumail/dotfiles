@@ -42,6 +42,11 @@ nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied!"<CR>
 " Absolute path
 nnoremap <leader>F :let @+ = expand('%:p')<CR>:echo "Absolute path copied!"<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
+
+" open notes in a split
+nnoremap <leader>,n <Cmd>vertical term ++kill=term notes.sh<CR>
+" nnoremap <leader>,n <Cmd>vertical term ++kill=term notes.sh $NOTE_DIR<CR>
+
 " open tab in terminal
 nnoremap <leader>ot :tab term ++kill=term<CR>
 " Open current buffer in new tab
