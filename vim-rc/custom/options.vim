@@ -49,12 +49,30 @@ set grepformat=%f:%l:%c:%m,%f:%l:%m
 " UI and appearance
 """"""""""""""""""""""""""""""""""""
 " set statusline=%<%f\ %h%m%r%{FugitiveStatusline()}%=%-14.(%l,%c%V%)\ %P
-" set tabline=%!MyTabLine()
-" set showtabline=2
+set laststatus=2
+set showtabline=2
+set guioptions-=e
+let g:netrw_altfile = 1
 set signcolumn=yes
 set number " relativenumber
 set hlsearch              " Highlight search results
 set incsearch             " Incremental search (highlight as you type)
+set splitbelow splitright " Open splits below and to the right
+
+
+" Vertically center document when entering insert mode
+" autocmd InsertEnter * norm zz
+
+" Cursor settings
+" set cursorline
+" set cursorcolumn
+" highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold
+" highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold
+
+" Change based on mode
+let &t_SI = "\e[6 q"      " Vertical bar cursor in Insert mode
+let &t_EI = "\e[2 q"      " Block cursor in Normal mode
+
 " set nohlsearch
 set foldmethod=indent
 set ruler
@@ -70,6 +88,8 @@ syntax on
 filetype plugin indent on
 
 " Set netrw config
+let g:goyo_width = 95
+let g:goyo_height = 95
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
 " enable numbering
@@ -96,11 +116,13 @@ endif
 " Load any scheme-specific after/colors files
 " https://vi.stackexchange.com/questions/24846/how-to-customize-colorschemes-without-editing-their-source-files
 " Lighter diff colors
+" https://github.com/junegunn/goyo.vim/tree/master#faq
 augroup ColorOverrides
   autocmd!
   autocmd ColorScheme * runtime! after/colors/common.vim
   autocmd ColorScheme * runtime! after/colors/<amatch>.vim
 augroup END
+
 let g:afterglow_italic_comments=1
 colorscheme afterglow
 " colorscheme palenight
@@ -111,21 +133,4 @@ colorscheme afterglow
 "       \ 'comment_grey': { 'gui': '#FF8800', 'cterm': '214', 'cterm16': '3' }
 "       \ }
 
-
-set splitbelow splitright " Open splits below and to the right
-
-
-" Vertically center document when entering insert mode
-" autocmd InsertEnter * norm zz
-
-" Cursor settings
-" set cursorline
-" set cursorcolumn
-" highlight CursorLine ctermbg=LightGrey guibg=#505050  cterm=bold
-" highlight CursorColumn ctermbg=LightGrey guibg=#505050  cterm=bold
-
-
-" Change based on mode
-let &t_SI = "\e[6 q"      " Vertical bar cursor in Insert mode
-let &t_EI = "\e[2 q"      " Block cursor in Normal mode
 

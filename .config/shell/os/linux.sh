@@ -42,6 +42,7 @@ _wezterm_preexec_trap() {
   cmd="${cmd##*/}"
 
   __wezterm_set_user_var WEZTERM_PROG "$cmd"
+  __wezterm_set_user_var WEZTERM_CMD "$BASH_COMMAND"
   _wezterm_osc2_preexec "$BASH_COMMAND"
 }
 
