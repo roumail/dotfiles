@@ -92,6 +92,32 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.default_domain = "WSL:Debian"
 end
 
+-- capture last command and working directory
+local latest = {
+  cwd = nil,
+  cmd = nil,
+}
+
+wezterm.on('user-var-changed', function(window, pane, name, value)
+  if name == 'WEZTERM_CWD' then
+    latest.cwd = value
+  elseif name == 'WEZTERM_CMD' then
+    latest.cmd = value
+  end
+end)
+
+wezterm.on('copy-cwd', function(window, pane)
+  if latest.cwd then
+    window:copy_to_clipboard(latest.cwd)
+  end
+end)
+
+wezterm.on('copy-cmd', function(window, pane)
+  if latest.cmd then
+    window:copy_to_clipboard(latest.cmd)
+  end
+end)
+
 local my_keys = {
   {
     key = "p",
@@ -166,6 +192,9 @@ local my_keys = {
     action = wezterm.action.SplitVertical { domain = "CurrentPaneDomain" },
   },
   { key = "b", mods = "LEADER", action = wezterm.action.ActivateLastTab },
+  { key = "f", mods = "LEADER", action = wezterm.action.Search("CurrentSelectionOrEmptyString") },
+  { key = "y", mods = "LEADER", action = wezterm.action.EmitEvent 'copy-cmd' },
+  { key = "Y", mods = "LEADER|SHIFT", action = wezterm.action.EmitEvent 'copy-cwd'},
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },
@@ -190,6 +219,9 @@ local my_keys = {
     }
   },
 }
+for _, key in ipairs(my_keys) do
+  table.insert(config.keys, key)
+end
 config.key_tables = config.key_tables or {}
 config.key_tables.resize_panes = {
     helpers.resize_pane('j', 'Down'),
@@ -198,62 +230,51 @@ config.key_tables.resize_panes = {
     helpers.resize_pane('l', 'Right'),
 }
 
--- local function make_typed_zone(pair, direction, zone_key, zone_type)
---   local action = {}
+local function make_typed_zone(direction, zone_type, zone_key, pair)
+  local action = {}
 
---   if direction == "forward" then
---     action = { MoveForwardZoneOfType = zone_type }
---   else
---     action = { MoveBackwardZoneOfType = zone_type }
---   end
+  if direction == "forward" then
+    action = { MoveForwardZoneOfType = zone_type }
+  else
+    action = { MoveBackwardZoneOfType = zone_type }
+  end
 
---   return {
---     key = zone_key,
---     mods = pair,
---     action = wezterm.action.CopyMode(action),
---   }
--- end
--- -- config.key_tables.copy_mode = config.key_tables.copy_mode or {}
--- local mappings = {
-
---   -- Typed zones: [ ] layer
---   make_typed_zone("[", "backward", "p", "Prompt"),
---   make_typed_zone("]", "forward",  "p", "Prompt"),
-
---   make_typed_zone("[", "backward", "i", "Input"),
---   make_typed_zone("]", "forward",  "i", "Input"),
-
---   make_typed_zone("[", "backward", "o", "Output"),
---   make_typed_zone("]", "forward",  "o", "Output"),
-
--- }
--- -- table.insert(config.key_tables.copy_mode, {
--- --   key = 'x',
--- --   mods = 'NONE',
--- --   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Prompt' },
--- --   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Output' },
--- --   action = wezterm.action.CopyMode { MoveForwardZoneOfType = 'Input' },
--- --   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Prompt' },
--- --   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Output' },
--- --   action = wezterm.action.CopyMode { MoveBackwardZoneOfType = 'Input' },
--- --
--- --           Semantic zones: { } layer
--- --           simple("(", "s", "MoveBackwardSemanticZone"),
--- --           simple(")", "s", "MoveForwardSemanticZone"),
--- --           {
--- --               key = key,
--- --               mods = pair,
--- --               action = wezterm.action.CopyMode(action_name),
--- --             }
--- --   action = wezterm.action.CopyMode 'MoveBackwardSemanticZone'
--- --   action = wezterm.action.CopyMode 'MoveForwardSemanticZone'
--- --
--- --   action = wezterm.action.CopyMode { SetSelectionMode = 'Cell' },
--- --   -- action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' },
--- -- })
-
-for _, key in ipairs(my_keys) do
-  table.insert(config.keys, key)
+  return {
+    key = zone_key,
+    mods = pair,
+    action = wezterm.action.CopyMode(action),
+  }
 end
+
+-- -- https://wezterm.org/config/lua/wezterm.gui/default_key_tables.html?h=backspace#weztermguidefault_key_tables
+local copy_mode = nil
+local copy_mappings = {
+
+  -- Typed zones layer
+  -- p
+  make_typed_zone("backward","Prompt","P","NONE"),
+  make_typed_zone("forward","Prompt","p","NONE"),
+
+  -- i
+  make_typed_zone("backward","Input","I","NONE"),
+  make_typed_zone("forward","Input","i","NONE"),
+
+  -- o
+  make_typed_zone("backward","Output","O","NONE"),
+  make_typed_zone("forward","Output","o","NONE"),
+
+  -- s
+  { key = '(', mods = 'NONE', action = wezterm.action.CopyMode 'MoveBackwardSemanticZone' },
+  { key = ')', mods = 'NONE', action = wezterm.action.CopyMode 'MoveForwardSemanticZone' },
+  { key = 'Z', mods = 'SHIFT', action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' }}
+}
+
+if wezterm.gui then
+  copy_mode = wezterm.gui.default_key_tables().copy_mode
+  for _, key in ipairs(copy_mappings) do
+    table.insert(copy_mode, key)
+  end
+end
+config.key_tables.copy_mode = copy_mode
 
 return config

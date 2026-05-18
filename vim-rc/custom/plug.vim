@@ -19,9 +19,11 @@ Plug 'prabirshrestha/vim-lsp'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-rsi'
 Plug 'mattn/vim-lsp-settings'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/vim-easy-align'
+Plug 'junegunn/goyo.vim'
 " requires dependency installation using npm install -g livedown
 " Plug 'shime/vim-livedown'
 " Use rg integration with fzf

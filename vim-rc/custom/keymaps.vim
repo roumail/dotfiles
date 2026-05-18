@@ -14,12 +14,12 @@ imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 "imap <c-x><c-k> <plug>(fzf-complete-word)
 
-" }}}
+" }}}1
 
 " ============================================================
 " Normal mode {{{
 " ============================================================
-"nnoremap <leader>q :wq<CR>
+nnoremap zm :Goyo<CR>
 nnoremap K i<CR><Esc>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
@@ -27,10 +27,6 @@ nnoremap <leader>d "_dd
 nnoremap Y y$
 nnoremap gp =p
 nnoremap gP =P
-
-"""""""""""""""""""
-" Paste {{{1
-"""""""""""""""""""
 
 " Cursor at end of pasted chars
 nnoremap p ]p
@@ -46,6 +42,11 @@ nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied!"<CR>
 " Absolute path
 nnoremap <leader>F :let @+ = expand('%:p')<CR>:echo "Absolute path copied!"<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
+
+" open notes in a split
+nnoremap <leader>,n <Cmd>vertical term ++kill=term notes.sh<CR>
+" nnoremap <leader>,n <Cmd>vertical term ++kill=term notes.sh $NOTE_DIR<CR>
+
 " open tab in terminal
 nnoremap <leader>ot :tab term ++kill=term<CR>
 " Open current buffer in new tab
@@ -58,7 +59,7 @@ nnoremap <silent> <leader>tt :tab split<CR>
 nnoremap c "_c
 nnoremap C "_C
 " Navigate folds
-" \@! is a negative lookahead operator, only matching {{{ if there isn't a \d
+" \@! is a negative lookahead operator, only matching {'s if there isn't a \d
 " after it
 nnoremap ]s /{{{\d\@!<CR>
 nnoremap [s ?{{{\d\@!<CR>
@@ -89,6 +90,8 @@ nnoremap <leader>h <C-w>h
 nnoremap <leader>j <C-w>j
 nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
+" inverse of terminal mode
+nnoremap <S-Tab> :tabnext<CR>
 
 nnoremap <silent> yoq :call ToggleQuickfix()<CR>
 
@@ -129,6 +132,8 @@ nnoremap <silent> <leader>rw <Cmd>execute 'GrepScope' '\b' . expand('<cword>') .
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
+
+" }}}1
 
 """""""""""""""""""
 " lsp {{{1
@@ -186,6 +191,7 @@ augroup lsp_install
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
+" }}}1
 " }}}
 
 " ============================================================
@@ -232,6 +238,8 @@ xnoremap p "_dP<Esc>
 xnoremap <silent> <leader>rw y:<C-u>execute 'GrepScope' '\b' . getreg('"') . '\b'<CR>
 " xnoremap <silent> <leader>rW y:<C-u>execute 'GrepScope' getreg('"')<CR>
 xmap <leader><tab> <plug>(fzf-maps-x)
+
+" }}}1
 " }}}
 
 " ============================================================
@@ -243,5 +251,18 @@ tnoremap <Esc>h <C-w>h
 tnoremap <Esc>j <C-w>j
 tnoremap <Esc>k <C-w>k
 tnoremap <Esc>l <C-w>l
+
+" }}}
+
+" ============================================================
+" Command mode {{{
+" ============================================================
+
+cnoremap <C-K> <C-\>e{-> slice(getcmdline(), 0, getcmdpos() - 1)}()<CR>
+cnoreabbrev WQ wq
+cnoreabbrev Wq wq
+cnoreabbrev Q q
+cnoreabbrev Qa qa
+cnoreabbrev QA qa
 
 " }}}
