@@ -24,6 +24,10 @@ for plugin in "${COMMON_CORE[@]}"; do
   source_if_exists "$BASE/common/$plugin" 
 done
 
+if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
+  source_if_exists "$BASE/common/wezterm.sh"
+fi
+
 USER_SHELL=$(basename "$SHELL")
 
 
