@@ -31,12 +31,21 @@ _wezterm_preexec_trap() {
   # Skip completion context
   [[ -n "${COMP_LINE:-}" ]] && return
 
-  # Prevent recursion / hook noise
-  case "$BASH_COMMAND" in
-    _wezterm_preexec_trap*|_wezterm_prompt_hook*|_wezterm_osc2_preexec*|_wezterm_osc2_precmd*|_wezterm_osc7_hook*|__wezterm_set_user_var*)
-      return
-      ;;
-  esac
+  # Ignore hook/internal commands that should not become WEZTERM_CMD
+  local -a _wezterm_ignored_patterns=(
+    "_wezterm_preexec_trap*"
+    "_wezterm_prompt_hook*"
+    "_wezterm_osc2_preexec*"
+    "_wezterm_osc2_precmd*"
+    "_wezterm_osc7_hook*"
+    "__wezterm_set_user_var*"
+    "starship_precmd*"
+  )
+
+  local pattern
+  for pattern in "${_wezterm_ignored_patterns[@]}"; do
+    [[ "$BASH_COMMAND" == $pattern ]] && return
+  done
 
   local cmd="${BASH_COMMAND%% *}"
   cmd="${cmd##*/}"
