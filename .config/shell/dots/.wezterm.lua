@@ -246,35 +246,34 @@ local function make_typed_zone(direction, zone_type, zone_key, pair)
   }
 end
 
--- -- https://wezterm.org/config/lua/wezterm.gui/default_key_tables.html?h=backspace#weztermguidefault_key_tables
-local copy_mode = nil
-local copy_mappings = {
-
-  -- Typed zones layer
-  -- p
-  make_typed_zone("backward","Prompt","P","NONE"),
-  make_typed_zone("forward","Prompt","p","NONE"),
-
-  -- i
-  make_typed_zone("backward","Input","I","NONE"),
-  make_typed_zone("forward","Input","i","NONE"),
-
-  -- o
-  make_typed_zone("backward","Output","O","NONE"),
-  make_typed_zone("forward","Output","o","NONE"),
-
-  -- s
-  { key = '(', mods = 'NONE', action = wezterm.action.CopyMode 'MoveBackwardSemanticZone' },
-  { key = ')', mods = 'NONE', action = wezterm.action.CopyMode 'MoveForwardSemanticZone' },
-  { key = 'Z', mods = 'SHIFT', action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' }}
-}
-
 if wezterm.gui then
+-- -- https://wezterm.org/config/lua/wezterm.gui/default_key_tables.html?h=backspace#weztermguidefault_key_tables
+  local copy_mappings = {
+
+    -- Typed zones layer
+    -- p
+    make_typed_zone("backward","Prompt","P","NONE"),
+    make_typed_zone("forward","Prompt","p","NONE"),
+
+    -- i
+    make_typed_zone("backward","Input","I","NONE"),
+    make_typed_zone("forward","Input","i","NONE"),
+
+    -- o
+    make_typed_zone("backward","Output","O","NONE"),
+    make_typed_zone("forward","Output","o","NONE"),
+
+    -- s
+    { key = '(', mods = 'NONE', action = wezterm.action.CopyMode 'MoveBackwardSemanticZone' },
+    { key = ')', mods = 'NONE', action = wezterm.action.CopyMode 'MoveForwardSemanticZone' },
+    { key = 'Z', mods = 'SHIFT', action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' }}
+  }
+
   copy_mode = wezterm.gui.default_key_tables().copy_mode
   for _, key in ipairs(copy_mappings) do
     table.insert(copy_mode, key)
   end
+  config.key_tables.copy_mode = copy_mode
 end
-config.key_tables.copy_mode = copy_mode
 
 return config
