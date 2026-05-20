@@ -21,10 +21,13 @@ __wezterm_set_user_var() {
 
 __wezterm_custom_precmd() {
   __wezterm_set_user_var WEZTERM_CWD "$PWD"
-#     __wezterm_set_user_var WEZTERM_CWD "$PWD"
 }
 
 __wezterm_custom_preexec() {
+  [[ -z "$1" ]] && return
+  local cmd="${1%% *}"
+  cmd="${cmd##*/}"
+  __wezterm_set_user_var WEZTERM_PROG "$cmd"
   __wezterm_set_user_var WEZTERM_CMD "$1"
 }
 
