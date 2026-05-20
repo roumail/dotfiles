@@ -21,6 +21,11 @@ __wezterm_set_user_var() {
 
 __wezterm_custom_precmd() {
   __wezterm_set_user_var WEZTERM_CWD "$PWD"
+  if [[ -n "${ZSH_NAME-}" ]]; then
+    __wezterm_set_user_var WEZTERM_PROG "zsh"
+  elif [[ -n "${BASH_VERSION-}" ]]; then
+    __wezterm_set_user_var WEZTERM_PROG "bash"
+  fi
 }
 
 __wezterm_custom_preexec() {
