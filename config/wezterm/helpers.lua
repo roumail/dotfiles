@@ -75,9 +75,17 @@ local function shorten(path)
 end
 
 function M.processed_name(tab)
+  local title = tab.tab_title
   local pane = tab.active_pane
   local vars = pane.user_vars
   local process = vars and vars.WEZTERM_PROG
+  -- If tab has a custom title, use it
+  if title and title ~= "" then
+    return wezterm.format({
+      { Text = title }
+    })
+  end
+  
   if not process or process == "" then
     return wezterm.format({
       { Text = icons.default }
