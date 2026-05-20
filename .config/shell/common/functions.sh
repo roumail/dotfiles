@@ -19,15 +19,26 @@ __wezterm_set_user_var() {
     fi
 }
 
-_wezterm_osc7_hook() {
-    printf "\033]7;file://%s%s\a" "$HOSTNAME" "$PWD"
-    __wezterm_set_user_var WEZTERM_CWD "$PWD"
+__wezterm_custom_precmd() {
+  __wezterm_set_user_var WEZTERM_CWD "$PWD"
+#     __wezterm_set_user_var WEZTERM_CWD "$PWD"
 }
 
-_wezterm_osc2_preexec() {
-    printf "\033]2;%s\a" "$1"
+__wezterm_custom_preexec() {
+  __wezterm_set_user_var WEZTERM_CMD "$1"
 }
 
-_wezterm_osc2_precmd() {
-    printf "\033]2;%s\a" "$PWD"
-}
+precmd_functions+=(__wezterm_custom_precmd)
+preexec_functions+=(__wezterm_custom_preexec)
+# _wezterm_osc7_hook() {
+#     printf "\033]7;file://%s%s\a" "$HOSTNAME" "$PWD"
+#     __wezterm_set_user_var WEZTERM_CWD "$PWD"
+# }
+
+# _wezterm_osc2_preexec() {
+#     printf "\033]2;%s\a" "$1"
+# }
+
+# _wezterm_osc2_precmd() {
+#     printf "\033]2;%s\a" "$PWD"
+# }

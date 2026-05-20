@@ -14,6 +14,10 @@ source_if_exists "$BASE/local/secrets.sh"
 # interactive guard - exit if not running interactively
 [[ $- != *i* ]] && return
 
+if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
+  source_if_exists "$BASE/common/wezterm.sh"
+fi
+
 # 1. Common 
 COMMON_CORE=(
   functions.sh
@@ -23,10 +27,6 @@ COMMON_CORE=(
 for plugin in "${COMMON_CORE[@]}"; do
   source_if_exists "$BASE/common/$plugin" 
 done
-
-if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
-  source_if_exists "$BASE/common/wezterm.sh"
-fi
 
 USER_SHELL=$(basename "$SHELL")
 
