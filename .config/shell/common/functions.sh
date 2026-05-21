@@ -30,23 +30,26 @@ __wezterm_custom_precmd() {
 
 __wezterm_custom_preexec() {
   [[ -z "$1" ]] && return
-  local cmd="${1%% *}"
-  cmd="${cmd##*/}"
-  __wezterm_set_user_var WEZTERM_PROG "$cmd"
+
+  local typed="${1%% *}"
+  local resolved="$typed"
+
+  # resolve aliases
+  if alias "$typed" >/dev/null 2>&1; then
+    resolved="$(alias "$typed")"
+
+    # alias v='vim .'
+    resolved="${resolved#*=}"
+    resolved="${resolved//\'}"
+    resolved="${resolved%% *}"
+  fi
+
+  # normalize basename
+  resolved="${resolved##*/}"
+
+  __wezterm_set_user_var WEZTERM_PROG "$resolved"
   __wezterm_set_user_var WEZTERM_CMD "$1"
 }
 
 precmd_functions+=(__wezterm_custom_precmd)
 preexec_functions+=(__wezterm_custom_preexec)
-# _wezterm_osc7_hook() {
-#     printf "\033]7;file://%s%s\a" "$HOSTNAME" "$PWD"
-#     __wezterm_set_user_var WEZTERM_CWD "$PWD"
-# }
-
-# _wezterm_osc2_preexec() {
-#     printf "\033]2;%s\a" "$1"
-# }
-
-# _wezterm_osc2_precmd() {
-#     printf "\033]2;%s\a" "$PWD"
-# }
