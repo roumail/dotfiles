@@ -85,7 +85,7 @@ function M.processed_name(tab)
       { Text = title }
     })
   end
-  
+
   if not process or process == "" then
     return wezterm.format({
       { Text = icons.default }
