@@ -7,6 +7,7 @@ config.font = wezterm.font 'JetBrains Mono'
 -- leader a perhaps so it doesn't clash with tmux
 config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
 config.window_close_confirmation = 'NeverPrompt'
+config.native_macos_fullscreen_mode = true
 config.automatically_reload_config = false
 config.disable_default_key_bindings = true
 -- https://wezterm.org/config/lua/config/visual_bell.html
