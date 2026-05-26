@@ -3,6 +3,9 @@ if exists('b:loaded_md_keymaps_ftplugin')
 endif
 let b:loaded_md_keymaps_ftplugin = 1
 
+" Coming from instant markdown, which uses a browser
+":InstantMarkdownPreview to start and :InstantMarkdownStop
+let g:instant_markdown_autostart = 0
 let maplocalleader = "_"
 let s:is_wezterm = ($TERM_PROGRAM ==# 'WezTerm' || !empty($WEZTERM_PANE))
 let s:is_tmux = !empty($TMUX)
