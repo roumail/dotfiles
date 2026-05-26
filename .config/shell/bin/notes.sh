@@ -31,6 +31,28 @@ delete_note() {
     fi
 }
 
+rename_note() {
+    [ -z "$1" ] && return
+    old_name="$1"
+    old_file="$old_name.$NOTE_EXT"
+
+    echo -en "\r\x1b[KRename $old_name -> "
+    read -e -i "$old_name" -r new_name
+    new_name=$(echo "$new_name" | sed 's/[[:space:]]*$//')
+
+    [ -z "$new_name" ] && return
+    [ "$new_name" = "$old_name" ] && return
+
+    if [ -e "$new_name.$NOTE_EXT" ]; then
+        echo "Target already exists: $new_name.$NOTE_EXT"
+        read -r -p "Press Enter to continue..." _
+        return
+    fi
+
+    mv "$old_file" "$new_name.$NOTE_EXT"
+    query="$new_name"
+}
+
 list_notes() {
     # Use fd to find files, then a loop to get timestamps and format
     # This avoids 'ls' column-parsing issues across different OSs
@@ -68,15 +90,15 @@ opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
 
 while true; do
     if [ "$key" = ctrl-l ]; then
-        out=$(list_notes | fzf $opts  --delimiter=$'\t' --prompt="list> " --expect=ctrl-f,alt-d,alt-n --query="$query" \
+        out=$(list_notes | fzf $opts  --delimiter=$'\t' --prompt="list> " --expect=ctrl-f,alt-d,alt-n,alt-r --query="$query" \
             --preview "bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
-            --header=$'\nCTRL-F: find / ALT-N: new / ALT-D: delete\n\n')
+            --header=$'\nCTRL-F: find / ALT-N: new / ALT-D: delete / ALT-R: rename\n\n')
     else
-        out=$(find_in_notes | fzf $opts --prompt="find> " --expect=ctrl-l,alt-d,alt-n \
+        out=$(find_in_notes | fzf $opts --prompt="find> " --expect=ctrl-l,alt-d,alt-n,alt-r \
             --delimiter=':' --nth=3.. --query="$query" \
             --preview "bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
             --preview-window 'down,+{2}/2' \
-            --no-clear --header=$'\nCTRL-L: list / ALT-N: new / ALT-D: delete\n\n')
+            --no-clear --header=$'\nCTRL-L: list / ALT-N: new / ALT-D: delete / ALT-R: rename\n\n')
     fi
 
     # Exit if fzf was interrupted (ESC / Ctrl-C)
@@ -101,6 +123,7 @@ while true; do
     case "$newkey" in
         ctrl-*) key=$newkey ;;
         alt-d)  [ "$lines" -gt 2 ] && delete_note "$file" ;;
+        alt-r)  [ "$lines" -gt 2 ] && rename_note "$file" ;;
         alt-n)  [ -n "$query" ] && $EDITOR "$query.$NOTE_EXT" ;;
         *)
             if [ "$key" = ctrl-l ]; then
