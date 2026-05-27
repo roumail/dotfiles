@@ -3,6 +3,14 @@ if exists('b:loaded_md_keymaps_ftplugin')
 endif
 let b:loaded_md_keymaps_ftplugin = 1
 
+"autocmd BufRead,BufNewFile *.md,*.txt setlocal wrap " DO wrap on markdown files
+augroup MarkdownSettings
+  autocmd!
+  " Apply these settings ONLY to markdown files
+  autocmd FileType markdown setlocal wrap linebreak textwidth=0
+  autocmd FileType markdown setlocal syntax=off
+augroup END
+
 " Coming from instant markdown, which uses a browser
 ":InstantMarkdownPreview to start and :InstantMarkdownStop
 let g:instant_markdown_autostart = 0

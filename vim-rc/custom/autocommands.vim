@@ -17,13 +17,6 @@ augroup vimrc-remember-cursor-position
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
 
-"autocmd BufRead,BufNewFile *.md,*.txt setlocal wrap " DO wrap on markdown files
-augroup MarkdownSettings
-  autocmd!
-  " Apply these settings ONLY to markdown files
-  autocmd FileType markdown setlocal wrap linebreak textwidth=0
-augroup END
-
 augroup StripTrailingCR
   autocmd!
   " Trigger on: Read Post, Write Pre (before saving), and exiting a window
