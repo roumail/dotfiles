@@ -11,15 +11,15 @@
     pm = pull origin master
     pn = pull origin main
 
-    sn = fetch origin main:main
-    sm = fetch origin master:master
+    # sn = fetch origin main:main
+    # sm = fetch origin master:master
     # delete branches that have been merged
     po = remote prune origin
     #push current branch to origin
     poh = "!f() { git push origin HEAD \"$@\"; }; f"
     ci = !git commit -m 'ci: empty commit' --no-verify --allow-empty && git push && git reset --soft HEAD~ && git push --force-with-lease
     # Fetch origin
-    f = "!git fetch origin"
+    # f = "!git fetch origin"
 
     # merge from origin directly
     mom = merge origin/master
@@ -59,3 +59,5 @@
 [diff]
 		colorMoved = default
 	    tool = vimdiff
+[http]
+	postBuffer = 524288000
