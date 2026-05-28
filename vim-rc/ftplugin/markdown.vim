@@ -46,7 +46,7 @@ endfunction
 function! s:GlowStaticPreview() abort
   call s:CloseGlowBuffers()
 
-  execute 'vert term glow ' .. shellescape(expand('%:p'))
+  execute 'vert term glow ' .. fnameescape(expand('%:p'))
   setlocal filetype=glow
   file __glow_preview
 
