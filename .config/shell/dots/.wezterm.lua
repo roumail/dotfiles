@@ -93,6 +93,24 @@ if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
   config.default_domain = "WSL:Debian"
 end
 
+wezterm.on('format-window-title', function(tab, pane, tabs)
+  local zoomed = ''
+  if tab.active_pane.is_zoomed then
+    zoomed = '[Z] '
+  end
+
+  local workspace = wezterm.mux.get_active_workspace()
+  local workspaces = wezterm.mux.get_workspace_names()
+  local num_workspaces = workspaces and #workspaces or 1
+   return string.format(
+    "%s%s [ws %d | tabs %d]",
+    zoomed,
+    workspace,
+    num_workspaces,
+    #tabs or 1
+  )
+end)
+
 -- capture last command and working directory
 local latest = {
   cwd = nil,
