@@ -55,20 +55,26 @@ rename_note() {
 
 list_notes() {
     # Use fd to find files, then a loop to get timestamps and format
-    # This avoids 'ls' column-parsing issues across different OSs
-    fd -e "$NOTE_EXT" --max-depth 1 -0 | while read -d $'\0' file; do
+    fd -e "$NOTE_EXT" --exclude "trash" -0 | while read -d $'\0' file; do
         mtime=$(get_mtime "$file")
         ftime=$(format_date "$mtime")
-        fname=$(basename "$file" ".$NOTE_EXT")
-        # Output: epoch_time [TAB] formatted_name [TAB] formatted_date
-        printf "%s\t\033[1m%-50s\033[0m\t\033[0;36m%s\033[0m\n" "$mtime" "$fname" "$ftime"
+        # fname=$(basename "$file" ".$NOTE_EXT")
+        # Remove the file extension but KEEP the directory path (e.g., "attachments/my-file")
+        rel_path="${file%.$NOTE_EXT}"
+        # Remove leading "./" if present
+        rel_path="${rel_path#./}"
+
+        # Output: relative_path [TAB] formatted_date
+        # We display the relative path in fzf so you know where it lives
+        printf "%s\t\033[1m%-50s\033[0m\t\033[0;36m%s\033[0m\n" "$mtime" "$rel_path" "$ftime"
+        # # Output: epoch_time [TAB] formatted_name [TAB] formatted_date
+        # printf "%s\t\033[1m%-50s\033[0m\t\033[0;36m%s\033[0m\n" "$mtime" "$fname" "$ftime"
     done | sort -rn | cut -f2- # Sort by epoch, then remove the epoch column
 }
 
 find_in_notes() {
-    # Ripgrep handles the heavy lifting.
     # We use --field-separator to make parsing with awk bulletproof.
-    rg --line-number --no-heading --color=always --with-filename "." |
+    rg --line-number --no-heading --color=always --with-filename --glob '!trash/*' "." |
     awk -F: -v ext=".$NOTE_EXT" '
     {
         fname=$1;
@@ -76,10 +82,13 @@ find_in_notes() {
         col=$3;
         content=$4;
 
+        # Keep path, strip extension and leading ./
+        fname=file_with_ext;
         sub(ext, "", fname);
-        prefix=sprintf("\033[1m%s\033[0m:\033[33m%s\033[0m:", fname, line);
-        printf "%-55s %s\n", prefix, content
-    }'
+        sub(/^\.\//, "", fname);
+
+        prefix=sprintf("\033[1m%s\033[0m:%03d:", fname, line);
+        printf "%s %s\n", prefix, content}'
 }
 
 # --- FZF Loop ---
