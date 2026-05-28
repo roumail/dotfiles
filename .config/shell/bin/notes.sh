@@ -136,7 +136,10 @@ while true; do
         alt-n)
           if [ -n "$query" ]; then
             # Pre-populate with query as title
-            echo "# $query" > "$query.$NOTE_EXT"
+            # Everything after first / kept - would need to be ${x##*/} to
+            # support nested directories
+            title="${query#*/}"
+            echo "# $title" > "$query.$NOTE_EXT"
             echo "" >> "$query.$NOTE_EXT"
             $EDITOR "$query.$NOTE_EXT"
           fi
