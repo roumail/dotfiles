@@ -4,12 +4,8 @@ endif
 let b:loaded_md_keymaps_ftplugin = 1
 
 "autocmd BufRead,BufNewFile *.md,*.txt setlocal wrap " DO wrap on markdown files
-augroup MarkdownSettings
-  autocmd!
-  " Apply these settings ONLY to markdown files
-  autocmd FileType markdown setlocal wrap linebreak textwidth=0
-  autocmd FileType markdown setlocal syntax=off
-augroup END
+setlocal wrap linebreak textwidth=0
+setlocal syntax=off
 
 " Coming from instant markdown, which uses a browser
 ":InstantMarkdownPreview to start and :InstantMarkdownStop
@@ -50,7 +46,7 @@ endfunction
 function! s:GlowStaticPreview() abort
   call s:CloseGlowBuffers()
 
-  execute 'vert term glow %'
+  execute 'vert term glow ' .. shellescape(expand('%:p'))
   setlocal filetype=glow
   file __glow_preview
 
