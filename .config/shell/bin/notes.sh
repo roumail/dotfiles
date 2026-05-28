@@ -133,7 +133,14 @@ while true; do
         ctrl-*) key=$newkey ;;
         alt-d)  [ "$lines" -gt 2 ] && delete_note "$file" ;;
         alt-r)  [ "$lines" -gt 2 ] && rename_note "$file" ;;
-        alt-n)  [ -n "$query" ] && $EDITOR "$query.$NOTE_EXT" ;;
+        alt-n)
+          if [ -n "$query" ]; then
+            # Pre-populate with query as title
+            echo "# $query" > "$query.$NOTE_EXT"
+            echo "" >> "$query.$NOTE_EXT"
+            $EDITOR "$query.$NOTE_EXT"
+          fi
+          ;;
         *)
             if [ "$key" = ctrl-l ]; then
                 [ -n "$file" ] && $EDITOR "$file.$NOTE_EXT"
