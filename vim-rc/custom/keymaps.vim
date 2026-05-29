@@ -222,7 +222,10 @@ xmap ga <Plug>(EasyAlign)
 " vnoremap <leader>f zf
 " Don't overwrite register with selection, losing previous yank
 " xnoremap p p<Esc>
-xnoremap p "_dp<Esc>
+" some strange inconsistent behaviour happens with viw and p, somethings ahead
+" and sometimes behind
+xnoremap p "_dP<Esc>
+" xnoremap p "_dp<Esc>
 
 """""""""""""""""""
 " fzf {{{1
