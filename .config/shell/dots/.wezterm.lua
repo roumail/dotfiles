@@ -288,11 +288,9 @@ if wezterm.gui then
     { key = 'Z', mods = 'SHIFT', action = wezterm.action.CopyMode { SetSelectionMode = 'SemanticZone' }}
   }
 
-  copy_mode = wezterm.gui.default_key_tables().copy_mode
   for _, key in ipairs(copy_mappings) do
-    table.insert(copy_mode, key)
+    table.insert(config.key_tables.copy_mode, key)
   end
-  config.key_tables.copy_mode = copy_mode
 end
 
 return config
