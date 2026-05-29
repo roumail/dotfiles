@@ -4,7 +4,7 @@
 NOTE_DIR=${NOTE_DIR:-$(dirname "${BASH_SOURCE[0]}")}
 TRASH_DIR="$NOTE_DIR/trash"
 EDITOR=${EDITOR:-vim}
-export NOTE_EXT=${NOTE_EXT:-txt}
+export NOTE_EXT=${NOTE_EXT:-md}
 
 cd "$NOTE_DIR" || exit 1
 
@@ -72,23 +72,44 @@ list_notes() {
     done | sort -rn | cut -f2- # Sort by epoch, then remove the epoch column
 }
 
+copy_note() {
+    [ -z "$1" ] && return
+    old_file="$1.$NOTE_EXT"
+    
+    # Create new filename with -copy suffix
+    new_file="$1-copy.$NOTE_EXT"
+    
+    # Copy the file
+    cp "$old_file" "$new_file"
+
+    # Update markdown file title adding -copy 
+    IFS= read -r title < "$new_file"
+    title=${title#"# "}
+    {
+        printf '# %s -copy\n' "$title"
+        tail -n +2 "$new_file"
+    } > "$new_file.tmp" && mv "$new_file.tmp" "$new_file"
+    
+    $EDITOR "$new_file"
+}
+
 find_in_notes() {
     # We use --field-separator to make parsing with awk bulletproof.
-    rg --line-number --no-heading --color=always --with-filename --glob '!trash/*' "." |
+    rg --line-number --no-heading --color=never --with-filename --glob '!trash/*' "." |
     awk -F: -v ext=".$NOTE_EXT" '
     {
         fname=$1;
         line=$2;
-        col=$3;
-        content=$4;
 
         # Keep path, strip extension and leading ./
-        fname=file_with_ext;
-        sub(ext, "", fname);
-        sub(/^\.\//, "", fname);
+        sub(ext "$", "", fname)
+        sub(/^\.\//, "", fname)
 
-        prefix=sprintf("\033[1m%s\033[0m:%03d:", fname, line);
-        printf "%s %s\n", prefix, content}'
+        content = $0
+        sub(/^[^:]*:[0-9]+:/, "", content)
+
+        printf "\033[1m%s\033[0m:%03d:%s\n", fname, line, content
+    }'
 }
 
 # --- FZF Loop ---
@@ -99,15 +120,15 @@ opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
 
 while true; do
     if [ "$key" = ctrl-l ]; then
-        out=$(list_notes | fzf $opts  --delimiter=$'\t' --prompt="list> " --expect=ctrl-f,alt-d,alt-n,alt-r --query="$query" \
+        out=$(list_notes | fzf $opts  --delimiter=$'\t' --prompt="list> " --expect=ctrl-f,alt-d,alt-n,alt-r,alt-c --query="$query" \
             --preview "bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
-            --header=$'\nCTRL-F: find / ALT-N: new / ALT-D: delete / ALT-R: rename\n\n')
+            --header=$'\nCTRL-F: find / ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename\n\n')
     else
-        out=$(find_in_notes | fzf $opts --prompt="find> " --expect=ctrl-l,alt-d,alt-n,alt-r \
+        out=$(find_in_notes | fzf $opts --prompt="find> " --expect=ctrl-l,alt-d,alt-n,alt-r,alt-c \
             --delimiter=':' --nth=3.. --query="$query" \
             --preview "bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
             --preview-window 'down,+{2}/2' \
-            --no-clear --header=$'\nCTRL-L: list / ALT-N: new / ALT-D: delete / ALT-R: rename\n\n')
+            --no-clear --header=$'\nCTRL-L: list / ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename\n\n')
     fi
 
     # Exit if fzf was interrupted (ESC / Ctrl-C)
@@ -133,6 +154,7 @@ while true; do
         ctrl-*) key=$newkey ;;
         alt-d)  [ "$lines" -gt 2 ] && delete_note "$file" ;;
         alt-r)  [ "$lines" -gt 2 ] && rename_note "$file" ;;
+        alt-c)  [ "$lines" -gt 2 ] && copy_note "$file" ;;
         alt-n)
           if [ -n "$query" ]; then
             # Pre-populate with query as title
@@ -148,7 +170,7 @@ while true; do
             if [ "$key" = ctrl-l ]; then
                 [ -n "$file" ] && $EDITOR "$file.$NOTE_EXT"
             else
-                # Open at specific line (works for Vim, Nano, VS Code)
+                # Open at specific line 
                 $EDITOR "$file.$NOTE_EXT" "+$line_no"
             fi
             ;;
