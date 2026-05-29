@@ -95,7 +95,7 @@ copy_note() {
 
 find_in_notes() {
     # We use --field-separator to make parsing with awk bulletproof.
-    rg --line-number --no-heading --color=never --with-filename --glob '!trash/*' "." |
+    rg --line-number --no-heading --color=never --with-filename --glob "**/*.$NOTE_EXT" --glob '!trash/*' "." |
     awk -F: -v ext=".$NOTE_EXT" '
     {
         fname=$1;
