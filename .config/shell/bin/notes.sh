@@ -118,20 +118,25 @@ find_in_notes() {
 key=ctrl-l
 query="$*"
 opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
+expect_list='ctrl-f,alt-d,alt-n,alt-r,alt-c'
+expect_find='ctrl-l,alt-d,alt-n,alt-r,alt-c'
+header_actions='ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename'
+header_list=$'\nCTRL-F: find / '"$header_actions"$'\n\n'
+header_find=$'\nCTRL-L: list / '"$header_actions"$'\n\n'
 
 while true; do
     if [ "$key" = ctrl-l ]; then
         out=$(list_notes | fzf $opts \
-            --delimiter=$'\t' --prompt="list> " --expect=ctrl-f,alt-d,alt-n,alt-r,alt-c --query="$query" \
+            --delimiter=$'\t' --prompt="list> " --expect="$expect_list" --query="$query" \
             --preview "bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
-            --header=$'\nCTRL-F: find / ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename\n\n')
+            --header="$header_list")
     else
         out=$(find_in_notes | fzf $opts \
-            --prompt="find> " --expect=ctrl-l,alt-d,alt-n,alt-r,alt-c \
+            --prompt="find> " --expect="$expect_find" \
             --delimiter=':' --nth=3.. --query="$query" \
             --preview "bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
             --preview-window 'down,+{2}/2' \
-            --header=$'\nCTRL-L: list / ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename\n\n')
+            --header="$header_find")
     fi
 
     # Exit if fzf was interrupted (ESC / Ctrl-C)
