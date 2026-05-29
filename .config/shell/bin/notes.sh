@@ -95,7 +95,8 @@ copy_note() {
 
 find_in_notes() {
     # We use --field-separator to make parsing with awk bulletproof.
-    rg --line-number --no-heading --color=never --with-filename --glob "**/*.$NOTE_EXT" --glob '!trash/*' "." |
+    rg --line-number --no-heading --color=never --with-filename \
+        --glob "**/*.$NOTE_EXT" --glob '!trash/*' "." |
     awk -F: -v ext=".$NOTE_EXT" '
     {
         fname=$1;
@@ -120,11 +121,13 @@ opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
 
 while true; do
     if [ "$key" = ctrl-l ]; then
-        out=$(list_notes | fzf $opts  --delimiter=$'\t' --prompt="list> " --expect=ctrl-f,alt-d,alt-n,alt-r,alt-c --query="$query" \
+        out=$(list_notes | fzf $opts \
+            --delimiter=$'\t' --prompt="list> " --expect=ctrl-f,alt-d,alt-n,alt-r,alt-c --query="$query" \
             --preview "bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
             --header=$'\nCTRL-F: find / ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename\n\n')
     else
-        out=$(find_in_notes | fzf $opts --prompt="find> " --expect=ctrl-l,alt-d,alt-n,alt-r,alt-c \
+        out=$(find_in_notes | fzf $opts \
+            --prompt="find> " --expect=ctrl-l,alt-d,alt-n,alt-r,alt-c \
             --delimiter=':' --nth=3.. --query="$query" \
             --preview "bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
             --preview-window 'down,+{2}/2' \
@@ -146,7 +149,8 @@ while true; do
     if [ "$key" = ctrl-l ]; then
         file=$(echo "$selection" | awk 'BEGIN { FS="\t" } { print $1 }' | sed 's/[[:space:]]*$//')
     else
-        file=$(echo "$selection" | awk -F: '{print $1}' | sed 's/[[:space:]]*$//')
+        file=$(echo "$selection" | awk -F: '{print $1}' \
+            | sed 's/[[:space:]]*$//')
         line_no=$(echo "$selection" | awk -F: '{print $2}' | tr -d ' ')
     fi
 
