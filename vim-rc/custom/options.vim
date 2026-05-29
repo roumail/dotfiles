@@ -54,6 +54,7 @@ set showtabline=2
 set guioptions-=e
 let g:netrw_altfile = 1
 set signcolumn=yes
+set listchars=tab:»·,trail:·,extends:→,precedes:←
 set number " relativenumber
 set hlsearch              " Highlight search results
 set incsearch             " Incremental search (highlight as you type)
