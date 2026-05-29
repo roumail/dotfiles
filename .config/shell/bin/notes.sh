@@ -118,11 +118,13 @@ find_in_notes() {
 key=ctrl-l
 query="$*"
 opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
-expect_list='ctrl-f,alt-d,alt-n,alt-r,alt-c'
-expect_find='ctrl-l,alt-d,alt-n,alt-r,alt-c'
 header_actions='ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename'
-header_list=$'\nCTRL-F: find / '"$header_actions"$'\n\n'
-header_find=$'\nCTRL-L: list / '"$header_actions"$'\n\n'
+expect_actions='alt-n,alt-c,alt-d,alt-r'
+expect_list="ctrl-f,$expect_actions"
+expect_find="ctrl-l,$expect_actions"
+header_wrap=$'\n%s\n\n'
+header_list=$(printf "$header_wrap" "CTRL-F: find / $header_actions")
+header_find=$(printf "$header_wrap" "CTRL-L: list / $header_actions")
 
 while true; do
     if [ "$key" = ctrl-l ]; then
