@@ -36,9 +36,13 @@ rename_note() {
     old_name="$1"
     old_file="$old_name.$NOTE_EXT"
 
-    echo -en "\r\x1b[KRename $old_name -> "
-    read -e -i "$old_name" -r new_name
-    new_name=$(echo "$new_name" | sed 's/[[:space:]]*$//')
+    # Read handles the prompt and prefill natively here
+    if ! read -e -i "$old_name" -r -p "Rename $old_name -> " new_name; then
+        return
+    fi
+
+    # Strip trailing whitespace safely without spawning a sed subprocess
+    new_name="${new_name%%[[:space:]]}"
 
     [ -z "$new_name" ] && return
     [ "$new_name" = "$old_name" ] && return
@@ -75,21 +79,21 @@ list_notes() {
 copy_note() {
     [ -z "$1" ] && return
     old_file="$1.$NOTE_EXT"
-    
+
     # Create new filename with -copy suffix
     new_file="$1-copy.$NOTE_EXT"
-    
+
     # Copy the file
     cp "$old_file" "$new_file"
 
-    # Update markdown file title adding -copy 
+    # Update markdown file title adding -copy
     IFS= read -r title < "$new_file"
     title=${title#"# "}
     {
         printf '# %s -copy\n' "$title"
         tail -n +2 "$new_file"
     } > "$new_file.tmp" && mv "$new_file.tmp" "$new_file"
-    
+
     $EDITOR "$new_file"
 }
 
@@ -181,7 +185,7 @@ while true; do
             if [ "$key" = ctrl-l ]; then
                 [ -n "$file" ] && $EDITOR "$file.$NOTE_EXT"
             else
-                # Open at specific line 
+                # Open at specific line
                 $EDITOR "$file.$NOTE_EXT" "+$line_no"
             fi
             ;;
