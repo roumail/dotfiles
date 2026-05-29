@@ -128,7 +128,7 @@ while true; do
             --delimiter=':' --nth=3.. --query="$query" \
             --preview "bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
             --preview-window 'down,+{2}/2' \
-            --no-clear --header=$'\nCTRL-L: list / ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename\n\n')
+            --header=$'\nCTRL-L: list / ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename\n\n')
     fi
 
     # Exit if fzf was interrupted (ESC / Ctrl-C)
