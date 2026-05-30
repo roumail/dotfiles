@@ -119,8 +119,8 @@ find_in_notes() {
 key=ctrl-l
 query="$*"
 opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
-header_actions='ALT-N: new / ALT-C: duplicate / ALT-D: delete / ALT-R: rename'
-expect_actions='alt-n,alt-c,alt-d,alt-r'
+header_actions='ALT-N: new / ALT-C: duplicate / ALT-X: delete / ALT-R: rename'
+expect_actions='alt-n,alt-c,alt-x,alt-r'
 expect_list="ctrl-f,$expect_actions"
 expect_find="ctrl-l,$expect_actions"
 header_wrap=$'\n%s\n\n'
