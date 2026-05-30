@@ -129,18 +129,22 @@ expect_find="ctrl-l,$expect_actions"
 header_wrap=$'\n%s\n\n'
 header_list=$(printf "$header_wrap" "CTRL-F: find / $header_actions")
 header_find=$(printf "$header_wrap" "CTRL-L: list / $header_actions")
+list_preview_cmd='bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT'
+find_preview_cmd='bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT'
 
 while true; do
     if [ "$key" = ctrl-l ]; then
         out=$(list_notes | fzf $opts \
-            --delimiter=$'\t' --prompt="list> " --expect="$expect_list" --query="$query" \
-            --preview "bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
+            --delimiter=$'\t' \
+            --prompt="list> " \
+            --expect="$expect_list" --query="$query" \
+            --preview "$list_preview_cmd" \
             --header="$header_list")
     else
         out=$(find_in_notes | fzf $opts \
             --prompt="find> " --expect="$expect_find" \
             --delimiter=':' --nth=3.. --query="$query" \
-            --preview "bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT" \
+            --preview "$find_preview_cmd" \
             --preview-window 'down,+{2}/2' \
             --header="$header_find")
     fi
