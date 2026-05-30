@@ -3,6 +3,8 @@
 " Insert mode {{{
 " ============================================================
 inoremap jj <Esc>
+inoremap k{ {{{
+inoremap j{ }}}
 inoremap jk <Esc>:w<CR>
 inoremap jq <Esc>:wq<CR>
 
