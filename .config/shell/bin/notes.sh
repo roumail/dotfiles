@@ -128,6 +128,18 @@ header_find=$(printf "$header_wrap" "CTRL-L: list / $header_actions")
 list_preview_cmd='bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT'
 find_preview_cmd='bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT'
 
+create_note() {
+  local q="$1"
+  # Pre-populate with query as title
+  # Everything after first / kept - would need to be ${x##*/} to
+  # support nested directories
+  local title="${q#*/}"
+  local file="$q.$NOTE_EXT"
+  echo "# $title" > "$file"
+  echo "" >> "$file"
+  $EDITOR "$file"
+}
+
 while true; do
     if [ "$key" = ctrl-l ]; then
         out=$(list_notes | fzf $opts \
@@ -150,9 +162,15 @@ while true; do
     (( exit_status % 128 == 2 )) && exit 1
 
     lines=$(wc -l <<< "$out")
+    query=$(head -1 <<< "$out")
+    # If user pressed Enter with no selection but did type a query,
+    # treat it as "create new note" instead of doing nothing / losing intent
+    if [ -n "$query" ] && [ "$lines" -lt 2 ]; then
+      create_note "$query"
+      continue
+    fi
     [ "$lines" -lt 2 ] && continue
 
-    query=$(head -1 <<< "$out")
     newkey=$(head -2 <<< "$out" | tail -1)
     # Extract filename from the last line, trimming trailing whitespace
     selection=$(tail -1 <<< "$out")
@@ -170,17 +188,7 @@ while true; do
         alt-d)  [ "$lines" -gt 2 ] && delete_note "$file" ;;
         alt-r)  [ "$lines" -gt 2 ] && rename_note "$file" ;;
         alt-c)  [ "$lines" -gt 2 ] && copy_note "$file" ;;
-        alt-n)
-          if [ -n "$query" ]; then
-            # Pre-populate with query as title
-            # Everything after first / kept - would need to be ${x##*/} to
-            # support nested directories
-            title="${query#*/}"
-            echo "# $title" > "$query.$NOTE_EXT"
-            echo "" >> "$query.$NOTE_EXT"
-            $EDITOR "$query.$NOTE_EXT"
-          fi
-          ;;
+        alt-n)  [ -n "$query" ] && create_note "$query";;
         *)
             if [ "$key" = ctrl-l ]; then
                 [ -n "$file" ] && $EDITOR "$file.$NOTE_EXT"
