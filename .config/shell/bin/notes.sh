@@ -190,7 +190,7 @@ while true; do
 
     case "$newkey" in
         ctrl-*) key=$newkey ;;
-        alt-d)  [ "$lines" -gt 2 ] && delete_note "$file" ;;
+        alt-x)  [ "$lines" -gt 2 ] && delete_note "$file" ;;
         alt-r)  [ "$lines" -gt 2 ] && rename_note "$file" ;;
         alt-c)  [ "$lines" -gt 2 ] && copy_note "$file" ;;
         alt-n)  [ -n "$query" ] && create_note "$query";;
