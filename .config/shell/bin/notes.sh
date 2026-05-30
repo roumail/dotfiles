@@ -68,11 +68,7 @@ list_notes() {
         # Remove leading "./" if present
         rel_path="${rel_path#./}"
 
-        # Output: relative_path [TAB] formatted_date
-        # We display the relative path in fzf so you know where it lives
         printf "%s\t\033[1m%-50s\033[0m\t\033[0;36m%s\033[0m\n" "$mtime" "$rel_path" "$ftime"
-        # # Output: epoch_time [TAB] formatted_name [TAB] formatted_date
-        # printf "%s\t\033[1m%-50s\033[0m\t\033[0;36m%s\033[0m\n" "$mtime" "$fname" "$ftime"
     done | sort -rn | cut -f2- # Sort by epoch, then remove the epoch column
 }
 
