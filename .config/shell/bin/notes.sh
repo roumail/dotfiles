@@ -147,6 +147,7 @@ create_note() {
 while true; do
     if [ "$key" = ctrl-l ]; then
         out=$(list_notes | fzf $opts \
+            --ghost "Query length limited to ${MAX_NOTE_LEN}" \
             --delimiter=$'\t' \
             --prompt="list> " \
             --expect="$expect_list" --query="$query" \
