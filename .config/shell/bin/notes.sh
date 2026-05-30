@@ -4,6 +4,7 @@
 NOTE_DIR=${NOTE_DIR:-$(dirname "${BASH_SOURCE[0]}")}
 TRASH_DIR="$NOTE_DIR/trash"
 EDITOR=${EDITOR:-vim}
+MAX_NOTE_LEN=50
 export NOTE_EXT=${NOTE_EXT:-md}
 
 cd "$NOTE_DIR" || exit 1
@@ -130,6 +131,9 @@ find_preview_cmd='bat --color=always --style=numbers --highlight-line={2} {1}.$N
 
 create_note() {
   local q="$1"
+  if [ "${#q}" -gt "$MAX_NOTE_LEN" ]; then
+        return 1
+    fi
   # Pre-populate with query as title
   # Everything after first / kept - would need to be ${x##*/} to
   # support nested directories
