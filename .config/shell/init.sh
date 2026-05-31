@@ -18,14 +18,14 @@ if [[ "$TERM_PROGRAM" == "WezTerm" ]]; then
   source_if_exists "$BASE/common/wezterm.sh"
 fi
 
-# 1. Common 
+# 1. Common
 COMMON_CORE=(
   functions.sh
   aliases.sh
 )
 
 for plugin in "${COMMON_CORE[@]}"; do
-  source_if_exists "$BASE/common/$plugin" 
+  source_if_exists "$BASE/common/$plugin"
 done
 
 USER_SHELL=$(basename "$SHELL")
@@ -41,17 +41,17 @@ echo "Loading shell config for $SHELL_NAME"
 # 2. Bash-specific
 source_dir "$BASE/$SHELL_NAME"
 
-# 3. OS-specific
+# 3. Shared plugins (fzf, etc.)
+source_dir "$BASE/plugins"
+
+# 4. OS-specific
 case "$(uname)" in
   Darwin) source_if_exists "$BASE/os/macos.sh" ;;
   Linux)  source_if_exists "$BASE/os/linux.sh" ;;
 esac
 
-# 4. Shared plugins (fzf, etc.)
-source_dir "$BASE/plugins"
-
-# 5. Shell specific plugins 
+# 5. Shell specific plugins
 source_dir "$BASE/$SHELL_NAME/plugins"
 
-# 6. Local overrides 
+# 6. Local overrides
 source_dir "$BASE/local"
