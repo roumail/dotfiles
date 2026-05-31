@@ -21,6 +21,23 @@ else
     format_date() { date -r "$1" "+%Y-%m-%d %H:%M"; }
 fi
 
+# --- Git Status Daemon (FIFO) ---
+GIT_REQ="/tmp/notes_git_req_$$"
+GIT_RESP="/tmp/notes_git_resp_$$"
+mkfifo "$GIT_REQ" "$GIT_RESP"
+
+trap 'rm -f "$GIT_REQ" "$GIT_RESP"; kill $GIT_PID 2>/dev/null' EXIT
+
+(
+    while true; do
+        # Block here until list_notes writes to the request pipe
+        if read -r _ < "$GIT_REQ"; then
+            git status --porcelain > "$GIT_RESP"
+        fi
+    done
+) &
+GIT_PID=$!
+
 # --- Core Functions ---
 
 delete_note() {
@@ -59,19 +76,57 @@ rename_note() {
 }
 
 list_notes() {
-    # Use fd to find files, then a loop to get timestamps and format
+    # Grab the fresh git status from the blocked pipe
+    echo "GO" > "$GIT_REQ"
+    local git_stat=$(cat "$GIT_RESP")
+    export GIT_STAT="$git_stat"
     fd -e "$NOTE_EXT" --exclude "trash" -0 | while read -d $'\0' file; do
         mtime=$(get_mtime "$file")
         ftime=$(format_date "$mtime")
-        # fname=$(basename "$file" ".$NOTE_EXT")
-        # Remove the file extension but KEEP the directory path (e.g., "attachments/my-file")
-        rel_path="${file%.$NOTE_EXT}"
-        # Remove leading "./" if present
-        rel_path="${rel_path#./}"
+		echo -e "${mtime}\t${file}\t${ftime}"
+    done | awk -v ext=".$NOTE_EXT" '
+    BEGIN {
+        FS="\t"
+        # Parse git status into a fast lookup map
+        split(git_stat, git_lines, "\n")
+        for (i in git_lines) {
+            if (git_lines[i] == "") continue
+            marker = substr(git_lines[i], 1, 2)
+            gfile = substr(git_lines[i], 4)
+            git_map[gfile] = marker
+        }
+    }
+    {
+        mtime = $1
+        file = $2
+        ftime = $3
 
-        printf "%s\t\033[1m%-50s\033[0m\t\033[0;36m%s\033[0m\n" "$mtime" "$rel_path" "$ftime"
-    done | sort -rn | cut -f2- # Sort by epoch, then remove the epoch column
+        # Clean the file path for matching Git output
+        clean_file = file
+        sub(/^\.\//, "", clean_file)
+
+        marker = git_map[clean_file]
+        if (marker == "") marker = "  "
+
+        rel_path = clean_file
+        sub(ext "$", "", rel_path)
+
+        # Output format:
+        # Col 1: Epoch (for sorting, stripped later)
+        # Col 2: HIDDEN raw path (for fzf to select safely)
+        # Col 3: VISIBLE formatted string (Git marker + Name)
+        # Col 4: VISIBLE date
+        printf "%s\t%s\t\033[33m%2s\033[0m \033[1m%-47s\033[0m\t\033[0;36m%s\033[0m\n", mtime, rel_path, marker, rel_path, ftime
+    }' | sort -rn | cut -f2-
 }
+        # # Remove the file extension but KEEP the directory path (e.g., "attachments/my-file")
+        # rel_path="${file%.$NOTE_EXT}"
+        # # Remove leading "./" if present
+        # rel_path="${rel_path#./}"
+
+        # printf "%s\t\033[1m%-50s\033[0m\t\033[0;36m%s\033[0m\n" "$mtime" "$rel_path" "$ftime"
+    # done | sort -rn | cut -f2- # Sort by epoch, then remove the epoch column
+# }
 
 copy_note() {
     [ -z "$1" ] && return
@@ -149,6 +204,7 @@ while true; do
         out=$(list_notes | fzf $opts \
             --ghost "Query length limited to ${MAX_NOTE_LEN}" \
             --delimiter=$'\t' \
+            --with-nth=2.. \
             --prompt="list> " \
             --expect="$expect_list" --query="$query" \
             --preview "$list_preview_cmd" \
@@ -181,7 +237,8 @@ while true; do
     selection=$(tail -1 <<< "$out")
 
     if [ "$key" = ctrl-l ]; then
-        file=$(echo "$selection" | awk 'BEGIN { FS="\t" } { print $1 }' | sed 's/[[:space:]]*$//')
+        file=$(echo "$selection" | awk -F'\t' '{ print $1 }')
+        # file=$(echo "$selection" | awk 'BEGIN { FS="\t" } { print $1 }' | sed 's/[[:space:]]*$//')
     else
         file=$(echo "$selection" | awk -F: '{print $1}' \
             | sed 's/[[:space:]]*$//')
