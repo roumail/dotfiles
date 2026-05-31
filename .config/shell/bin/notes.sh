@@ -87,13 +87,24 @@ list_notes() {
     done | awk -v ext=".$NOTE_EXT" '
     BEGIN {
         FS="\t"
-        # Parse git status into a fast lookup map
+        # Pull directly from environment to avoid macOS awk newline crash
+        git_stat = ENVIRON["GIT_STAT"]
         split(git_stat, git_lines, "\n")
+
         for (i in git_lines) {
-            if (git_lines[i] == "") continue
-            marker = substr(git_lines[i], 1, 2)
-            gfile = substr(git_lines[i], 4)
-            git_map[gfile] = marker
+            line = git_lines[i]
+            gsub(/\r/, "", line) # Catch stray carriage returns just in case
+            if (line == "") continue
+
+            marker = substr(line, 1, 2)
+            gfile = substr(line, 4)
+            gsub(/^"|"$/, "", gfile) # Strip quotes if Git added them
+
+            # Split the path by "/" and grab the last piece (the basename)
+            # This completely bypasses the repo-root vs current-dir mismatch
+            n = split(gfile, parts, "/")
+            gbase = parts[n]
+            git_map[gbase] = marker
         }
     }
     {
@@ -101,11 +112,15 @@ list_notes() {
         file = $2
         ftime = $3
 
-        # Clean the file path for matching Git output
+        # Clean the file path
         clean_file = file
         sub(/^\.\//, "", clean_file)
 
-        marker = git_map[clean_file]
+        # Grab the basename from fds output to match against Git
+        n = split(clean_file, parts, "/")
+        cbase = parts[n]
+
+        marker = git_map[cbase]
         if (marker == "") marker = "  "
 
         rel_path = clean_file
@@ -119,14 +134,6 @@ list_notes() {
         printf "%s\t%s\t\033[33m%2s\033[0m \033[1m%-47s\033[0m\t\033[0;36m%s\033[0m\n", mtime, rel_path, marker, rel_path, ftime
     }' | sort -rn | cut -f2-
 }
-        # # Remove the file extension but KEEP the directory path (e.g., "attachments/my-file")
-        # rel_path="${file%.$NOTE_EXT}"
-        # # Remove leading "./" if present
-        # rel_path="${rel_path#./}"
-
-        # printf "%s\t\033[1m%-50s\033[0m\t\033[0;36m%s\033[0m\n" "$mtime" "$rel_path" "$ftime"
-    # done | sort -rn | cut -f2- # Sort by epoch, then remove the epoch column
-# }
 
 copy_note() {
     [ -z "$1" ] && return
