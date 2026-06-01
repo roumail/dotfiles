@@ -75,6 +75,68 @@ rename_note() {
     query="$new_name"
 }
 
+
+copy_note() {
+    [ -z "$1" ] && return
+    old_file="$1"
+    new_file="${old_file%.$NOTE_EXT}-copy.$NOTE_EXT"
+
+    # Copy the file
+    cp "$old_file" "$new_file"
+
+    # Update markdown file title adding -copy
+    IFS= read -r title < "$new_file"
+    title=${title#"# "}
+    {
+        printf '# %s -copy\n' "$title"
+        tail -n +2 "$new_file"
+    } > "$new_file.tmp" && mv "$new_file.tmp" "$new_file"
+
+    $EDITOR "$new_file"
+}
+
+create_note() {
+  local q="$1"
+  if [ "${#q}" -gt "$MAX_NOTE_LEN" ]; then
+        return 1
+    fi
+  # Pre-populate with query as title
+  # Everything after first / kept - would need to be ${x##*/} to
+  # support nested directories
+  local title="${q#*/}"
+  local file="$q.$NOTE_EXT"
+  echo "# $title" > "$file"
+  echo "" >> "$file"
+  $EDITOR "$file"
+}
+
+toggle_pin() {
+    [ -z "$1" ] && return
+    mkdir -p "$META_DIR"
+    local note="$1"
+    local pinned_file="$META_DIR/pinned"
+
+    local tmp_file
+    touch "$pinned_file"
+    tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
+    # Tmp file used to replace as a safety in case filtering fails mid-way
+    # It keeps pinned_file valid even if filtering fails mid-way.
+    # You cannot safely read and write the same file in one command pipeline
+
+    # Case A (already pinned): remove the exact line, preserve all others and order.
+    if grep -Fxq "$note" "$pinned_file"; then
+        tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
+        # $0 != note keeps every line except the one being unpinned.
+        awk -v note="$note" '$0 != note' "$pinned_file" > "$tmp_file"
+        mv "$tmp_file" "$pinned_file"
+    else
+        # Case B (not pinned): append one line
+        printf '%s\n' "$note" >> "$pinned_file"
+    fi
+}
+
+# --- Core entrypoints ---
+
 list_notes() {
     # Grab the fresh git status from the blocked pipe
     echo "GO" > "$GIT_REQ"
@@ -167,25 +229,6 @@ list_notes() {
     }' | sort -k1,1nr -k2,2nr | cut -f3-
 }
 
-copy_note() {
-    [ -z "$1" ] && return
-    old_file="$1"
-    new_file="${old_file%.$NOTE_EXT}-copy.$NOTE_EXT"
-
-    # Copy the file
-    cp "$old_file" "$new_file"
-
-    # Update markdown file title adding -copy
-    IFS= read -r title < "$new_file"
-    title=${title#"# "}
-    {
-        printf '# %s -copy\n' "$title"
-        tail -n +2 "$new_file"
-    } > "$new_file.tmp" && mv "$new_file.tmp" "$new_file"
-
-    $EDITOR "$new_file"
-}
-
 find_in_notes() {
     # We use --field-separator to make parsing with awk bulletproof.
     rg --line-number --no-heading --color=never --with-filename \
@@ -219,46 +262,6 @@ header_list=$(printf "$header_wrap" "CTRL-F: find / $header_actions")
 header_find=$(printf "$header_wrap" "CTRL-L: list / $header_actions")
 list_preview_cmd='bat --color=always --style=grid {1} 2>/dev/null || cat {1}'
 find_preview_cmd='bat --color=always --style=numbers --highlight-line={2} {1} 2>/dev/null || cat {1}'
-
-create_note() {
-  local q="$1"
-  if [ "${#q}" -gt "$MAX_NOTE_LEN" ]; then
-        return 1
-    fi
-  # Pre-populate with query as title
-  # Everything after first / kept - would need to be ${x##*/} to
-  # support nested directories
-  local title="${q#*/}"
-  local file="$q.$NOTE_EXT"
-  echo "# $title" > "$file"
-  echo "" >> "$file"
-  $EDITOR "$file"
-}
-
-toggle_pin() {
-    [ -z "$1" ] && return
-    mkdir -p "$META_DIR"
-    local note="$1"
-    local pinned_file="$META_DIR/pinned"
-
-    local tmp_file
-    touch "$pinned_file"
-    tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
-    # Tmp file used to replace as a safety in case filtering fails mid-way
-    # It keeps pinned_file valid even if filtering fails mid-way.
-    # You cannot safely read and write the same file in one command pipeline
-
-    # Case A (already pinned): remove the exact line, preserve all others and order.
-    if grep -Fxq "$note" "$pinned_file"; then
-        tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
-        # $0 != note keeps every line except the one being unpinned.
-        awk -v note="$note" '$0 != note' "$pinned_file" > "$tmp_file"
-        mv "$tmp_file" "$pinned_file"
-    else
-        # Case B (not pinned): append one line
-        printf '%s\n' "$note" >> "$pinned_file"
-    fi
-}
 
 while true; do
     if [ "$key" = ctrl-l ]; then
