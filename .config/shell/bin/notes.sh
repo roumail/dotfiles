@@ -85,7 +85,7 @@ list_notes() {
         mtime=$(get_mtime "$file")
         ftime=$(format_date "$mtime")
 		echo -e "${mtime}\t${file}\t${ftime}"
-    done | awk -v ext=".$NOTE_EXT" '
+    done | awk -v ext=".$NOTE_EXT" -v pinned_file="$META_DIR/pinned" '
     BEGIN {
         FS="\t"
         while ((getline line < pinned_file) > 0) {
@@ -129,19 +129,21 @@ list_notes() {
         marker = git_map[cbase]
         if (marker == "") marker = "  "
 
-        rel_path = clean_file
-        sub(ext "$", "", rel_path)
+        fmt_file = clean_file
+        sub(ext "$", "", fmt_file)
 
-        pin = (rel_path in pinned_map) ? 1 : 0
+        pin = (clean_file in pinned_map) ? 1 : 0
 
+        pin_mark = (pin ? "*" : " ")
+        status = pin_mark marker
 
         # TAB STRUCTURE & ANSI FORMATTING:
         # 
         # Pre-cut output (5 columns, 4 tabs):
-        #   pin \t mtime \t clean_file \t [ANSI] marker + rel_path [/ANSI] \t ftime
+        #   pin \t mtime \t clean_file \t [ANSI] status + fmt_file [/ANSI] \t ftime
         #
         # After cut -f3- (strips pin & mtime):
-        #   clean_file \t [ANSI] marker + rel_path [/ANSI] \t ftime
+        #   clean_file \t [ANSI] status + fmt_file [/ANSI] \t ftime
         # Clean_file is hidden 
         # fzf extraction :
         #   $1 = clean_file (undecorated, safe for file ops)
@@ -156,12 +158,12 @@ list_notes() {
         #   %s = pin (used for sort key: 1=pinned, 0=unpinned)
         #   %s = mtime (used for sort key: newest first)
         #   %s = clean_file (hidden after cut, extracted raw later )
-        #   %2s = marker (git status, e.g. "M " or "  ")
-        #   %s = rel_path (the filename without extension, padded or not)
+        #   %3s = status (git status, e.g. "M " or "  ")
+        #   %s = fmt_file (the filename without extension, padded or not)
         #   %s = ftime (formatted timestamp string)
 
-        printf "%s\t%s\t%s\t\033[33m%2s\033[0m \033[1m%-47s\033[0m\t\033[0;36m%s\033[0m\n", \ 
-            pin, mtime, clean_file, marker, rel_path, ftime
+        printf "%s\t%s\t%s\t\033[33m%3s\033[0m \033[1m%-47s\033[0m\t\033[0;36m%s\033[0m\n", \
+            pin, mtime, clean_file, status, fmt_file, ftime
     }' | sort -k1,1nr -k2,2nr | cut -f3-
 }
 
@@ -188,13 +190,12 @@ find_in_notes() {
     # We use --field-separator to make parsing with awk bulletproof.
     rg --line-number --no-heading --color=never --with-filename \
         --glob "**/*.$NOTE_EXT" --glob '!trash/*' "." |
-    awk -F: -v ext=".$NOTE_EXT" '
+    awk -F: '
     {
         fname=$1;
         line=$2;
 
-        # Keep path, strip extension and leading ./
-        sub(ext "$", "", fname)
+        # Strip path and leading ./
         sub(/^\.\//, "", fname)
 
         content = $0
@@ -217,7 +218,7 @@ header_wrap=$'\n%s\n\n'
 header_list=$(printf "$header_wrap" "CTRL-F: find / $header_actions")
 header_find=$(printf "$header_wrap" "CTRL-L: list / $header_actions")
 list_preview_cmd='bat --color=always --style=grid {1} 2>/dev/null || cat {1}'
-find_preview_cmd='bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT'
+find_preview_cmd='bat --color=always --style=numbers --highlight-line={2} {1} 2>/dev/null || cat {1}'
 
 create_note() {
   local q="$1"
@@ -234,12 +235,38 @@ create_note() {
   $EDITOR "$file"
 }
 
+toggle_pin() {
+    [ -z "$1" ] && return
+    mkdir -p "$META_DIR"
+    local note="$1"
+    local pinned_file="$META_DIR/pinned"
+
+    local tmp_file
+    touch "$pinned_file"
+    tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
+    # Tmp file used to replace as a safety in case filtering fails mid-way
+    # It keeps pinned_file valid even if filtering fails mid-way.
+    # You cannot safely read and write the same file in one command pipeline
+
+    # Case A (already pinned): remove the exact line, preserve all others and order.
+    if grep -Fxq "$note" "$pinned_file"; then
+        tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
+        # $0 != note keeps every line except the one being unpinned.
+        awk -v note="$note" '$0 != note' "$pinned_file" > "$tmp_file"
+        mv "$tmp_file" "$pinned_file"
+    else
+        # Case B (not pinned): append one line
+        printf '%s\n' "$note" >> "$pinned_file"
+    fi
+}
+
 while true; do
     if [ "$key" = ctrl-l ]; then
         out=$(list_notes | fzf $opts \
             --ghost "Query length limited to ${MAX_NOTE_LEN}" \
             --delimiter=$'\t' \
             --with-nth=2.. \
+            --accept-nth=1 \
             --prompt="list> " \
             --expect="$expect_list" --query="$query" \
             --preview "$list_preview_cmd" \
@@ -272,7 +299,7 @@ while true; do
     selection=$(tail -1 <<< "$out")
 
     if [ "$key" = ctrl-l ]; then
-        file=$(echo "$selection" | awk -F'\t' '{ print $1 }')
+        file="$selection"
     else
         file=$(echo "$selection" | awk -F: '{print $1}' \
             | sed 's/[[:space:]]*$//')
@@ -291,7 +318,7 @@ while true; do
                 [ -n "$file" ] && $EDITOR "$file"
             else
                 # Open at specific line
-                $EDITOR "$file.$NOTE_EXT" "+$line_no"
+                $EDITOR "$file" "+$line_no"
             fi
             ;;
     esac
