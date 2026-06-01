@@ -41,41 +41,6 @@ GIT_PID=$!
 
 # --- Core Functions ---
 
-delete_note() {
-    echo -en "\r\x1b[KDelete $1? (y/n) "
-    read -r yn
-    if [[ "$yn" =~ ^y ]]; then
-        mkdir -p "$TRASH_DIR"
-        mv "$1" "$TRASH_DIR/"
-    fi
-}
-
-rename_note() {
-    [ -z "$1" ] && return
-    old_file="$1"
-    old_name="${old_file%.$NOTE_EXT}"
-
-    if ! read -e -i "$old_name" -r -p "Rename $old_name -> " new_name; then
-        return
-    fi
-
-    # Strip trailing whitespace safely without spawning a sed subprocess
-    new_name="${new_name%%[[:space:]]}"
-
-    [ -z "$new_name" ] && return
-    [ "$new_name" = "$old_name" ] && return
-
-    if [ -e "$new_name.$NOTE_EXT" ]; then
-        echo "Target already exists: $new_name.$NOTE_EXT"
-        read -r -p "Press Enter to continue..." _
-        return
-    fi
-
-    mv "$old_file" "$new_name.$NOTE_EXT"
-    query="$new_name"
-}
-
-
 copy_note() {
     [ -z "$1" ] && return
     old_file="$1"
@@ -110,28 +75,108 @@ create_note() {
   $EDITOR "$file"
 }
 
-toggle_pin() {
-    [ -z "$1" ] && return
-    mkdir -p "$META_DIR"
+is_pinned() {
     local note="$1"
-    local pinned_file="$META_DIR/pinned"
+    [ -z "$note" ] && return 1
+    ensure_pin_store
+    grep -Fxq -- "$note" "$(pin_file_path)"
+}
 
+pin_file_path() {
+    printf '%s\n' "$META_DIR/pinned"
+}
+
+ensure_pin_store() {
+    mkdir -p "$META_DIR"
+    touch "$(pin_file_path)"
+}
+
+pin_set() {
+    # pin_set <note> <1|0>
+    local note="$1"
+    local want="$2"
+    local pinned_file
     local tmp_file
-    touch "$pinned_file"
-    tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
+
+    ensure_pin_store
+    pinned_file="$(pin_file_path)"
+
     # Tmp file used to replace as a safety in case filtering fails mid-way
     # It keeps pinned_file valid even if filtering fails mid-way.
     # You cannot safely read and write the same file in one command pipeline
+    tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
 
-    # Case A (already pinned): remove the exact line, preserve all others and order.
-    if grep -Fxq "$note" "$pinned_file"; then
-        tmp_file="$(mktemp /tmp/notes-pinned.XXXXXX)" || return 1
-        # $0 != note keeps every line except the one being unpinned.
-        awk -v note="$note" '$0 != note' "$pinned_file" > "$tmp_file"
-        mv "$tmp_file" "$pinned_file"
-    else
-        # Case B (not pinned): append one line
+    # remove any existing entry first (dedupe + deterministic result)
+    if ! awk -v note="$note" '$0 != note' "$pinned_file" > "$tmp_file"; then
+        rm -f "$tmp_file"; return 1
+    fi
+
+    if ! mv "$tmp_file" "$pinned_file"; then
+        rm -f "$tmp_file"; return 1
+    fi
+    # add back only when requested
+    if [ "$want" = "1" ]; then
         printf '%s\n' "$note" >> "$pinned_file"
+    fi
+}
+
+delete_note() {
+    local note="$1"
+    echo -en "\r\x1b[KDelete $1? (y/n) "
+    read -r yn
+    if [[ "$yn" =~ ^y ]]; then
+        mkdir -p "$TRASH_DIR"
+        if mv "$note" "$TRASH_DIR/"; then
+            pin_set "$note" 0
+        fi
+    fi
+}
+
+rename_note() {
+    [ -z "$1" ] && return
+    old_file="$1"
+    old_name="${old_file%.$NOTE_EXT}"
+
+    if ! read -e -i "$old_name" -r -p "Rename $old_name -> " new_name; then
+        return
+    fi
+
+    # snapshot old pin state before rename
+    local was_pinned=0
+    if is_pinned "$old_file"; then
+        was_pinned=1
+    fi
+
+    # Strip trailing whitespace safely without spawning a sed subprocess
+    new_name="${new_name%%[[:space:]]}"
+
+    [ -z "$new_name" ] && return
+    [ "$new_name" = "$old_name" ] && return
+
+    local new_file="$new_name.$NOTE_EXT"
+    if [ -e "$new_file" ]; then
+        echo "Target already exists: $new_file"
+        read -r -p "Press Enter to continue..." _
+        return
+    fi
+
+    mv "$old_file" "$new_file" || return
+    # re-attach pin to the new filename if old one was pinned
+    if [ "$was_pinned" -eq 1 ]; then
+        pin_set "$old_file" 0
+        pin_set "$new_file" 1
+    fi
+    query="$new_name"
+}
+
+toggle_pin() {
+    [ -z "$1" ] && return
+
+    # Remove the exact line, preserve all others and order if already pinned, else add to file
+    if is_pinned "$1"; then
+        pin_set "$1" 0
+    else
+        pin_set "$1" 1
     fi
 }
 
