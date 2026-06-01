@@ -5,6 +5,7 @@ NOTE_DIR=${NOTE_DIR:-$(dirname "${BASH_SOURCE[0]}")}
 TRASH_DIR="$NOTE_DIR/trash"
 EDITOR=${EDITOR:-vim}
 MAX_NOTE_LEN=50
+META_DIR="$NOTE_DIR/.notes"
 export NOTE_EXT=${NOTE_EXT:-md}
 
 cd "$NOTE_DIR" || exit 1
@@ -45,16 +46,15 @@ delete_note() {
     read -r yn
     if [[ "$yn" =~ ^y ]]; then
         mkdir -p "$TRASH_DIR"
-        mv "$1.$NOTE_EXT" "$TRASH_DIR/"
+        mv "$1" "$TRASH_DIR/"
     fi
 }
 
 rename_note() {
     [ -z "$1" ] && return
-    old_name="$1"
-    old_file="$old_name.$NOTE_EXT"
+    old_file="$1"
+    old_name="${old_file%.$NOTE_EXT}"
 
-    # Read handles the prompt and prefill natively here
     if ! read -e -i "$old_name" -r -p "Rename $old_name -> " new_name; then
         return
     fi
@@ -80,13 +80,17 @@ list_notes() {
     echo "GO" > "$GIT_REQ"
     local git_stat=$(cat "$GIT_RESP")
     export GIT_STAT="$git_stat"
-    fd -e "$NOTE_EXT" --exclude "trash" -0 | while read -d $'\0' file; do
+    fd -e "$NOTE_EXT" --exclude "${TRASH_DIR##*/}" --exclude "${META_DIR##*/}" -0 | \
+        while read -d $'\0' file; do
         mtime=$(get_mtime "$file")
         ftime=$(format_date "$mtime")
 		echo -e "${mtime}\t${file}\t${ftime}"
     done | awk -v ext=".$NOTE_EXT" '
     BEGIN {
         FS="\t"
+        while ((getline line < pinned_file) > 0) {
+            pinned_map[line] = 1
+        }
         # Pull directly from environment to avoid macOS awk newline crash
         git_stat = ENVIRON["GIT_STAT"]
         split(git_stat, git_lines, "\n")
@@ -98,8 +102,10 @@ list_notes() {
 
             marker = substr(line, 1, 2)
             gfile = substr(line, 4)
-            gsub(/^"|"$/, "", gfile) # Strip quotes if Git added them
+            gsub(/^"|"$/, "", gfile) # Strip quotes that Git might have added
 
+            # TODO: relying on basename can be frail with same named files nested in
+            # folders
             # Split the path by "/" and grab the last piece (the basename)
             # This completely bypasses the repo-root vs current-dir mismatch
             n = split(gfile, parts, "/")
@@ -112,7 +118,7 @@ list_notes() {
         file = $2
         ftime = $3
 
-        # Clean the file path
+        # File with leading ./ stripped, containing extension
         clean_file = file
         sub(/^\.\//, "", clean_file)
 
@@ -126,21 +132,43 @@ list_notes() {
         rel_path = clean_file
         sub(ext "$", "", rel_path)
 
-        # Output format:
-        # Col 1: Epoch (for sorting, stripped later)
-        # Col 2: HIDDEN raw path (for fzf to select safely)
-        # Col 3: VISIBLE formatted string (Git marker + Name)
-        # Col 4: VISIBLE date
-        printf "%s\t%s\t\033[33m%2s\033[0m \033[1m%-47s\033[0m\t\033[0;36m%s\033[0m\n", mtime, rel_path, marker, rel_path, ftime
-    }' | sort -rn | cut -f2-
+        pin = (rel_path in pinned_map) ? 1 : 0
+
+
+        # TAB STRUCTURE & ANSI FORMATTING:
+        # 
+        # Pre-cut output (5 columns, 4 tabs):
+        #   pin \t mtime \t clean_file \t [ANSI] marker + rel_path [/ANSI] \t ftime
+        #
+        # After cut -f3- (strips pin & mtime):
+        #   clean_file \t [ANSI] marker + rel_path [/ANSI] \t ftime
+        # Clean_file is hidden 
+        # fzf extraction :
+        #   $1 = clean_file (undecorated, safe for file ops)
+        #   $2 = formatted display (visible, with colors)
+        #   $3 = ftime (visible)
+        #
+        # CRITICAL: ANSI codes wrap ONLY the visible formatted column ($2 in cut output).
+        # They do NOT touch $1 (clean_file), which is used raw for file operations.
+        # This is why we apply ANSI inside column 4 of printf, NOT around clean_file.
+        #
+        # Arguments to printf (order matters):
+        #   %s = pin (used for sort key: 1=pinned, 0=unpinned)
+        #   %s = mtime (used for sort key: newest first)
+        #   %s = clean_file (hidden after cut, extracted raw later )
+        #   %2s = marker (git status, e.g. "M " or "  ")
+        #   %s = rel_path (the filename without extension, padded or not)
+        #   %s = ftime (formatted timestamp string)
+
+        printf "%s\t%s\t%s\t\033[33m%2s\033[0m \033[1m%-47s\033[0m\t\033[0;36m%s\033[0m\n", \ 
+            pin, mtime, clean_file, marker, rel_path, ftime
+    }' | sort -k1,1nr -k2,2nr | cut -f3-
 }
 
 copy_note() {
     [ -z "$1" ] && return
-    old_file="$1.$NOTE_EXT"
-
-    # Create new filename with -copy suffix
-    new_file="$1-copy.$NOTE_EXT"
+    old_file="$1"
+    new_file="${old_file%.$NOTE_EXT}-copy.$NOTE_EXT"
 
     # Copy the file
     cp "$old_file" "$new_file"
@@ -181,14 +209,14 @@ find_in_notes() {
 key=ctrl-l
 query="$*"
 opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
-header_actions='ALT-N: new / ALT-C: duplicate / ALT-X: delete / ALT-R: rename'
-expect_actions='alt-n,alt-c,alt-x,alt-r'
+header_actions='ALT-N: new / ALT-C: duplicate / ALT-X: delete / ALT-R: rename / ALT-S: pin'
+expect_actions='alt-n,alt-c,alt-x,alt-r,alt-s'
 expect_list="ctrl-f,$expect_actions"
 expect_find="ctrl-l,$expect_actions"
 header_wrap=$'\n%s\n\n'
 header_list=$(printf "$header_wrap" "CTRL-F: find / $header_actions")
 header_find=$(printf "$header_wrap" "CTRL-L: list / $header_actions")
-list_preview_cmd='bat --color=always --style=grid {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT'
+list_preview_cmd='bat --color=always --style=grid {1} 2>/dev/null || cat {1}'
 find_preview_cmd='bat --color=always --style=numbers --highlight-line={2} {1}.$NOTE_EXT 2>/dev/null || cat {1}.$NOTE_EXT'
 
 create_note() {
@@ -245,7 +273,6 @@ while true; do
 
     if [ "$key" = ctrl-l ]; then
         file=$(echo "$selection" | awk -F'\t' '{ print $1 }')
-        # file=$(echo "$selection" | awk 'BEGIN { FS="\t" } { print $1 }' | sed 's/[[:space:]]*$//')
     else
         file=$(echo "$selection" | awk -F: '{print $1}' \
             | sed 's/[[:space:]]*$//')
@@ -258,9 +285,10 @@ while true; do
         alt-r)  [ "$lines" -gt 2 ] && rename_note "$file" ;;
         alt-c)  [ "$lines" -gt 2 ] && copy_note "$file" ;;
         alt-n)  [ -n "$query" ] && create_note "$query";;
+        alt-s)  [ "$lines" -gt 2 ] && toggle_pin "$file" ;;
         *)
             if [ "$key" = ctrl-l ]; then
-                [ -n "$file" ] && $EDITOR "$file.$NOTE_EXT"
+                [ -n "$file" ] && $EDITOR "$file"
             else
                 # Open at specific line
                 $EDITOR "$file.$NOTE_EXT" "+$line_no"
