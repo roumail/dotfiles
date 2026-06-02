@@ -1,7 +1,3 @@
-function! s:StartPytest(args) abort
-  execute 'Start! -strategy=terminal pytest ' . a:args
-endfunction
-
 " -- needs to be added after dispatch, even if we automatically add -compiler pytest
 "https://github.com/tpope/vim-dispatch/issues/263
 " Previously we had to explicitly pass -compiler=pytest -- <args>
@@ -11,7 +7,7 @@ function! pytest#dispatch#Dispatch(bang, args) abort
 endfunction
 
 function! pytest#dispatch#StartPytest(args) abort
-  execute 'Start! -strategy=terminal pytest ' . a:args
+  execute 'Start! -strategy=terminal chkpyt.sh --no-default-addopts ' . a:args
 endfunction
 
 function! pytest#dispatch#WithScope(scope, bang) abort
@@ -36,7 +32,7 @@ function! pytest#dispatch#WithScopeAndTrace(scope, bang) abort
   endif
 
   let debug_flag = empty(a:bang) ? '--trace' : '--pdb'
-  call s:StartPytest(test_path . ' ' . debug_flag)
+  call pytest#dispatch#StartPytest(test_path . ' ' . debug_flag)
 endfunction
 
 " Prefer vim terminal for interactive processes
