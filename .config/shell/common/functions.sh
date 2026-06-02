@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-chkpyt() {
-    PYTEST_ADDOPTS='' pytest -q -r fE --tb=no --capture=fd "$@"
-}
 
 # https://wezterm.org/recipes/passing-data.html?h=osc#user-vars
 __wezterm_set_user_var() {
