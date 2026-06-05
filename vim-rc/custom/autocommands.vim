@@ -26,16 +26,36 @@ augroup vimrc-remember-cursor-position
         \ endif
 augroup END
 
-augroup StripTrailingCR
-  autocmd!
-  " Trigger on: Read Post, Write Pre (before saving), and exiting a window
-  autocmd BufReadPost,BufWritePre,BufWinLeave *
-        \ if !&readonly && &modifiable && search('\r$', 'nw') |
-        \   let save_cursor = getpos(".") |
-        \   silent! %s/\r$//e |
-        \   call setpos('.', save_cursor) |
-        \ endif
-augroup END
+function! s:WithPreservedCursor(Callback) abort
+  if &readonly || !&modifiable
+    return
+  endif
+
+  let save_cursor = getpos('.')
+  try
+    call call(a:Callback, [])
+  finally
+    call setpos('.', save_cursor)
+  endtry
+endfunction
+
+function! s:StripTrailingWhitespace() abort
+  " :let b:strip_trailing_whitespace = 0
+  " Skip if explicitly disabled for this buffer
+  if get(b:, 'strip_trailing_whitespace', 1) == 0
+      return
+  endif
+  silent! %s/\v\S\zs[ \t]+$//e
+endfunction
+
+function! s:StripTrailingCR() abort
+  if search('\r$', 'nw')
+    silent! %s/\r$//e
+  endif
+endfunction
+
+autocmd BufReadPost,BufWinLeave * call s:WithPreservedCursor(function('s:StripTrailingCR'))
+autocmd BufWritePre * call s:WithPreservedCursor(function('s:StripTrailingWhitespace'))
 
 " Make sure all types of requirements.txt files get syntax highlighting.
 autocmd BufNewFile,BufRead requirements*.txt set ft=python
@@ -44,8 +64,6 @@ autocmd BufNewFile,BufRead requirements*.txt set ft=python
 autocmd BufNewFile,BufRead .*aliases* set ft=sh
 
 autocmd BufReadPost fugitive://* set bufhidden=delete
-" Strip trailing whitespace
-autocmd BufWritePre * %s/\s\+$//e
 
 augroup DetectPythonProject
   autocmd!
