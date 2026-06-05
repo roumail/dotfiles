@@ -11,10 +11,19 @@ autocmd User FzfQuery call s:fzf_query_to_search()
 " Understand jsconc
 autocmd FileType json syntax match Comment +\/\/.\+$+
 
+augroup remember_window_view
+  autocmd!
+  autocmd BufWinLeave * if &buftype == '' | let b:winview = winsaveview() | endif
+  autocmd BufWinEnter * if &buftype == '' && exists('b:winview') | call winrestview(b:winview) | endif
+augroup END
+
 " Remember cursor position when reopening a file
 augroup vimrc-remember-cursor-position
   autocmd!
-  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+  autocmd BufReadPost,BufWinEnter *
+        \ if line("'\"") > 1 && line("'\"") <= line("$") |
+        \ exe "normal! g`\"" |
+        \ endif
 augroup END
 
 augroup StripTrailingCR
