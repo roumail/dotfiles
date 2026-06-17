@@ -54,8 +54,12 @@ function! s:StripTrailingCR() abort
   endif
 endfunction
 
-autocmd BufReadPost,BufWinLeave * call s:WithPreservedCursor(function('s:StripTrailingCR'))
-autocmd BufWritePre * call s:WithPreservedCursor(function('s:StripTrailingWhitespace'))
+" BufReadPost,BufWinLeave
+augroup buffer_cleanup
+  autocmd!
+  autocmd BufWritePre * call s:WithPreservedCursor(function('s:StripTrailingCR'))
+  autocmd BufWritePre * call s:WithPreservedCursor(function('s:StripTrailingWhitespace'))
+augroup END
 
 " Make sure all types of requirements.txt files get syntax highlighting.
 autocmd BufNewFile,BufRead requirements*.txt set ft=python
