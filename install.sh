@@ -131,7 +131,12 @@ mkdir -p "$HOME/.vim"
 mkdir -p "$HOME/.vim/backup"
 mkdir -p "$HOME/.vim/swap"
 
+if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
+  curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
 link_tree "$VIM_CONFIG_SRC" "$HOME/.vim"
+link_file "$VIM_CONFIG_SRC/.vimrc" "$HOME/.vimrc"
 
 echo ""
 echo "Setting up tmux..."
