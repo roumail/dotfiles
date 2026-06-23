@@ -32,15 +32,21 @@ set wildmode=longest,list,full  " enhanced command-line completion
 set completeopt=menuone,noselect
 " set completeopt=menuone,popuphidden,noinsert,noselect
 " Diff options
-set diffopt=filler,internal,algorithm:histogram,indent-heuristic
+set diffopt=filler
 set diffopt+=iwhiteall
-if has('patch-9.2')
+try
+  set diffopt+=internal
+  set diffopt+=algorithm:histogram
+  set diffopt+=indent-heuristic
+catch /^Vim\%((\a\+)\)\=:E474/
+endtry
+
+try
   set diffopt-=inline:simple
-  " set diffopt+=inline:char
   set diffopt+=inline:word
   set diffopt+=linematch:60
-endif
-
+catch /^Vim\%((\a\+)\)\=:E474/
+endtry
 " set timeoutlen=300    " Mapped key sequence duration (1000 ms default)
 set grepprg=rg\ --vimgrep
 set grepformat=%f:%l:%c:%m,%f:%l:%m
