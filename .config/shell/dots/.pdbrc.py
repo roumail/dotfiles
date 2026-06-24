@@ -1,7 +1,21 @@
 import inspect
 from pdb import DefaultConfig, Pdb
 from pprint import pprint
+from functools import lru_cache
+import subprocess
+import shutil
 
+# win32yank for wsl
+@lru_cache(maxsize=1)
+def _clipboard_cmd():
+    if shutil.which("pbcopy"):
+        return ["pbcopy"]
+    if shutil.which("win32yank.exe"):
+        return ["win32yank.exe", "-i", "--crlf"]
+    raise RuntimeError("No supported clipboard command found (pbcopy/win32yank.exe)")
+
+# https://github.com/python/cpython/blob/3.14/Lib/pdb.py
+# expose additional do_ methods that a user can call inside pdb
 class Config(DefaultConfig):
 
     prompt = '(Moo++) '
@@ -27,31 +41,119 @@ def displayhook(self, obj):
 Pdb.displayhook = displayhook
 
 def do_findtest(self, arg):
-    """Find the closest function starting with 'test_', upwards the stack."""
+    """ft\n     Find the closest function starting with 'test_', upwards the stack."""
     frames_up = list(reversed(list(enumerate(self.stack[0:self.curindex]))))
     for i, (frame, _) in frames_up:
         if frame.f_code.co_name.startswith('test_'):
             self.curindex = i
             self.curframe = frame
             self.curframe_locals = self.curframe.f_locals
-            self.print_current_stack_entry()
+            self.print_stack_entry(self.stack[self.curindex])
             self.lineno = None
             return
 
 
 def do_bottommost(self, arg):
-    """Go to the bottommost frame."""
+    """bm\n    Jump to the bottommost frame in the stack."""
     last_frame = self.stack[-1][0]
     last_index = len(self.stack) - 1
 
     self.curindex = last_index
     self.curframe = last_frame
     self.curframe_locals = self.curframe.f_locals
-    self.print_current_stack_entry()
+    self.print_stack_entry(self.stack[self.curindex])
     self.lineno = None
     return
 
-Pdb.do_findtest = do_findtest
+def _copy_text(text):
+    data = str(text).replace("\r", "").encode()
+    subprocess.run(_clipboard_cmd(), input=data, check=True)
+
+def do_yank(self, arg):
+    """yank <expression>\n    Copy str(expression) to clipboard."""
+    if not arg.strip():
+        self.error("Usage: yank <expression>")
+        return
+    val = self._getval(arg)
+    _copy_text(str(val))
+
+def do_pank(self, arg):
+    """pank <expression>\n    Rich-format expression and copy to clipboard."""
+    if not arg.strip():
+        self.error("Usage: pank <expression>")
+        return
+    val = self._getval(arg)
+    from rich.console import Console
+    c = Console(record=True, color_system=None)
+    c.print(val)
+    _copy_text(c.export_text())
+
+def do_jsonpank(self, arg):
+    """jsonpank <expression>\n    Parse expression as JSON, rich-format it, and copy to clipboard."""
+    if not arg.strip():
+        self.error("Usage: jsonpank <expression>")
+        return
+    from rich.console import Console
+    import json
+    val = self._getval(arg)
+    if isinstance(val, str):
+        parsed = json.loads(val)
+    else:
+        parsed = json.loads(str(val))
+    c = Console(record=True, color_system=None)
+    c.print(parsed)
+    _copy_text(c.export_text())
+
+def do_diffyank(self, arg):
+    """diffyank <left_expr> -- <right_expr>\n    Unified diff two expressions and copy result to clipboard."""
+    if "--" not in arg:
+        self.error("Usage: diffyank <left_expr> -- <right_expr>")
+        return
+    left_expr, right_expr = [x.strip() for x in arg.split("--", 1)]
+    if not left_expr or not right_expr:
+        self.error("Usage: diffyank <left_expr> -- <right_expr>")
+        return
+
+    import difflib
+    left = str(self._getval(left_expr))
+    right = str(self._getval(right_expr))
+    diff_text = "\n".join(
+        difflib.unified_diff(
+            left.splitlines(),
+            right.splitlines(),
+            fromfile="expected",
+            tofile="actual",
+            lineterm="",
+        )
+    )
+    self.message(diff_text)
+    _copy_text(diff_text)
+
+def do_dir(self, arg):
+    """dir [-p] <expression>
+    List attributes of expression, filtering dunders by default.
+    With -p, also filter single-underscore (private) attributes."""
+    import rich
+    filter_private = False
+    if arg.startswith("-p ") or arg == "-p":
+        filter_private = True
+        arg = arg[3:].strip()
+    if not arg:
+        self.error("Usage: dir [-p] <expression>")
+        return
+    val = self._getval(arg)
+    if filter_private:
+        attrs = [x for x in dir(val) if not x.startswith("_")]
+    else:
+        attrs = [x for x in dir(val) if not x.startswith("__")]
+    rich.print(attrs)
+
 Pdb.do_ft = do_findtest
-Pdb.do_bottommost = do_bottommost
 Pdb.do_bm = do_bottommost
+Pdb.do_ft = do_findtest
+Pdb.do_bm = do_bottommost
+Pdb.do_yank = do_yank
+Pdb.do_pank = do_pank
+Pdb.do_jsonpank = do_jsonpank
+Pdb.do_diffyank = do_diffyank
+Pdb.do_dir = do_dir
