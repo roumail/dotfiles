@@ -131,6 +131,7 @@ mkdir -p "$HOME/.vim"
 mkdir -p "$HOME/.vim/backup"
 mkdir -p "$HOME/.vim/swap"
 
+# TODO: everything.fzf: docker.fzf, pr.fzf and rg.fzf from everything.fzf aren't linked automatically
 if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
   curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
