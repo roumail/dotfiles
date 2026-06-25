@@ -137,8 +137,17 @@ rename_note() {
     old_file="$1"
     old_name="${old_file%.$NOTE_EXT}"
 
-    if ! read -e -i "$old_name" -r -p "Rename $old_name -> " new_name; then
-        return
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS - doesn't have -i
+        printf "Rename %s -> " "$old_name"
+        if ! read -r new_name; then
+            return
+        fi
+    else
+        # Linux - use GNU bash's -i option
+        if ! read -e -i "$old_name" -r -p "Rename $old_name -> " new_name; then
+            return
+        fi
     fi
 
     # snapshot old pin state before rename
