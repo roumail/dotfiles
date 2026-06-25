@@ -3,6 +3,3 @@
 
 # Vi editing mode
 set -o vi
-
-# Starship prompt initialization
-eval "$(starship init bash)"
