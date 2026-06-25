@@ -14,6 +14,8 @@ DOT_CONFIG_SRC="$DOTFILES_DIR/config"
 DOT_CONFIG_DST="$HOME/.config"
 SHELL_CONFIG_DEST="$DOT_CONFIG_DST/shell"
 USER_SHELL=$(basename "$SHELL")
+PROJECTS_DIR="$HOME/projects"
+EVERYTHING_FZF_DIR="$PROJECTS_DIR/everything.fzf"
 
 # 0. Bootstrap (pure shell)
 [ -r "$SHELL_CONFIG_SRC/lib/bootstrap.sh" ] && . "$SHELL_CONFIG_SRC/lib/bootstrap.sh"
@@ -34,21 +36,20 @@ install_local_file_from_example() {
 install_dotconfig_dirs() {
   echo "Symlinking .config app directories..."
 
-  # TODO: disable alacritty?
-  # alacritty (platform-specific)
-  mkdir -p "$DOT_CONFIG_DST/alacritty"
-  case "$(uname)" in
-    Darwin|Linux)
-      link_file \
-        "$DOT_CONFIG_SRC/alacritty/alacritty.unix.toml" \
-        "$DOT_CONFIG_DST/alacritty/alacritty.toml"
-      ;;
-    MINGW*|MSYS*|CYGWIN*)
-      link_file \
-        "$DOT_CONFIG_SRC/alacritty/alacritty.win.toml" \
-        "$DOT_CONFIG_DST/alacritty/alacritty.toml"
-      ;;
-  esac
+  # # alacritty (platform-specific)
+  # mkdir -p "$DOT_CONFIG_DST/alacritty"
+  # case "$(uname)" in
+  #   Darwin|Linux)
+  #     link_file \
+  #       "$DOT_CONFIG_SRC/alacritty/alacritty.unix.toml" \
+  #       "$DOT_CONFIG_DST/alacritty/alacritty.toml"
+  #     ;;
+  #   MINGW*|MSYS*|CYGWIN*)
+  #     link_file \
+  #       "$DOT_CONFIG_SRC/alacritty/alacritty.win.toml" \
+  #       "$DOT_CONFIG_DST/alacritty/alacritty.toml"
+  #     ;;
+  # esac
 
   # bat
   mkdir -p "$DOT_CONFIG_DST/bat"
@@ -142,7 +143,23 @@ mkdir -p "$HOME/.vim"
 mkdir -p "$HOME/.vim/backup"
 mkdir -p "$HOME/.vim/swap"
 
-# TODO: everything.fzf: docker.fzf, pr.fzf and rg.fzf from everything.fzf aren't linked automatically
+# Add fzf helpers
+mkdir -p "$PROJECTS_DIR"
+if [ ! -d "$EVERYTHING_FZF_DIR/.git" ]; then
+  git clone https://github.com/roumail/everything.fzf "$EVERYTHING_FZF_DIR"
+else
+  git -C "$EVERYTHING_FZF_DIR" pull --ff-only || true
+fi
+
+mkdir -p "$HOME/.local/bin"
+for tool in docker.fzf pr.fzf rg.fzf; do
+  if [ -f "$EVERYTHING_FZF_DIR/$tool" ]; then
+    link_file "$EVERYTHING_FZF_DIR/$tool" "$HOME/.local/bin/$tool"
+  else
+    echo "  ⚠ Not found in everything.fzf: $tool"
+  fi
+done
+
 if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
   curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
