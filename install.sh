@@ -17,6 +17,46 @@ USER_SHELL=$(basename "$SHELL")
 PROJECTS_DIR="$HOME/projects"
 EVERYTHING_FZF_DIR="$PROJECTS_DIR/everything.fzf"
 
+check_required_tools() {
+  local required_tools=("fzf" "uv" "bat" "starship" "wezterm" "git" "vim" "curl" "fd" "rg")
+  local os_tools=()
+
+  case "$(uname)" in
+    Darwin)
+      os_tools+=("brew")
+      ;;
+    Linux)
+      :
+      ;;
+  esac
+
+  local missing_tools=()
+
+  for tool in "${required_tools[@]}" "${os_tools[@]}"; do
+    if ! command -v "$tool" >/dev/null 2>&1; then
+      missing_tools+=("$tool")
+    fi
+  done
+
+  if [ ${#missing_tools[@]} -gt 0 ]; then
+    echo "✗ Installation failed: required tools not found:"
+    printf "  - %s\n" "${missing_tools[@]}"
+    exit 1
+  fi
+}
+
+# Detect which shell RC we’re installing
+if [ "$USER_SHELL" = "zsh" ]; then
+  RC_FILE="$HOME/.zshrc"
+  SHELL_NAME="zsh"
+else
+  RC_FILE="$HOME/.bashrc"
+  SHELL_NAME="bash"
+fi
+
+# Check required tools FIRST, before any side effects
+check_required_tools
+
 # 0. Bootstrap (pure shell)
 [ -r "$SHELL_CONFIG_SRC/lib/bootstrap.sh" ] && . "$SHELL_CONFIG_SRC/lib/bootstrap.sh"
 
@@ -59,7 +99,7 @@ install_dotconfig_dirs() {
   mkdir -p "$DOT_CONFIG_DST/wezterm"
   link_tree "$DOT_CONFIG_SRC/wezterm" "$DOT_CONFIG_DST/wezterm"
 }
-#
+
 # Create ~/.config if it doesn't exist
 mkdir -p "$DOT_CONFIG_DST"
 
@@ -74,15 +114,6 @@ for example_file in "$SHELL_CONFIG_DEST/local/"*.example; do
   target_file="${example_file%.example}"
   install_local_file_from_example "$example_file" "$target_file"
 done
-
-# Detect which shell RC we’re installing
-if [ "$USER_SHELL" = "zsh" ]; then
-  RC_FILE="$HOME/.zshrc"
-  SHELL_NAME="zsh"
-else
-  RC_FILE="$HOME/.bashrc"
-  SHELL_NAME="bash"
-fi
 
 echo "Installing $SHELL_NAME entrypoint: $RC_FILE"
 
@@ -103,6 +134,7 @@ BOOTLOADER="\$SHELL_CONFIG_BASE/init.sh"
 EOF
 
 echo "✓ Installed new $RC_FILE"
+
 # Symlink dotfiles from dots/ to $HOME
 echo ""
 echo "Symlinking dotfiles..."
@@ -143,7 +175,17 @@ mkdir -p "$HOME/.vim"
 mkdir -p "$HOME/.vim/backup"
 mkdir -p "$HOME/.vim/swap"
 
+
+if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
+  curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+fi
+link_tree "$VIM_CONFIG_SRC" "$HOME/.vim"
+link_file "$VIM_CONFIG_SRC/.vimrc" "$HOME/.vimrc"
+
 # Add fzf helpers
+echo ""
+echo "Setting up everything.fzf..."
 mkdir -p "$PROJECTS_DIR"
 if [ ! -d "$EVERYTHING_FZF_DIR/.git" ]; then
   git clone https://github.com/roumail/everything.fzf "$EVERYTHING_FZF_DIR"
@@ -160,13 +202,6 @@ for tool in docker.fzf pr.fzf rg.fzf; do
   fi
 done
 
-if [ ! -f "$HOME/.vim/autoload/plug.vim" ]; then
-  curl -fLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-fi
-link_tree "$VIM_CONFIG_SRC" "$HOME/.vim"
-link_file "$VIM_CONFIG_SRC/.vimrc" "$HOME/.vimrc"
-
 echo ""
 echo "Setting up tmux..."
 
@@ -175,7 +210,6 @@ mkdir -p "$HOME/.tmux/resurrect"
 
 # Link tmux.conf
 link_file "$TMUX_CONFIG_SRC/.tmux.conf" "$HOME/.tmux.conf"
-
 
 echo ""
 echo "Setting up .config.."
