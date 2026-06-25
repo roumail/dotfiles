@@ -38,7 +38,7 @@ elif [ -n "$BASH_VERSION" ]; then
 fi
 
 echo "Loading shell config for $SHELL_NAME"
-# 2. Bash-specific
+# 2. Shell-specific
 source_dir "$BASE/$SHELL_NAME"
 
 # 3. Shared plugins (fzf, etc.)
