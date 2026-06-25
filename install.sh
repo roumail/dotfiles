@@ -102,7 +102,6 @@ BOOTLOADER="\$SHELL_CONFIG_BASE/init.sh"
 EOF
 
 echo "✓ Installed new $RC_FILE"
-# TODO: respect bash vs zsh (for example .inputrc)
 # Symlink dotfiles from dots/ to $HOME
 echo ""
 echo "Symlinking dotfiles..."
@@ -111,7 +110,18 @@ for dotfile in "$SHELL_CONFIG_SRC/dots/".??*; do
   filename=$(basename "$dotfile")
   link_file "$dotfile" "$HOME/$filename"
 done
-
+echo ""
+echo "Symlinking shell-specific dotfiles..."
+case "$SHELL_NAME" in
+  bash)
+    if [ -f "$SHELL_CONFIG_SRC/bash/dots/.inputrc" ]; then
+      link_file "$SHELL_CONFIG_SRC/bash/dots/.inputrc" "$HOME/.inputrc"
+    fi
+    ;;
+  zsh)
+    # Add zsh-only links here if needed later
+    ;;
+esac
 echo "Symlinking .config files..."
 
 for config in "$SHELL_CONFIG_SRC/dotconfig/"*; do
