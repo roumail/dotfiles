@@ -50,8 +50,5 @@ case "$(uname)" in
   Linux)  source_if_exists "$BASE/os/linux.sh" ;;
 esac
 
-# 5. Shell specific plugins
-source_dir "$BASE/$SHELL_NAME/plugins"
-
-# 6. Local overrides
+# 5. Local overrides
 source_dir "$BASE/local"
