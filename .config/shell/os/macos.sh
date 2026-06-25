@@ -15,7 +15,7 @@ setopt interactivecomments
 
 # source_if_exists /usr/share/bash-completion/completions/git
 source <(fzf --zsh)
-eval "$(rbenv init - zsh)"
+#eval "$(rbenv init - zsh)"
 eval "$(starship init zsh)"
 # brew install zsh-vi-mode
 source $(brew --prefix)/opt/zsh-vi-mode/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh

@@ -2,7 +2,7 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 -- config.color_scheme = 'Batman'
-config.font_size = 12
+config.font_size = 16
 config.font = wezterm.font 'JetBrains Mono'
 -- leader a perhaps so it doesn't clash with tmux
 config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
