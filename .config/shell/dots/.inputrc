@@ -1,5 +1,5 @@
 $include /etc/inputrc
-
+# TODO: This should only be linked on bash and not on mac
 set editing-mode vi
 set show-mode-in-prompt on
 # Better completion UX

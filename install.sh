@@ -102,6 +102,7 @@ BOOTLOADER="\$SHELL_CONFIG_BASE/init.sh"
 EOF
 
 echo "✓ Installed new $RC_FILE"
+# TODO: respect bash vs zsh (for example .inputrc)
 # Symlink dotfiles from dots/ to $HOME
 echo ""
 echo "Symlinking dotfiles..."
