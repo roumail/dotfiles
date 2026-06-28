@@ -46,9 +46,12 @@ case "$(uname)" in
   Linux)  source_if_exists "$BASE/os/linux.sh" ;;
 esac
 
-# 3. Shell-specific (requires tools installation)
+# 3. Shell-specific: load in dependency order
 # wezterm, fzf, starship
-source_dir "$BASE/$SHELL_NAME"
+for _f in tools.sh completion.sh prompt.sh keybindings.sh; do
+  source_if_exists "$BASE/$SHELL_NAME/$_f"
+done
+unset _f
 
 # 4. Shared plugins (currently only fzf)
 source_dir "$BASE/plugins"
