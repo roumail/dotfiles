@@ -1,5 +1,4 @@
 $include /etc/inputrc
-# TODO: This should only be linked on bash and not on mac
 set editing-mode vi
 set show-mode-in-prompt on
 # Better completion UX
@@ -30,6 +29,6 @@ set completion-prefix-display-length 2
 set colored-stats on
 set visible-stats on
 
-# Bell → off 
+# Bell → off
 set bell-style none
 "\e\C-?": unix-filename-rubout
