@@ -116,7 +116,7 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 " Switch to open buffer
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
-noremap <buffer> <leader>rr <Cmd>call fzf_utils#live_grep#replay()<CR>
+nnoremap <silent> <leader>rr <Cmd>call fzf_utils#live_grep#replay()<CR>
 " Fuzzy search scoped to the current buffer's directory
 nnoremap <silent> <leader>r. <Cmd>execute 'Grep -- ' . expand('%:.:h') . '/'<CR>
 " Line search from project root directory
