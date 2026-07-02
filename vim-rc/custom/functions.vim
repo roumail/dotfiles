@@ -113,3 +113,49 @@ endfunction
 
 command! QuickFixToLocList call setloclist(0, getqflist())
 command! LocListToQuickFix call setqflist(getloclist(0))
+
+" Handle {'foo': True, 'bar': None}
+"  This works but not as a function due to escaping
+"  :%!python3 -c "import ast,json,sys;obj=ast.literal_eval(sys.stdin.read());print(json.dumps(obj,sort_keys=True,indent=2))"
+function! NormalizePythonDict(line1, line2) abort
+  let l:script = 'import ast,json,sys;obj=ast.literal_eval(sys.stdin.read());print(json.dumps(obj,sort_keys=True,indent=2,ensure_ascii=False))'
+  execute a:line1 . ',' . a:line2 . '!python3 -c ' . shellescape(l:script)
+endfunction
+
+" handles '{"foo": true, "bar": null}'
+"  This works but not as a function due to escaping
+"  :%!python3 -c "import ast,json,sys;s=ast.literal_eval(sys.stdin.read());obj=json.loads(s);print(json.dumps(obj,sort_keys=True,indent=2))"
+function! NormalizeJsonString(line1, line2) abort
+  let l:script = 'import ast,json,sys;s=ast.literal_eval(sys.stdin.read());obj=json.loads(s);print(json.dumps(obj,sort_keys=True,indent=2,ensure_ascii=False))'
+  execute a:line1 . ',' . a:line2 . '!python3 -c ' . shellescape(l:script)
+endfunction
+
+command! -range=% NormalizeJsonString call NormalizeJsonString(<line1>, <line2>)
+command! -range=% NormalizePythonDict call NormalizePythonDict(<line1>, <line2>)
+
+function! NormalizeSplitDiff() abort
+  if winnr('$') < 2
+    echoerr 'NormalizeSplitDiff needs at least 2 windows'
+    return
+  endif
+
+  let l:cur = winnr()
+
+  " Left window: JSON string
+  execute '1wincmd w'
+  call NormalizeJsonString(1, line('$'))
+
+  " Right window: Python dict
+  execute '2wincmd w'
+  call NormalizePythonDict(1, line('$'))
+
+  " Diff mode in both
+  execute '1wincmd w'
+  diffthis
+  execute '2wincmd w'
+  diffthis
+
+  execute l:cur . 'wincmd w'
+endfunction
+
+command! NormalizeSplitDiff call NormalizeSplitDiff()
