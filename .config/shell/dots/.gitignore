@@ -5,3 +5,5 @@ notebooks/
 pgadmin-data/
 .pdbrc
 .vim.custom
+
+**/.claude/settings.local.json

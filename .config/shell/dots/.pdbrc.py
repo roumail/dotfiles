@@ -104,19 +104,59 @@ def do_jsonpank(self, arg):
     c.print(parsed)
     _copy_text(c.export_text())
 
+def _char_diff(left, right):
+    import difflib
+    from rich.text import Text
+
+    matcher = difflib.SequenceMatcher(None, left, right)
+    rich_text = Text()
+    plain_parts = []
+
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == "equal":
+            rich_text.append(left[i1:i2])
+            plain_parts.append(left[i1:i2])
+        elif tag == "delete":
+            rich_text.append(left[i1:i2], style="red strike")
+            plain_parts.append(f"[-{left[i1:i2]}-]")
+        elif tag == "insert":
+            rich_text.append(right[j1:j2], style="green")
+            plain_parts.append(f"{{+{right[j1:j2]}+}}")
+        elif tag == "replace":
+            rich_text.append(left[i1:i2], style="red strike")
+            rich_text.append(right[j1:j2], style="green")
+            plain_parts.append(f"[-{left[i1:i2]}-]{{+{right[j1:j2]}+}}")
+
+    return rich_text, "".join(plain_parts)
+
 def do_diffyank(self, arg):
-    """diffyank <left_expr> -- <right_expr>\n    Unified diff two expressions and copy result to clipboard."""
+    """diffyank [-c] <left_expr> -- <right_expr>
+    Diff two expressions and copy result to clipboard.
+    Default is a unified line diff. With -c, diff char-wise instead."""
+    charwise = False
+    if arg == "-c" or arg.startswith("-c "):
+        charwise = True
+        arg = arg[2:].strip()
+
     if "--" not in arg:
-        self.error("Usage: diffyank <left_expr> -- <right_expr>")
+        self.error("Usage: diffyank [-c] <left_expr> -- <right_expr>")
         return
     left_expr, right_expr = [x.strip() for x in arg.split("--", 1)]
     if not left_expr or not right_expr:
-        self.error("Usage: diffyank <left_expr> -- <right_expr>")
+        self.error("Usage: diffyank [-c] <left_expr> -- <right_expr>")
+        return
+
+    left = str(self._getval(left_expr))
+    right = str(self._getval(right_expr))
+
+    if charwise:
+        rich_text, plain_text = _char_diff(left, right)
+        from rich.console import Console
+        Console().print(rich_text)
+        _copy_text(plain_text)
         return
 
     import difflib
-    left = str(self._getval(left_expr))
-    right = str(self._getval(right_expr))
     diff_text = "\n".join(
         difflib.unified_diff(
             left.splitlines(),

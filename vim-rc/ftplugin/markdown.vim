@@ -93,15 +93,20 @@ endfunction
 " ---------------------------------------------------------------------
 function! s:GlowPreview() abort
   if g:markdown_glow_live_preview
+    if !executable('entr')
+      echohl WarningMsg
+      echom 'Glow live preview requires entr (not found on PATH); falling back to static preview.'
+      echohl None
+    else
+      if s:is_tmux
+        call s:GlowLivePreviewTmux()
+        return
+      endif
 
-    if s:is_tmux
-      call s:GlowLivePreviewTmux()
-      return
-    endif
-
-    if s:is_wezterm
-      call s:GlowLivePreviewWezterm()
-      return
+      if s:is_wezterm
+        call s:GlowLivePreviewWezterm()
+        return
+      endif
     endif
   endif
 
@@ -118,7 +123,7 @@ function! s:SetupMarkdownKeymaps() abort
   nnoremap <buffer> <localleader>P :call <SID>ToggleGlowPreviewMode()<CR>
 endfunction
 
-if executable('glow') && executable('entr')
+if executable('glow')
   let s:wezterm_bin = ''
 
   if executable('wezterm')
