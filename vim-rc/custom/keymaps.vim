@@ -256,6 +256,7 @@ tnoremap <Esc>h <C-w>h
 tnoremap <Esc>j <C-w>j
 tnoremap <Esc>k <C-w>k
 tnoremap <Esc>l <C-w>l
+tnoremap <silent> <Esc>pp <C-w>:q!<CR>
 
 " }}}
 
