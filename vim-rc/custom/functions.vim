@@ -114,6 +114,26 @@ endfunction
 command! QuickFixToLocList call setloclist(0, getqflist())
 command! LocListToQuickFix call setqflist(getloclist(0))
 
+function! s:NextFoldMarkerNumber() abort
+  let s:fold_marker_counter += 1
+  return s:fold_marker_counter
+endfunction
+
+" Numbers {{{ fold markers as {{{ (1/3), {{{ (2/3), ... for easy navigation
+function! NumberFoldMarkers() abort
+  let l:total = str2nr(matchstr(execute('%s/{{{//gn'), '\d\+'))
+  let s:fold_marker_counter = 0
+  execute '%s#{{{#\="{{{ (" . s:NextFoldMarkerNumber() . "/" . l:total . ")"#g'
+endfunction
+
+" Strips the (n/total) suffix added by NumberFoldMarkers back to plain {{{
+function! StripFoldMarkerNumbers() abort
+  %s/\({{{\) (\d\+\/\d\+)/\1/g
+endfunction
+
+command! NumberFoldMarkers call NumberFoldMarkers()
+command! StripFoldMarkerNumbers call StripFoldMarkerNumbers()
+
 " Handle {'foo': True, 'bar': None}
 "  This works but not as a function due to escaping
 "  :%!python3 -c "import ast,json,sys;obj=ast.literal_eval(sys.stdin.read());print(json.dumps(obj,sort_keys=True,indent=2))"
