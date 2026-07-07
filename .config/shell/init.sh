@@ -37,24 +37,24 @@ elif [ -n "$BASH_VERSION" ]; then
   SHELL_NAME="bash"
 fi
 
+# 2. Shared plugins (currently only fzf)
+source_dir "$BASE/plugins"
+
 echo "Loading shell config for $SHELL_NAME"
 
-# 2. OS-specific
+# 3. OS-specific
 # wezterm, fzf, starship
 case "$(uname)" in
   Darwin) source_if_exists "$BASE/os/macos.sh" ;;
   Linux)  source_if_exists "$BASE/os/linux.sh" ;;
 esac
 
-# 3. Shell-specific: load in dependency order
+# 4. Shell-specific: load in dependency order
 # wezterm, fzf, starship
 for _f in tools.sh completion.sh prompt.sh keybindings.sh; do
   source_if_exists "$BASE/$SHELL_NAME/$_f"
 done
 unset _f
-
-# 4. Shared plugins (currently only fzf)
-source_dir "$BASE/plugins"
 
 # 5. Local overrides - what you want installed last
 source_dir "$BASE/local"
