@@ -4,13 +4,17 @@ let s:last_args = []
 function! fzf_utils#live_grep#replay() abort
   " Injected via autocommand from maintained fzf fork
   let l:query = getreg('/')
+
+  " Get only the options from the last run, discard the old pattern.
+  let [l:pattern, l:options] = s:split_args(s:last_args)
+
   call call(
         \ 'fzf_utils#live_grep#interactive',
-        \ [s:last_bang, l:query] + s:last_args
+        \ [s:last_bang, l:query] + l:options
         \ )
 endfunction
 
-function! fzf_utils#live_grep#parse_args(arg_list) abort
+function! s:split_args(arg_list) abort
   let sep = index(a:arg_list, '--')
 
   " Step 1: Split into pattern and options based on --
@@ -27,6 +31,12 @@ function! fzf_utils#live_grep#parse_args(arg_list) abort
     let pattern = join(a:arg_list[:sep-1], ' ')
     let options = a:arg_list[sep+1:]
   endif
+  return [pattern, options]
+endfunction
+
+function! fzf_utils#live_grep#parse_args(arg_list) abort
+  " Step 1: Split into pattern and options based on --
+  let [pattern, options] = s:split_args(a:arg_list)
 
   " Step 2: Separate options into paths (trailing /) and rg flags
   let rg_options = []
