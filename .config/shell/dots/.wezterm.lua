@@ -143,11 +143,11 @@ local my_keys = {
     mods = "ALT",
     action = wezterm.action.ActivateCommandPalette,
   },
-  {
-    key = "Enter",
-    mods = "ALT",
-    action = wezterm.action.ToggleFullScreen,
-  },
+  -- {
+  --   key = "Enter",
+  --   mods = "ALT",
+  --   action = wezterm.action.ToggleFullScreen,
+  -- },
   {
     key = "c",
     mods = "CMD",

@@ -19,7 +19,7 @@ EVERYTHING_FZF_DIR="$PROJECTS_DIR/everything.fzf"
 
 check_required_tools() {
   # cargo, npm, coreutils (mac - tac)
-  local required_tools=("fzf" "uv" "bat" "starship" "wezterm" "git" "vim" "curl" "fd" "rg" "delta")
+  local required_tools=("fzf" "uv" "bat" "starship" "wezterm" "git" "vim" "curl" "fd" "rg" "delta" "gh")
   local os_tools=()
 
   case "$(uname)" in
