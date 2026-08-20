@@ -1,3 +1,4 @@
+uv.lock
 .venv/
 .ipynb_checkpoints/
 docker-compose.override*
