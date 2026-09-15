@@ -26,6 +26,11 @@ if command -v notes.sh >/dev/null 2>&1; then
     alias n='notes.sh'
 fi
 
+if command -v aider >/dev/null 2>&1; then
+    alias ad='aider --chat-mode ask'
+    alias AD='aider --chat-mode architect'
+fi
+
 # ls aliases
 alias l='ls $LS_OPTIONS -lA'
 alias ll='ls $LS_OPTIONS -alF'
