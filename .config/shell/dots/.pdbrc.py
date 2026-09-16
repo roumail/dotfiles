@@ -26,6 +26,7 @@ class Config(DefaultConfig):
     sticky_by_default = True
     # The 256 colour formatter prints very dark function names:
     use_terminal256formatter = True
+    truncate_long_lines = False
 
 def displayhook(self, obj):
     """If the type defines its own pprint method, use it on its instances."""
