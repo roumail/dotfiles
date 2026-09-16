@@ -1,9 +1,13 @@
 import inspect
+import rich
+from rich.console import Console
 from pdb import DefaultConfig, Pdb
 from pprint import pprint
 from functools import lru_cache
 import subprocess
 import shutil
+
+_console = Console()
 
 # win32yank for wsl
 @lru_cache(maxsize=1)
@@ -33,10 +37,10 @@ def displayhook(self, obj):
     ):
         pprint_impl()
     else:
-        # Use rich for pretty printing instead of pprint
-        from rich.console import Console
-        Console().print(obj)
-        # pprint(obj)
+        try:
+            _console.print(obj)
+        except Exception:
+            print(repr(obj))
 
 Pdb.displayhook = displayhook
 
@@ -173,7 +177,6 @@ def do_dir(self, arg):
     """dir [-p] <expression>
     List attributes of expression, filtering dunders by default.
     With -p, also filter single-underscore (private) attributes."""
-    import rich
     filter_private = False
     if arg.startswith("-p ") or arg == "-p":
         filter_private = True
@@ -190,10 +193,10 @@ def do_dir(self, arg):
 
 Pdb.do_ft = do_findtest
 Pdb.do_bm = do_bottommost
-Pdb.do_ft = do_findtest
-Pdb.do_bm = do_bottommost
 Pdb.do_yank = do_yank
 Pdb.do_pank = do_pank
 Pdb.do_jsonpank = do_jsonpank
 Pdb.do_diffyank = do_diffyank
 Pdb.do_dir = do_dir
+Pdb.do_watch = Pdb.do_display
+Pdb.do_unwatch = Pdb.do_undisplay
