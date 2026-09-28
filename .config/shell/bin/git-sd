@@ -1,0 +1,24 @@
+#!/bin/bash
+# Sync default branch (main/master) from origin without checking it out
+
+set -euo pipefail
+
+# Load git helper functions
+BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
+[ -r "$BASE/common/git.sh" ] && . "$BASE/common/git.sh"
+
+BRANCH=$(git_get_default_branch)
+
+if [ -z "$BRANCH" ]; then
+    echo "Error: Could not detect default branch"
+    exit 1
+fi
+
+# git refuses to fetch into the currently checked-out branch
+if [ "$(git branch --show-current)" = "$BRANCH" ]; then
+    echo "On $BRANCH, pulling..."
+    git pull --ff-only origin "$BRANCH"
+else
+    echo "Updating $BRANCH from origin..."
+    git fetch origin "$BRANCH:$BRANCH"
+fi
