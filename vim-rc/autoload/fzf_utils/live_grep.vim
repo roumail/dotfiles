@@ -10,7 +10,7 @@ function! fzf_utils#live_grep#replay() abort
 
   call call(
         \ 'fzf_utils#live_grep#interactive',
-        \ [s:last_bang, l:query] + l:options
+        \ [s:last_bang, l:query, '--'] + l:options
         \ )
 endfunction
 

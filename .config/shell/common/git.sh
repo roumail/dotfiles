@@ -7,27 +7,28 @@ git_get_bare_dir() {
     echo "$bare_dir"
 }
 
+# Default branch (main/master). Optional arg: git dir (e.g. the bare repo).
+# Prefers origin/HEAD, since in a non-bare repo HEAD is just the current branch.
 git_get_default_branch() {
-    local bare_dir="$1"
+    local g=(git)
+    [ -n "${1:-}" ] && g+=(--git-dir="$1")
     local branch=""
 
-    # Prefer local repo HEAD for bare repo workflows.
-    branch=$(git --git-dir="$bare_dir" symbolic-ref --short HEAD 2>/dev/null)
+    branch=$("${g[@]}" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@')
 
-    # If HEAD is unavailable, try common default branch names.
     if [ -z "$branch" ]; then
         for candidate in main master; do
-            if git --git-dir="$bare_dir" show-ref --verify --quiet "refs/heads/$candidate" || \
-               git --git-dir="$bare_dir" show-ref --verify --quiet "refs/remotes/origin/$candidate"; then
+            if "${g[@]}" show-ref --verify --quiet "refs/remotes/origin/$candidate" || \
+               "${g[@]}" show-ref --verify --quiet "refs/heads/$candidate"; then
                 branch="$candidate"
                 break
             fi
         done
     fi
 
-    # Last fallback: origin/HEAD if it exists.
-    if [ -z "$branch" ]; then
-        branch=$(git --git-dir="$bare_dir" symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+    # Last fallback: HEAD, but only in a bare repo where it isn't a checkout.
+    if [ -z "$branch" ] && [ "$("${g[@]}" rev-parse --is-bare-repository 2>/dev/null)" = "true" ]; then
+        branch=$("${g[@]}" symbolic-ref --short HEAD 2>/dev/null)
     fi
 
     echo "$branch"
@@ -41,5 +42,3 @@ git_get_worktree_path() {
       --format='%(worktreepath)' \
       "refs/heads/$branch" | head -n1
 }
-
-
