@@ -268,6 +268,8 @@ def do_dir(self, arg):
 # goes silent as soon as you step into another function or hit the next
 # breakpoint. `watch` is process-wide: every stop prints every watched
 # expression evaluated in the current frame.
+# Guarded because this file runs again whenever pdbpp builds a fresh Pdb (e.g.
+# `debug`); re-capturing preloop then would make _preloop wrap itself.
 if not hasattr(Pdb, "_watches"):
     Pdb._watches = {}  # expr -> last repr
     Pdb._orig_preloop = Pdb.preloop
