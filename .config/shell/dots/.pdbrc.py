@@ -189,24 +189,9 @@ def _parse_two_exprs(self, arg, usage):
         return None
     return left_expr, right_expr
 
-def do_diffyank(self, arg):
-    """diffyank [-r] <expected_expr> -- <actual_expr>
-    Print a unified diff and copy it to the clipboard. Dicts/lists (or strings
-    holding JSON / Python literals) are normalized to sorted, indented JSON first;
-    other values are diffed as str(). With -r, always diff str() as-is."""
-    raw = False
-    if arg == "-r" or arg.startswith("-r "):
-        raw = True
-        arg = arg[2:].strip()
-    exprs = _parse_two_exprs(self, arg, "Usage: diffyank [-r] <expected_expr> -- <actual_expr>")
-    if not exprs:
-        return
-    left_val, right_val = self._getval(exprs[0]), self._getval(exprs[1])
-    fmt = str if raw else _normalize
-    left, right = fmt(left_val), fmt(right_val)
-
+def _unified_diff(left, right):
     import difflib
-    diff_text = "\n".join(
+    return "\n".join(
         difflib.unified_diff(
             left.splitlines(),
             right.splitlines(),
@@ -215,20 +200,68 @@ def do_diffyank(self, arg):
             lineterm="",
         )
     )
+
+def do_pdiff(self, arg):
+    """pdiff [-r] [-y] <expected_expr> -- <actual_expr>
+    Unified diff shown through delta (changed words highlighted, styled by your
+    gitconfig [delta] section), or plain if delta isn't installed. Dicts/lists
+    (or strings holding JSON / Python literals) are normalized to sorted,
+    indented JSON first; other values are diffed as str().
+    -r  diff str() as-is, no normalization
+    -y  also copy the (plain text) diff to the clipboard"""
+    usage = "Usage: pdiff [-r] [-y] <expected_expr> -- <actual_expr>"
+    raw = yank = False
+    words = arg.split(" ")
+    while words and words[0].startswith("-") and words[0] != "--" and set(words[0][1:]) <= {"r", "y"}:
+        raw |= "r" in words[0]
+        yank |= "y" in words[0]
+        words.pop(0)
+    exprs = _parse_two_exprs(self, " ".join(words), usage)
+    if not exprs:
+        return
+    left_val, right_val = self._getval(exprs[0]), self._getval(exprs[1])
+    fmt = str if raw else _normalize
+    diff_text = _unified_diff(fmt(left_val), fmt(right_val))
     if diff_text:
-        self.message(diff_text)
-        _copy_text(diff_text)
+        if shutil.which("delta"):
+            self.stdout.flush()
+            subprocess.run(["delta", "--paging=never"], input=diff_text.encode())
+        else:
+            self.message(diff_text)
+        if yank:
+            _copy_text(diff_text)
     elif not raw and str(left_val) != str(right_val):
         # JSON collapses 1/"1" and tuple/list; don't let that pass silently
-        self.message("(equal after normalization, but str() differs; try diffyank -r)")
+        self.message("(equal after normalization, but str() differs; try pdiff -r)")
     else:
         self.message("(no differences)")
 
+def _open_diff(self, paths):
+    """Show paths side by side without blocking pdb, wherever pdb is running."""
+    import json
+    import shlex
+    if os.environ.get("VIM_TERMINAL"):
+        # Inside a vim :terminal (chkpyt.sh via Start!): ask the outer vim to call
+        # Tapi_PdbDiff (vim-rc/custom/functions.vim), see :h terminal-api
+        self.stdout.write("\x1b]51;" + json.dumps(["call", "Tapi_PdbDiff", paths]) + "\x07")
+        self.stdout.flush()
+        return True
+    vim_cmd = ["vim", "-d", *paths]
+    if os.environ.get("TMUX"):
+        subprocess.run(["tmux", "new-window", "-n", "pdb-diff", shlex.join(vim_cmd)])
+        return True
+    wezterm = shutil.which("wezterm") or shutil.which("wezterm.exe")
+    if wezterm and (os.environ.get("TERM_PROGRAM") == "WezTerm" or os.environ.get("WEZTERM_PANE")):
+        subprocess.run([wezterm, "cli", "spawn", "--", *vim_cmd], stdout=subprocess.DEVNULL)
+        return True
+    subprocess.run([os.environ.get("EDITOR") or "vim", "-d", *paths])
+    return False
+
 def do_vdiff(self, arg):
     """vdiff <expected_expr> -- <actual_expr>
-    Normalize both sides like diffyank and open them in `$EDITOR -d`
-    (expected left, actual right).
-    Quit vim to return to pdb."""
+    Normalize both sides like pdiff and diff them (expected left, actual right):
+    in a reused vim tab when pdb runs in a vim :terminal, else a tmux window or
+    wezterm tab, else a blocking `$EDITOR -d`."""
     exprs = _parse_two_exprs(self, arg, "Usage: vdiff <expected_expr> -- <actual_expr>")
     if not exprs:
         return
@@ -242,9 +275,9 @@ def do_vdiff(self, arg):
         with open(path, "w") as f:
             f.write(_normalize(self._getval(expr)) + "\n")
         paths.append(path)
-    editor = os.environ.get("EDITOR") or "vim"
-    subprocess.run([editor, "-d", *paths])
-    shutil.rmtree(tmpdir, ignore_errors=True)
+    # the non-blocking viewers read the files after we return; leave them to the OS
+    if not _open_diff(self, paths):
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 def do_dir(self, arg):
     """dir [-p] <expression>
@@ -321,7 +354,7 @@ Pdb.do_pank = do_pank
 Pdb.do_jsonpank = do_jsonpank
 Pdb.do_yline = do_yline
 Pdb.do_yloc = do_yloc
-Pdb.do_diffyank = do_diffyank
+Pdb.do_pdiff = do_pdiff
 Pdb.do_vdiff = do_vdiff
 Pdb.do_dir = do_dir
 Pdb.do_watch = do_watch
