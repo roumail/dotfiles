@@ -222,6 +222,8 @@ local my_keys = {
   { key = "l", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Right" },
 
   -- Swapping Windows: https://github.com/sei40kr/wez-pain-control/blob/main/plugin/init.lua
+  -- Ctrl+Backspace deletes a word, same as Alt+Backspace (as in alacritty config)
+  { key = "Backspace", mods = "CTRL", action = wezterm.action.SendString "\x1b\x7f" },
   { key = "<", mods = "LEADER|SHIFT", action = wezterm.action.MoveTabRelative(-1) },
   { key = ">", mods = "LEADER|SHIFT", action = wezterm.action.MoveTabRelative(1) },
   {
