@@ -152,30 +152,3 @@ endfunction
 
 command! -range=% NormalizeJsonString call NormalizeJsonString(<line1>, <line2>)
 command! -range=% NormalizePythonDict call NormalizePythonDict(<line1>, <line2>)
-
-function! NormalizeSplitDiff() abort
-  if winnr('$') < 2
-    echoerr 'NormalizeSplitDiff needs at least 2 windows'
-    return
-  endif
-
-  let l:cur = winnr()
-
-  " Left window: JSON string
-  execute '1wincmd w'
-  call NormalizeJsonString(1, line('$'))
-
-  " Right window: Python dict
-  execute '2wincmd w'
-  call NormalizePythonDict(1, line('$'))
-
-  " Diff mode in both
-  execute '1wincmd w'
-  diffthis
-  execute '2wincmd w'
-  diffthis
-
-  execute l:cur . 'wincmd w'
-endfunction
-
-command! NormalizeSplitDiff call NormalizeSplitDiff()
