@@ -189,68 +189,27 @@ def _parse_two_exprs(self, arg, usage):
         return None
     return left_expr, right_expr
 
-def _render_diff(left, right, context=3):
-    """Unified line diff of two strings as (rich Text, plain text).
-
-    Changed lines are paired up and the characters that differ inside each pair
-    are highlighted, so a one-character change in a long value stands out."""
+def _unified_diff(left, right):
     import difflib
-    from rich.text import Text
+    return "\n".join(
+        difflib.unified_diff(
+            left.splitlines(),
+            right.splitlines(),
+            fromfile="expected",
+            tofile="actual",
+            lineterm="",
+        )
+    )
 
-    a, b = left.splitlines(), right.splitlines()
-    out, plain = Text(), []
-
-    def emit(line, style=""):
-        out.append(line + "\n", style=style)
-        plain.append(line)
-
-    def emit_pair(old, new):
-        sm = difflib.SequenceMatcher(None, old, new, autojunk=False)
-        if sm.ratio() < 0.4:  # unrelated lines: per-char highlights are just noise
-            emit("-" + old, "red")
-            emit("+" + new, "green")
-            return
-        o, n = Text("-", style="red"), Text("+", style="green")
-        for tag, i1, i2, j1, j2 in sm.get_opcodes():
-            same = tag == "equal"
-            o.append(old[i1:i2], style="red" if same else "bold white on red")
-            n.append(new[j1:j2], style="green" if same else "bold white on green")
-        out.append_text(o + Text("\n") + n + Text("\n"))
-        plain.extend(["-" + old, "+" + new])
-
-    groups = list(difflib.SequenceMatcher(None, a, b, autojunk=False).get_grouped_opcodes(context))
-    if not groups:
-        return None, ""
-    emit("--- expected", "bold")
-    emit("+++ actual", "bold")
-    for group in groups:
-        i1, j1 = group[0][1], group[0][3]
-        i2, j2 = group[-1][2], group[-1][4]
-        emit(f"@@ -{i1 + 1},{i2 - i1} +{j1 + 1},{j2 - j1} @@", "cyan")
-        for tag, i1, i2, j1, j2 in group:
-            if tag == "equal":
-                for line in a[i1:i2]:
-                    emit(" " + line, "dim")
-                continue
-            olds, news = a[i1:i2], b[j1:j2]
-            paired = min(len(olds), len(news))
-            for old, new in zip(olds, news):
-                emit_pair(old, new)
-            for old in olds[paired:]:
-                emit("-" + old, "red")
-            for new in news[paired:]:
-                emit("+" + new, "green")
-    out.rstrip()
-    return out, "\n".join(plain)
-
-def do_diff(self, arg):
-    """diff [-r] [-y] <expected_expr> -- <actual_expr>
-    Line diff with the changed characters highlighted. Dicts/lists (or strings
-    holding JSON / Python literals) are normalized to sorted, indented JSON first;
-    other values are diffed as str().
+def do_pdiff(self, arg):
+    """pdiff [-r] [-y] <expected_expr> -- <actual_expr>
+    Unified diff shown through delta (changed words highlighted, styled by your
+    gitconfig [delta] section), or plain if delta isn't installed. Dicts/lists
+    (or strings holding JSON / Python literals) are normalized to sorted,
+    indented JSON first; other values are diffed as str().
     -r  diff str() as-is, no normalization
     -y  also copy the (plain text) diff to the clipboard"""
-    usage = "Usage: diff [-r] [-y] <expected_expr> -- <actual_expr>"
+    usage = "Usage: pdiff [-r] [-y] <expected_expr> -- <actual_expr>"
     raw = yank = False
     words = arg.split(" ")
     while words and words[0].startswith("-") and words[0] != "--" and set(words[0][1:]) <= {"r", "y"}:
@@ -262,14 +221,18 @@ def do_diff(self, arg):
         return
     left_val, right_val = self._getval(exprs[0]), self._getval(exprs[1])
     fmt = str if raw else _normalize
-    rich_diff, plain = _render_diff(fmt(left_val), fmt(right_val))
-    if rich_diff is not None:
-        _console.print(rich_diff, highlight=False, soft_wrap=True)
+    diff_text = _unified_diff(fmt(left_val), fmt(right_val))
+    if diff_text:
+        if shutil.which("delta"):
+            self.stdout.flush()
+            subprocess.run(["delta", "--paging=never"], input=diff_text.encode())
+        else:
+            self.message(diff_text)
         if yank:
-            _copy_text(plain)
+            _copy_text(diff_text)
     elif not raw and str(left_val) != str(right_val):
         # JSON collapses 1/"1" and tuple/list; don't let that pass silently
-        self.message("(equal after normalization, but str() differs; try diff -r)")
+        self.message("(equal after normalization, but str() differs; try pdiff -r)")
     else:
         self.message("(no differences)")
 
@@ -296,7 +259,7 @@ def _open_diff(self, paths):
 
 def do_vdiff(self, arg):
     """vdiff <expected_expr> -- <actual_expr>
-    Normalize both sides like diff and diff them (expected left, actual right):
+    Normalize both sides like pdiff and diff them (expected left, actual right):
     in a reused vim tab when pdb runs in a vim :terminal, else a tmux window or
     wezterm tab, else a blocking `$EDITOR -d`."""
     exprs = _parse_two_exprs(self, arg, "Usage: vdiff <expected_expr> -- <actual_expr>")
@@ -391,7 +354,7 @@ Pdb.do_pank = do_pank
 Pdb.do_jsonpank = do_jsonpank
 Pdb.do_yline = do_yline
 Pdb.do_yloc = do_yloc
-Pdb.do_diff = do_diff
+Pdb.do_pdiff = do_pdiff
 Pdb.do_vdiff = do_vdiff
 Pdb.do_dir = do_dir
 Pdb.do_watch = do_watch
