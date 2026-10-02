@@ -189,46 +189,116 @@ def _parse_two_exprs(self, arg, usage):
         return None
     return left_expr, right_expr
 
-def do_diffyank(self, arg):
-    """diffyank [-r] <expected_expr> -- <actual_expr>
-    Print a unified diff and copy it to the clipboard. Dicts/lists (or strings
+def _render_diff(left, right, context=3):
+    """Unified line diff of two strings as (rich Text, plain text).
+
+    Changed lines are paired up and the characters that differ inside each pair
+    are highlighted, so a one-character change in a long value stands out."""
+    import difflib
+    from rich.text import Text
+
+    a, b = left.splitlines(), right.splitlines()
+    out, plain = Text(), []
+
+    def emit(line, style=""):
+        out.append(line + "\n", style=style)
+        plain.append(line)
+
+    def emit_pair(old, new):
+        sm = difflib.SequenceMatcher(None, old, new, autojunk=False)
+        if sm.ratio() < 0.4:  # unrelated lines: per-char highlights are just noise
+            emit("-" + old, "red")
+            emit("+" + new, "green")
+            return
+        o, n = Text("-", style="red"), Text("+", style="green")
+        for tag, i1, i2, j1, j2 in sm.get_opcodes():
+            same = tag == "equal"
+            o.append(old[i1:i2], style="red" if same else "bold white on red")
+            n.append(new[j1:j2], style="green" if same else "bold white on green")
+        out.append_text(o + Text("\n") + n + Text("\n"))
+        plain.extend(["-" + old, "+" + new])
+
+    groups = list(difflib.SequenceMatcher(None, a, b, autojunk=False).get_grouped_opcodes(context))
+    if not groups:
+        return None, ""
+    emit("--- expected", "bold")
+    emit("+++ actual", "bold")
+    for group in groups:
+        i1, j1 = group[0][1], group[0][3]
+        i2, j2 = group[-1][2], group[-1][4]
+        emit(f"@@ -{i1 + 1},{i2 - i1} +{j1 + 1},{j2 - j1} @@", "cyan")
+        for tag, i1, i2, j1, j2 in group:
+            if tag == "equal":
+                for line in a[i1:i2]:
+                    emit(" " + line, "dim")
+                continue
+            olds, news = a[i1:i2], b[j1:j2]
+            paired = min(len(olds), len(news))
+            for old, new in zip(olds, news):
+                emit_pair(old, new)
+            for old in olds[paired:]:
+                emit("-" + old, "red")
+            for new in news[paired:]:
+                emit("+" + new, "green")
+    out.rstrip()
+    return out, "\n".join(plain)
+
+def do_diff(self, arg):
+    """diff [-r] [-y] <expected_expr> -- <actual_expr>
+    Line diff with the changed characters highlighted. Dicts/lists (or strings
     holding JSON / Python literals) are normalized to sorted, indented JSON first;
-    other values are diffed as str(). With -r, always diff str() as-is."""
-    raw = False
-    if arg == "-r" or arg.startswith("-r "):
-        raw = True
-        arg = arg[2:].strip()
-    exprs = _parse_two_exprs(self, arg, "Usage: diffyank [-r] <expected_expr> -- <actual_expr>")
+    other values are diffed as str().
+    -r  diff str() as-is, no normalization
+    -y  also copy the (plain text) diff to the clipboard"""
+    usage = "Usage: diff [-r] [-y] <expected_expr> -- <actual_expr>"
+    raw = yank = False
+    words = arg.split(" ")
+    while words and words[0].startswith("-") and words[0] != "--" and set(words[0][1:]) <= {"r", "y"}:
+        raw |= "r" in words[0]
+        yank |= "y" in words[0]
+        words.pop(0)
+    exprs = _parse_two_exprs(self, " ".join(words), usage)
     if not exprs:
         return
     left_val, right_val = self._getval(exprs[0]), self._getval(exprs[1])
     fmt = str if raw else _normalize
-    left, right = fmt(left_val), fmt(right_val)
-
-    import difflib
-    diff_text = "\n".join(
-        difflib.unified_diff(
-            left.splitlines(),
-            right.splitlines(),
-            fromfile="expected",
-            tofile="actual",
-            lineterm="",
-        )
-    )
-    if diff_text:
-        self.message(diff_text)
-        _copy_text(diff_text)
+    rich_diff, plain = _render_diff(fmt(left_val), fmt(right_val))
+    if rich_diff is not None:
+        _console.print(rich_diff, highlight=False, soft_wrap=True)
+        if yank:
+            _copy_text(plain)
     elif not raw and str(left_val) != str(right_val):
         # JSON collapses 1/"1" and tuple/list; don't let that pass silently
-        self.message("(equal after normalization, but str() differs; try diffyank -r)")
+        self.message("(equal after normalization, but str() differs; try diff -r)")
     else:
         self.message("(no differences)")
 
+def _open_diff(self, paths):
+    """Show paths side by side without blocking pdb, wherever pdb is running."""
+    import json
+    import shlex
+    if os.environ.get("VIM_TERMINAL"):
+        # Inside a vim :terminal (chkpyt.sh via Start!): ask the outer vim to call
+        # Tapi_PdbDiff (vim-rc/custom/functions.vim), see :h terminal-api
+        self.stdout.write("\x1b]51;" + json.dumps(["call", "Tapi_PdbDiff", paths]) + "\x07")
+        self.stdout.flush()
+        return True
+    vim_cmd = ["vim", "-d", *paths]
+    if os.environ.get("TMUX"):
+        subprocess.run(["tmux", "new-window", "-n", "pdb-diff", shlex.join(vim_cmd)])
+        return True
+    wezterm = shutil.which("wezterm") or shutil.which("wezterm.exe")
+    if wezterm and (os.environ.get("TERM_PROGRAM") == "WezTerm" or os.environ.get("WEZTERM_PANE")):
+        subprocess.run([wezterm, "cli", "spawn", "--", *vim_cmd], stdout=subprocess.DEVNULL)
+        return True
+    subprocess.run([os.environ.get("EDITOR") or "vim", "-d", *paths])
+    return False
+
 def do_vdiff(self, arg):
     """vdiff <expected_expr> -- <actual_expr>
-    Normalize both sides like diffyank and open them in `$EDITOR -d`
-    (expected left, actual right).
-    Quit vim to return to pdb."""
+    Normalize both sides like diff and diff them (expected left, actual right):
+    in a reused vim tab when pdb runs in a vim :terminal, else a tmux window or
+    wezterm tab, else a blocking `$EDITOR -d`."""
     exprs = _parse_two_exprs(self, arg, "Usage: vdiff <expected_expr> -- <actual_expr>")
     if not exprs:
         return
@@ -242,9 +312,9 @@ def do_vdiff(self, arg):
         with open(path, "w") as f:
             f.write(_normalize(self._getval(expr)) + "\n")
         paths.append(path)
-    editor = os.environ.get("EDITOR") or "vim"
-    subprocess.run([editor, "-d", *paths])
-    shutil.rmtree(tmpdir, ignore_errors=True)
+    # the non-blocking viewers read the files after we return; leave them to the OS
+    if not _open_diff(self, paths):
+        shutil.rmtree(tmpdir, ignore_errors=True)
 
 def do_dir(self, arg):
     """dir [-p] <expression>
@@ -321,7 +391,7 @@ Pdb.do_pank = do_pank
 Pdb.do_jsonpank = do_jsonpank
 Pdb.do_yline = do_yline
 Pdb.do_yloc = do_yloc
-Pdb.do_diffyank = do_diffyank
+Pdb.do_diff = do_diff
 Pdb.do_vdiff = do_vdiff
 Pdb.do_dir = do_dir
 Pdb.do_watch = do_watch
