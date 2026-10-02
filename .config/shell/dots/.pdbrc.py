@@ -202,19 +202,21 @@ def _unified_diff(left, right):
     )
 
 def do_pdiff(self, arg):
-    """pdiff [-r] [-y] <expected_expr> -- <actual_expr>
-    Unified diff shown through delta (changed words highlighted, styled by your
-    gitconfig [delta] section), or plain if delta isn't installed. Dicts/lists
+    """pdiff [-r] [-y] [-u] <expected_expr> -- <actual_expr>
+    Side-by-side diff shown through delta (changed words highlighted, styled by
+    your gitconfig [delta] section), or plain if delta isn't installed. Dicts/lists
     (or strings holding JSON / Python literals) are normalized to sorted,
     indented JSON first; other values are diffed as str().
     -r  diff str() as-is, no normalization
-    -y  also copy the (plain text) diff to the clipboard"""
-    usage = "Usage: pdiff [-r] [-y] <expected_expr> -- <actual_expr>"
-    raw = yank = False
+    -y  also copy the (plain text) diff to the clipboard
+    -u  unified (stacked -/+) instead of side by side"""
+    usage = "Usage: pdiff [-r] [-y] [-u] <expected_expr> -- <actual_expr>"
+    raw = yank = unified = False
     words = arg.split(" ")
-    while words and words[0].startswith("-") and words[0] != "--" and set(words[0][1:]) <= {"r", "y"}:
+    while words and words[0].startswith("-") and words[0] != "--" and set(words[0][1:]) <= {"r", "y", "u"}:
         raw |= "r" in words[0]
         yank |= "y" in words[0]
+        unified |= "u" in words[0]
         words.pop(0)
     exprs = _parse_two_exprs(self, " ".join(words), usage)
     if not exprs:
@@ -225,7 +227,12 @@ def do_pdiff(self, arg):
     if diff_text:
         if shutil.which("delta"):
             self.stdout.flush()
-            subprocess.run(["delta", "--paging=never"], input=diff_text.encode())
+            # delta highlights changed *words* (default --word-diff-regex '\w+'), so
+            # a 1-char change in a UUID lights up the whole token. For per-character
+            # highlights add "--word-diff-regex=." here (not in gitconfig, or git diff
+            # changes too).
+            delta = ["delta", "--paging=never"] + ([] if unified else ["--side-by-side"])
+            subprocess.run(delta, input=diff_text.encode())
         else:
             self.message(diff_text)
         if yank:
