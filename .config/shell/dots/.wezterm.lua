@@ -143,6 +143,7 @@ local my_keys = {
     mods = "ALT",
     action = wezterm.action.ActivateCommandPalette,
   },
+  { key = "Backspace", mods = "CTRL", action = wezterm.action.SendString "\x1b\x7f" },
   -- {
   --   key = "Enter",
   --   mods = "ALT",
