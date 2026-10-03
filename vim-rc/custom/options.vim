@@ -51,6 +51,7 @@ endtry
 set grepprg=rg\ --vimgrep
 set grepformat=%f:%l:%c:%m,%f:%l:%m
 
+let g:scratch_dir = get(g:, 'scratch_dir', expand('~/scratch'))
 """"""""""""""""""""""""""""""""""""
 " UI and appearance
 """"""""""""""""""""""""""""""""""""

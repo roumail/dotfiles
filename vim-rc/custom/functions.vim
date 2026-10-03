@@ -64,6 +64,24 @@ endfunction
 command! -nargs=+ ScratchFrom call s:ScratchFrom(<q-args>)
 
 
+function! s:ScratchSave(bang, path) abort
+  if &buftype !=# 'nofile'
+    echoerr 'Not a scratch buffer'
+    return
+  endif
+  let l:path = a:path
+  if empty(l:path)
+    call mkdir(g:scratch_dir, 'p')
+    let l:path = g:scratch_dir . '/' . strftime('%Y%m%d-%H%M%S') . '.txt'
+  endif
+  execute 'keepalt file' fnameescape(fnamemodify(l:path, ':p'))
+  setlocal buftype= bufhidden= swapfile
+  execute 'write' . (a:bang ? '!' : '')
+  filetype detect
+endfunction
+
+command! -bang -nargs=? -complete=file ScratchSave call s:ScratchSave(<bang>0, <q-args>)
+
 " The default lsp behaviour is to open a quickfix/location list
 "https://github.com/prabirshrestha/vim-lsp/pull/1140/changes#diff-5644b29c0f34f56ca832ab251585503f273b59b2149cf29c7a38c004c2bad69c
 " These overrides attempt to prevent these from happening
