@@ -128,6 +128,28 @@ def do_yloc(self, arg):
     _copy_text(loc)
     self.message(loc)
 
+def do_ylast(self, arg):
+    """ylast [n]
+    Copy a command you typed at the prompt: the previous one, or n back.
+    Reads the line editor's (up-arrow) history, so it covers pdb commands too."""
+    import sys
+    try:
+        n = int(arg) if arg.strip() else 1
+    except ValueError:
+        self.error("Usage: ylast [n]")
+        return
+    rl = self.fancycompleter.config.readline if self.fancycompleter else sys.modules.get("readline")
+    if rl is None:
+        self.error("No line-editor history available")
+        return
+    newest_first = [rl.get_history_item(i) for i in range(rl.get_current_history_length(), 0, -1)]
+    commands = [x for x in newest_first if x and x.split(" ", 1)[0] != "ylast"]
+    if not 1 <= n <= len(commands):
+        self.error(f"Only {len(commands)} earlier commands in history")
+        return
+    _copy_text(commands[n - 1])
+    self.message(commands[n - 1])
+
 def do_jsonpank(self, arg):
     """jsonpank <expression>\n    Parse expression as JSON, rich-format it, and copy to clipboard."""
     if not arg.strip():
@@ -361,6 +383,7 @@ Pdb.do_pank = do_pank
 Pdb.do_jsonpank = do_jsonpank
 Pdb.do_yline = do_yline
 Pdb.do_yloc = do_yloc
+Pdb.do_ylast = do_ylast
 Pdb.do_pdiff = do_pdiff
 Pdb.do_vdiff = do_vdiff
 Pdb.do_dir = do_dir
