@@ -375,17 +375,44 @@ def do_unwatch(self, arg):
     else:
         self.error(f"{arg} is not watched")
 
+def do_myhelp(self, arg):
+    """myhelp
+    List the commands added by ~/.pdbrc.py (`help <name>` for the full text)."""
+    import re
+    from rich.table import Table
+    from rich.text import Text
+    table = Table(box=None, show_header=False, padding=(0, 2))
+    table.add_column(style="bold cyan", no_wrap=True)
+    table.add_column()
+    for name, fn in _COMMANDS.items():
+        usage, *rest = (fn.__doc__ or name).strip().splitlines()
+        desc = []
+        for line in rest:
+            line = line.strip()
+            if not line or line.startswith("-"):
+                break
+            desc.append(line)
+        summary = re.split(r"(?<=\.)\s", " ".join(desc), maxsplit=1)[0]
+        table.add_row(Text(usage.strip()), Text(summary))  # Text: "[n]" isn't markup
+    _console.print(table)
+
+_COMMANDS = {
+    "ft": do_findtest,
+    "bm": do_bottommost,
+    "yank": do_yank,
+    "pank": do_pank,
+    "jsonpank": do_jsonpank,
+    "yline": do_yline,
+    "yloc": do_yloc,
+    "ylast": do_ylast,
+    "pdiff": do_pdiff,
+    "vdiff": do_vdiff,
+    "dir": do_dir,
+    "watch": do_watch,
+    "unwatch": do_unwatch,
+    "myhelp": do_myhelp,
+}
+
 Pdb.preloop = _preloop
-Pdb.do_ft = do_findtest
-Pdb.do_bm = do_bottommost
-Pdb.do_yank = do_yank
-Pdb.do_pank = do_pank
-Pdb.do_jsonpank = do_jsonpank
-Pdb.do_yline = do_yline
-Pdb.do_yloc = do_yloc
-Pdb.do_ylast = do_ylast
-Pdb.do_pdiff = do_pdiff
-Pdb.do_vdiff = do_vdiff
-Pdb.do_dir = do_dir
-Pdb.do_watch = do_watch
-Pdb.do_unwatch = do_unwatch
+for _name, _fn in _COMMANDS.items():
+    setattr(Pdb, "do_" + _name, _fn)
