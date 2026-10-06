@@ -7,7 +7,6 @@
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-alias v='vim .'
 alias scratch='vim -c Scratch -c only'
 alias e='vim'
 alias g='git'
