@@ -73,8 +73,8 @@ nnoremap [2 ?\V{{{2<CR>
 
 nnoremap <leader>q :wq<CR>
 " buffer switching
-" Switch to the alternate (last used) buffer
-nnoremap gb :b#<CR>
+" Switch to the alternate (last used) buffer, skipping netrw listings
+nnoremap <silent> gb <Cmd>call AltBuffer()<CR>
 
 " bd ends up closing the current window too
 " nnoremap <leader>bc :bd<CR>

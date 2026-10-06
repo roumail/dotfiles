@@ -23,6 +23,33 @@ function! SmartFilterClose()
   execute 'silent! bdelete! ' . l:current
 endfunction
 
+" Switch to the alternate buffer, skipping netrw listings. If # is a netrw
+" buffer (or missing), fall back to the most recently used other buffer.
+function! s:is_netrw(nr) abort
+  return getbufvar(a:nr, '&filetype') ==# 'netrw'
+        \ || !empty(getbufvar(a:nr, 'netrw_curdir'))
+        \ || bufname(a:nr) =~# 'NetrwTreeListing'
+        \ || isdirectory(bufname(a:nr))
+endfunction
+
+function! s:is_alt_candidate(nr) abort
+  return a:nr > 0 && a:nr != bufnr('%') && bufexists(a:nr) && !s:is_netrw(a:nr)
+endfunction
+
+function! AltBuffer() abort
+  let l:target = bufnr('#')
+  if !s:is_alt_candidate(l:target)
+    let l:bufs = filter(getbufinfo({'buflisted': 1}),
+          \ 's:is_alt_candidate(v:val.bufnr)')
+    if empty(l:bufs)
+      echo 'No alternate buffer'
+      return
+    endif
+    let l:target = sort(l:bufs, {a, b -> b.lastused - a.lastused})[0].bufnr
+  endif
+  execute 'buffer ' . l:target
+endfunction
+
 function! s:list_buffers()
   redir => list
   silent ls
