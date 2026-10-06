@@ -153,6 +153,22 @@ endfunction
 command! -range=% NormalizeJsonString call NormalizeJsonString(<line1>, <line2>)
 command! -range=% NormalizePythonDict call NormalizePythonDict(<line1>, <line2>)
 
+" Reduce pytest output in the current buffer to one line per failing test
+function! ParsePytestFailures()
+  " Keep only FAILED / ERROR lines
+  g!/^FAILED\|^ERROR/d
+  " Remove the FAILED/ERROR prefix
+  %s/^\(FAILED\|ERROR\) //e
+  " Remove the trailing error message (pytest separates it with ' - ')
+  %s/\s-.*$//e
+  " Remove parametrization ids, e.g. test_foo[a-1] -> test_foo
+  %s/\[.*\]$//e
+  " Sort and remove duplicates
+  sort u
+endfunction
+
+command! ParsePytestFailures call ParsePytestFailures()
+
 " Called by pdb's `vdiff` (.pdbrc.py) from inside a :terminal via the terminal
 " API (:h terminal-api). Shows expected | actual in a single reused tab, so
 " gt/gT flips between the diff and the pdb terminal.
