@@ -153,14 +153,20 @@ endfunction
 command! -range=% NormalizeJsonString call NormalizeJsonString(<line1>, <line2>)
 command! -range=% NormalizePythonDict call NormalizePythonDict(<line1>, <line2>)
 
-" Reduce pytest output in the current buffer to one line per failing test
+" Reduce pytest output (or coverage test contexts) in the current buffer to
+" one line per test
 function! ParsePytestFailures()
-  " Keep only FAILED / ERROR lines
-  g!/^FAILED\|^ERROR/d
-  " Remove the FAILED/ERROR prefix
-  %s/^\(FAILED\|ERROR\) //e
-  " Remove the trailing error message (pytest separates it with ' - ')
-  %s/\s-.*$//e
+  " Pytest output: keep only FAILED / ERROR lines. Skipped for pasted coverage
+  " contexts, which have no such lines and would otherwise all be deleted
+  if search('^\(FAILED\|ERROR\) ', 'nw')
+    g!/^FAILED\|^ERROR/d
+    " Remove the FAILED/ERROR prefix
+    %s/^\(FAILED\|ERROR\) //e
+    " Remove the trailing error message (pytest separates it with ' - ')
+    %s/\s-.*$//e
+  endif
+  " Remove coverage context phase, e.g. test_foo[a-1]|run -> test_foo[a-1]
+  %s/|\(run\|setup\|teardown\)$//e
   " Remove parametrization ids, e.g. test_foo[a-1] -> test_foo
   %s/\[.*\]$//e
   " Sort and remove duplicates
