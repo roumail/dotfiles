@@ -1,8 +1,10 @@
 let s:last_bang = 0
 let s:last_args = []
+" fzf appends the accepted query here; read back in s:on_exit
+let s:history_file = tempname()
 
 function! fzf_utils#live_grep#replay() abort
-  " Injected via autocommand from maintained fzf fork
+  " Populated by s:on_exit after each accepted live grep
   let l:query = getreg('/')
 
   " Get only the options from the last run, discard the old pattern.
@@ -32,6 +34,21 @@ function! s:split_args(arg_list) abort
     let options = a:arg_list[sep+1:]
   endif
   return [pattern, options]
+endfunction
+
+" Copy the accepted fzf query into the search register and history so that
+" replay, n/N and :History/ see it. Works with upstream fzf.vim (no fork
+" event needed). Called by fzf before the sink opens the selected file.
+function! s:on_exit(code) abort
+  if a:code != 0 || !filereadable(s:history_file)
+    return
+  endif
+  let l:lines = readfile(s:history_file)
+  if empty(l:lines) || empty(l:lines[-1])
+    return
+  endif
+  call setreg('/', l:lines[-1])
+  call histadd('/', l:lines[-1])
 endfunction
 
 function! fzf_utils#live_grep#parse_args(arg_list) abort
@@ -80,8 +97,11 @@ function! fzf_utils#live_grep#interactive(bang, ...) abort
         \   '--bind', 'ctrl-f:change-prompt(Fixed> )+reload(' . l:cmd_fixed . ' {q})',
         \   '--bind', 'ctrl-w:change-prompt(Word> )+reload(' . l:cmd_word  . ' {q})',
         \   '--bind', 'ctrl-r:change-prompt(Regex> )+reload(' . l:cmd_regex . ' {q})',
+        \   '--history', s:history_file, '--history-size', '50',
+        \   '--bind', 'ctrl-n:down',
         \ ]
         \ }, 'right,70%,border-left,+{2}+4/3,~4', 'ctrl-p')
+  let l:preview_opts.exit = function('s:on_exit')
 
   call fzf#vim#grep2(l:prefix, l:pattern, l:preview_opts, a:bang)
 endfunction
