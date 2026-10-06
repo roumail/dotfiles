@@ -53,10 +53,11 @@ __wezterm_custom_preexec() {
   __wezterm_set_user_var WEZTERM_CMD "$1"
 }
 
-# Open vim on changed git files (fzf GFiles?), or the current dir outside a repo
+# Open vim on changed git files (fzf GFiles?), or the current dir when outside
+# a repo or the tree is clean
 unalias v 2>/dev/null
 v() {
-  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
     vim -c 'GFiles?'
   else
     vim .
