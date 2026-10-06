@@ -63,6 +63,32 @@ endfunction
 
 command! -nargs=+ ScratchFrom call s:ScratchFrom(<q-args>)
 
+" Copy a buffer into a new scratch buffer, keeping its filetype.
+" No argument or %: current buffer, limited to the range if one is given.
+" Otherwise: that whole buffer (name, number or #, <Tab> completes).
+function! s:ScratchBuf(bang, line1, line2, buf) abort
+  if empty(a:buf) || a:buf ==# '%'
+    let l:src = bufnr('%')
+    let l:lines = getline(a:line1, a:line2)
+  else
+    let l:src = a:buf =~# '^\d\+$' ? str2nr(a:buf) : bufnr(a:buf)
+    if l:src < 1 || !bufexists(l:src)
+      echoerr 'ScratchBuf: no buffer matching ' . a:buf
+      return
+    endif
+    call bufload(l:src)
+    let l:lines = getbufline(l:src, 1, '$')
+  endif
+  let l:ft = getbufvar(l:src, '&filetype')
+
+  call s:Scratch(a:bang)
+  call setline(1, l:lines)
+  let &l:filetype = l:ft
+endfunction
+
+command! -bang -range=% -nargs=? -complete=buffer ScratchBuf
+      \ call s:ScratchBuf(<bang>0, <line1>, <line2>, <q-args>)
+
 
 " The default lsp behaviour is to open a quickfix/location list
 "https://github.com/prabirshrestha/vim-lsp/pull/1140/changes#diff-5644b29c0f34f56ca832ab251585503f273b59b2149cf29c7a38c004c2bad69c
