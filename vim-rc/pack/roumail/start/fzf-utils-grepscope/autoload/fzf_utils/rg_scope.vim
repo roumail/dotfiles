@@ -1,11 +1,15 @@
+" 'all' plus whatever the detected project's strategy offers, in menu order
+function! s:scope_list() abort
+  return [['all', []]] + fzf_utils#project#scopes()
+endfunction
+
+" Scope label -> rg arguments
 function! fzf_utils#rg_scope#scopes() abort
-  return {
-        \ 'all': [],
-        \ 'project': [g:project_name . '/'],
-        \ 'tests': ['tests/'],
-        \ 'project python': [g:project_name . '/', '-tpy'],
-        \ 'tests python': ['tests/', '-tpy']
-        \ }
+  let l:scopes = {}
+  for [l:label, l:args] in s:scope_list()
+    let l:scopes[l:label] = l:args
+  endfor
+  return l:scopes
 endfunction
 
 function! s:rg_scope_sink(choice) abort
@@ -14,7 +18,12 @@ endfunction
 
 function! fzf_utils#rg_scope#invoke(scope_name, ...) abort
   let pattern = a:0 > 0 ? a:1 : ''
-  let scope = fzf_utils#rg_scope#scopes()[a:scope_name]
+  let scopes = fzf_utils#rg_scope#scopes()
+  if !has_key(scopes, a:scope_name)
+    echo 'GrepScope: no scope "' . a:scope_name . '" for this project'
+    return
+  endif
+  let scope = scopes[a:scope_name]
 
   " Build arguments array matching the DSL: pattern -- scope
   " If pattern is '--' or empty, treat it as an empty list, otherwise wrap it
@@ -32,7 +41,7 @@ function! fzf_utils#rg_scope#run(...) abort
     echoerr 'Did you mean to use :Grep instead? (supports -- separator and options)'
     return
   endif
-  if !exists('g:project_name')
+  if empty(fzf_utils#project#scopes())
     echo "No project detected — falling back to Grep"
     if a:0 > 0
       call fzf_utils#live_grep#window(a:1)
@@ -44,13 +53,7 @@ function! fzf_utils#rg_scope#run(...) abort
 
 
   let s:current_search_pattern = a:0 > 0 ? a:1 : '--'
-  let s:rg_scope_order = [
-        \ 'all',
-        \ 'project',
-        \ 'project python',
-        \ 'tests',
-        \ 'tests python'
-        \ ]
+  let s:rg_scope_order = map(s:scope_list(), 'v:val[0]')
 
   let choice = fzf#run(fzf#wrap({
         \ 'source': s:rg_scope_order,
