@@ -41,16 +41,21 @@ link_file() {
 
   mkdir -p "$(dirname "$target")"
 
+  # -n: replace a symlink to a directory instead of linking inside it
   if [ -L "$target" ]; then
-    ln -sf "$src" "$target"
+    ln -sfn "$src" "$target"
     echo "  ↻ Refreshed symlink: $(basename "$target")"
   elif [ -e "$target" ]; then
     local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
-    cp "$target" "$backup"
-    ln -sf "$src" "$target"
+    # mv (not cp) also handles directories; never link if the backup failed
+    if ! mv "$target" "$backup"; then
+      echo "  ✗ Backup failed, left untouched: $target" >&2
+      return 0
+    fi
+    ln -sfn "$src" "$target"
     echo "  ✓ Backed up and linked: $(basename "$target")"
   else
-    ln -sf "$src" "$target"
+    ln -sfn "$src" "$target"
     echo "  ✓ Linked: $(basename "$target")"
   fi
 }
@@ -64,7 +69,7 @@ link_dir() {
   # symlink (file or dir)
   if [ -L "$target" ]; then
     unlink "$target"
-    ln -sf "$src" "$target"
+    ln -sfn "$src" "$target"
     echo "  ↻ Updated dir symlink: $(basename "$target")"
     # real file or directory
   elif [ -e "$target" ]; then
@@ -74,15 +79,18 @@ link_dir() {
 
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
-      mv "$target" "$backup"
-      ln -sf "$src" "$target"
+      if ! mv "$target" "$backup"; then
+        echo "  ✗ Backup failed, left untouched: $target" >&2
+        return 0
+      fi
+      ln -sfn "$src" "$target"
       echo "  ✓ Backed up and linked dir: $(basename "$target")"
     else
       echo "  → Skipped: $(basename "$target")"
     fi
 
   else
-    ln -sf "$src" "$target"
+    ln -sfn "$src" "$target"
     echo "  ✓ Linked dir: $(basename "$target")"
   fi
 }
@@ -94,14 +102,20 @@ link_tree() {
   rel="${file#$src/}"
   target="$dst/$rel"
   mkdir -p "$(dirname "$target")"
+  # Already the repo's file, e.g. through a symlinked parent directory
+  if [ "$target" -ef "$file" ]; then
+    continue
+  fi
+  # Never replace a real file, but say so: it shadows the repo's version
   if [ -e "$target" ] && [ ! -L "$target" ]; then
+    echo "  ⚠ Exists, not linked: $target" >&2
     continue
   fi
   # Skip if already correct symlink
   if [ -L "$target" ] && [ "$(readlink "$target")" = "$file" ]; then
     continue
   fi
-  ln -sf "$file" "$dst/$rel"
+  ln -sfn "$file" "$dst/$rel"
 done
   prune_dangling_links "$src" "$dst"
 }
