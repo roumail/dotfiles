@@ -28,7 +28,10 @@ function! s:python_scopes(name) abort
         \ ]
 endfunction
 
-call fzf_utils#project#register('python', {
-      \ 'detect': function('s:pyproject_name'),
-      \ 'scopes': function('s:python_scopes'),
-      \ })
+" Skip until fzf-utils-rg is installed (e.g. before the first :PlugInstall)
+if !empty(globpath(&rtp, 'autoload/fzf_utils/project.vim'))
+  call fzf_utils#project#register('python', {
+        \ 'detect': function('s:pyproject_name'),
+        \ 'scopes': function('s:python_scopes'),
+        \ })
+endif
