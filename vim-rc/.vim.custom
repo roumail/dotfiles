@@ -1,4 +1,8 @@
-let g:fzf_vim = get(g:, 'fzf_vim', {})
-let $FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow -I -E "**/__pycache__/**"'
-"let $FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --column --line-number --no-heading --color=always --smart-case -g "!__pycache__/*"'
-" let g:fzf_vim.rg_options = ''
+" Example per-directory config: .vimrc sources a .vim.custom from the directory
+" Vim starts in (the name is in .gitignore, so these stay local).
+"
+" To work inside a directory that is normally gitignored, such as a .venv, put a
+" .vim.custom there that makes :Files, :Grep and :Rg include ignored files from
+" the start (the same switch :FzfToggleIgnored flips):
+"
+"   let g:fzf_include_ignored = 1
