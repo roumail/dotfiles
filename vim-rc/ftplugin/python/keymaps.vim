@@ -31,7 +31,29 @@ function! s:SetupGrepKeymaps() abort
         \ )<CR>
 endfunction
 
-augroup python_grep_keymaps
-  autocmd!
-  autocmd BufEnter <buffer> call s:SetupGrepKeymaps()
-augroup END
+" g:project_name comes from project-detect, which runs at VimEnter: after the
+" ftplugin of any file opened on the command line. Buffers loaded later map
+" straight away; the earlier ones wait for User ProjectDetected.
+function! s:OnProjectDetected() abort
+  for l:buf in getbufinfo({'bufloaded': 1})
+    if getbufvar(l:buf.bufnr, '&filetype') !=# 'python'
+      continue
+    endif
+    if l:buf.bufnr == bufnr('%')
+      call s:SetupGrepKeymaps()
+    else
+      " Buffer-local mappings can only be made in the current buffer
+      execute 'autocmd python_grep_keymaps BufEnter <buffer=' . l:buf.bufnr
+            \ . '> ++once call s:SetupGrepKeymaps()'
+    endif
+  endfor
+endfunction
+
+if exists('g:project_name')
+  call s:SetupGrepKeymaps()
+elseif !exists('#python_grep_keymaps#User#ProjectDetected')
+  " Defined once: clearing the group would drop other buffers' hooks
+  augroup python_grep_keymaps
+    autocmd User ProjectDetected call s:OnProjectDetected()
+  augroup END
+endif
