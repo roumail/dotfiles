@@ -2,7 +2,7 @@
 let s:rg_base = 'rg --column --line-number --no-heading --color=always --smart-case'
 
 function! s:rg_cmd() abort
-  return s:rg_base . (fzf_utils#toggle#is_ignored_included() ? ' -u' : '')
+  return s:rg_base . (get(g:, 'fzf_include_ignored', 0) ? ' -u' : '')
 endfunction
 
 function! fzf_utils#ripgrep#get_command() abort
