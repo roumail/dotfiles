@@ -28,14 +28,11 @@ function! s:python_scopes(name) abort
         \ ]
 endfunction
 
-" Each registration is skipped until its plugin is installed (e.g. before the
-" first :PlugInstall)
+" Each registration is skipped until its plugin is installed (before the first
+" :PlugInstall on a new machine)
 if !empty(globpath(&rtp, 'autoload/project_detect.vim'))
   call project_detect#register('python', {'detect': function('s:pyproject_name')})
 endif
-" Check for the function itself: before :PlugUpdate, an older fzf-utils-rg can
-" still provide an autoload/fzf_utils/rg_scope.vim without it
-runtime autoload/fzf_utils/rg_scope.vim
-if exists('*fzf_utils#rg_scope#register')
+if !empty(globpath(&rtp, 'autoload/fzf_utils/rg_scope.vim'))
   call fzf_utils#rg_scope#register('python', function('s:python_scopes'))
 endif
