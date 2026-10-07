@@ -1,5 +1,5 @@
-" fzf-utils-fd: list files for fzf with fd, following the ignore toggle.
-" Requires junegunn/fzf and fd. :FzfToggleIgnored comes from fzf-utils.
+" fzf-utils: list files for fzf with fd, following the ignore toggle.
+" Requires junegunn/fzf and fd. :FzfToggleIgnored is in plugin/fzf_utils.vim.
 if exists('g:loaded_fzf_utils_fd')
   finish
 endif

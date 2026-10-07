@@ -1,5 +1,5 @@
-" fzf-utils: the ignore toggle shared by the rg and fd companions, and
-" fzf.vim's Files/Buffers with a preview.
+" fzf-utils: the ignore toggle shared by fd (plugin/fzf_utils_fd.vim) and
+" fzf-utils-rg, and fzf.vim's Files/Buffers with a preview.
 " Requires junegunn/fzf and junegunn/fzf.vim.
 if exists('g:loaded_fzf_utils')
   finish

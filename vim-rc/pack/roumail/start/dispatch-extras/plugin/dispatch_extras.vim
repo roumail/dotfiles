@@ -1,5 +1,5 @@
 " dispatch-extras: small helpers on top of tpope/vim-dispatch. No keys are
-" bound here; companions (pytest) or your vimrc map the <Plug>s.
+" bound here; pytest or your vimrc map the <Plug>s.
 if exists('g:loaded_dispatch_extras')
   finish
 endif

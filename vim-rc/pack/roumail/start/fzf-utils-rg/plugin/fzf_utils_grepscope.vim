@@ -1,5 +1,5 @@
-" fzf-utils-grepscope: pick a project scope, then live grep in it.
-" Requires junegunn/fzf and fzf-utils-rg (for the live grep itself).
+" fzf-utils-rg: pick a project scope, then live grep in it with :Grep.
+" Requires junegunn/fzf; :Grep is in plugin/fzf_utils_rg.vim.
 if exists('g:loaded_fzf_utils_grepscope')
   finish
 endif

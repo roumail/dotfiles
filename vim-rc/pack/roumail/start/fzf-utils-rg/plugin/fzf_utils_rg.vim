@@ -1,5 +1,6 @@
-" fzf-utils-rg: live and static ripgrep through fzf.vim.
-" Requires junegunn/fzf.vim and ripgrep. :FzfToggleIgnored comes from fzf-utils.
+" fzf-utils-rg: live and static ripgrep through fzf.vim, and :GrepScope
+" (plugin/fzf_utils_grepscope.vim). Requires junegunn/fzf.vim and ripgrep.
+" :FzfToggleIgnored comes from fzf-utils.
 if exists('g:loaded_fzf_utils_rg')
   finish
 endif
