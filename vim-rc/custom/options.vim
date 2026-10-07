@@ -48,7 +48,8 @@ endtry
 set grepprg=rg\ --vimgrep
 set grepformat=%f:%l:%c:%m,%f:%l:%m
 
-let g:scratch_dir = get(g:, 'scratch_dir', expand('~/scratch'))
+" Strip trailing whitespace and CR line endings on write (text-tools)
+let g:text_tools_strip_on_save = 1
 """"""""""""""""""""""""""""""""""""
 " UI and appearance
 """"""""""""""""""""""""""""""""""""

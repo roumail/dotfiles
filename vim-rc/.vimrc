@@ -53,9 +53,6 @@ function! MySource(file) abort
     execute 'source ' . g:vimdir . '/' . a:file
 endfunction
 
-" Load Functions and autocommands
-call MySource('custom/functions.vim')
-
 " Load plugin initialization
 call MySource('custom/plug.vim')
 
@@ -91,7 +88,6 @@ call MySource('custom/plugins/airline/options.vim')
 call MySource('custom/plugins/fzf/options.vim')
 call MySource('custom/plugins/fzf/grepscope.vim')
 call MySource('custom/plugins/lsp/options.vim')
-call MySource('custom/plugins/lsp/commands.vim')
 call MySource('custom/plugins/pytest/options.vim')
 
 " Load my keymaps last
