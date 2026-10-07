@@ -1,0 +1,20 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "ask",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen2.5-coder-14b-ctx": {
+          "name": "Qwen2.5 Coder 14B Instruct (local, 32k ctx)",
+          "options": { "num_ctx": 32768 }
+        }
+      }
+    }
+  },
+  "model": "ollama/qwen2.5-coder-14b-ctx"
+}
