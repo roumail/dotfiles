@@ -7,11 +7,9 @@ let g:loaded_fzf_utils_grepscope = 1
 
 " GrepScope: Interactive scope picker for grep
 "
-" Presents a menu to select search scope based on g:project_name:
-"   - project: Search in project directory
-"   - tests: Search in tests directory
-"   - project python: Search Python files in project
-"   - tests python: Search Python files in tests
+" Presents a menu of search scopes: 'all', plus the scopes of the detected
+" project. Which projects exist and what scopes they offer comes from the
+" strategies registered with fzf_utils#project#register(); none ship here.
 "
 " Falls back to :Grep if no project is detected.
 "
@@ -20,7 +18,7 @@ let g:loaded_fzf_utils_grepscope = 1
 "   :GrepScope
 command! -nargs=* GrepScope call fzf_utils#rg_scope#run(<f-args>)
 
-" g:project_name (from pyproject.toml) drives the GrepScope scopes
+" Run the registered project strategies once everything is loaded
 augroup fzf_utils_project
   autocmd!
   autocmd VimEnter * call fzf_utils#project#detect()

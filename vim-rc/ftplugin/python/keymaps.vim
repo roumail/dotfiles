@@ -1,13 +1,11 @@
-if exists('b:loaded_fzf_utils_python_ftplugin')
+if exists('b:loaded_python_keymaps_ftplugin')
   finish
 endif
-let b:loaded_fzf_utils_python_ftplugin = 1
+let b:loaded_python_keymaps_ftplugin = 1
 
-if get(g:, 'fzf_utils_no_mappings', 0)
-  finish
-endif
+" Used for test mappings
+let maplocalleader = "_"
 
-" Grep scoped to the project / tests Python files (needs g:project_name)
 function! s:SetupGrepKeymaps() abort
   if !exists('g:project_name')
     return

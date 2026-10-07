@@ -89,6 +89,7 @@ endif
 
 call MySource('custom/plugins/airline/options.vim')
 call MySource('custom/plugins/fzf/options.vim')
+call MySource('custom/plugins/fzf/grepscope.vim')
 call MySource('custom/plugins/lsp/options.vim')
 call MySource('custom/plugins/lsp/commands.vim')
 
