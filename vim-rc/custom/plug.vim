@@ -28,6 +28,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf.vim'
 Plug 'roumail/fzf-utils'
 Plug 'roumail/fzf-utils-rg'
+Plug 'roumail/project-detect'
+Plug 'roumail/fzf-utils-grepscope'
 Plug 'roumail/dispatch-extras'
 Plug 'roumail/pytest.vim'
 " requires dependency installation using npm install -g livedown

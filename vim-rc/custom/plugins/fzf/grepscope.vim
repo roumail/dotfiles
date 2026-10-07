@@ -1,5 +1,5 @@
-" Project strategies for :GrepScope (roumail/fzf-utils-rg).
-" Tried in registration order; the first whose detect() returns a name wins.
+" Project detection (roumail/project-detect) and the :GrepScope scopes for each
+" project type (roumail/fzf-utils-grepscope).
 
 " Python: the project is named in the nearest pyproject.toml
 function! s:pyproject_name() abort
@@ -28,10 +28,14 @@ function! s:python_scopes(name) abort
         \ ]
 endfunction
 
-" Skip until fzf-utils-rg is installed (e.g. before the first :PlugInstall)
-if !empty(globpath(&rtp, 'autoload/fzf_utils/project.vim'))
-  call fzf_utils#project#register('python', {
-        \ 'detect': function('s:pyproject_name'),
-        \ 'scopes': function('s:python_scopes'),
-        \ })
+" Each registration is skipped until its plugin is installed (e.g. before the
+" first :PlugInstall)
+if !empty(globpath(&rtp, 'autoload/project_detect.vim'))
+  call project_detect#register('python', {'detect': function('s:pyproject_name')})
+endif
+" Check for the function itself: before :PlugUpdate, an older fzf-utils-rg can
+" still provide an autoload/fzf_utils/rg_scope.vim without it
+runtime autoload/fzf_utils/rg_scope.vim
+if exists('*fzf_utils#rg_scope#register')
+  call fzf_utils#rg_scope#register('python', function('s:python_scopes'))
 endif
