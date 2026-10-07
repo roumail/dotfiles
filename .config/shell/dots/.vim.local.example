@@ -1,0 +1,4 @@
+" Local, machine-specific Vim settings (NOT in git)
+" Copy to ~/.vim.local and customize for your machine/employer
+
+" let g:github_enterprise_urls = ['https://github.example.com']
