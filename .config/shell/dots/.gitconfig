@@ -1,6 +1,7 @@
 [user]
 	name = Rohail Taimour
-	email = CW6559@engie.com
+	# email intentionally omitted - set via GIT_AUTHOR_EMAIL/GIT_COMMITTER_EMAIL
+	# env vars in .config/shell/local/env.sh (machine-specific, not in git)
 [core]
 	autocrlf = input
 	editor = vim

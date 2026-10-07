@@ -77,7 +77,10 @@ call MySource('custom/clipboard.vim')
 """"""""""""""""""""""""""""""""
 " Load plugin configurations """
 """"""""""""""""""""""""""""""""
-let g:github_enterprise_urls = ['https://github.tools.digital.engie.com']
+" Load machine-specific local overrides (e.g. g:github_enterprise_urls)
+if filereadable(expand('~/.vim.local'))
+    source ~/.vim.local
+endif
 
 " Load fzf key maps ---
 if isdirectory('/opt/homebrew/opt/fzf')
