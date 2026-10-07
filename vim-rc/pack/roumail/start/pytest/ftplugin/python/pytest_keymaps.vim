@@ -3,7 +3,8 @@ if exists('b:loaded_python_pytest_keymaps_ftplugin')
 endif
 let b:loaded_python_pytest_keymaps_ftplugin = 1
 
-if expand('%:t') !~ '^test_'
+" Set g:pytest_no_mappings = 1 to define your own mappings instead
+if get(g:, 'pytest_no_mappings', 0) || expand('%:t') !~ '^test_'
   finish
 endif
 

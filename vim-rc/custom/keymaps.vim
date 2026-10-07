@@ -116,23 +116,8 @@ nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
 " Switch to open buffer
 nnoremap <leader>ob <Cmd>Buffers<CR>
 
-nnoremap <silent> <leader>rr <Cmd>call fzf_utils#live_grep#replay()<CR>
 " Browse search history (populated by live grep queries too)
 nnoremap <silent> <leader>rh <Cmd>History/<CR>
-" Fuzzy search scoped to the current buffer's directory
-nnoremap <silent> <leader>r. <Cmd>execute 'Grep -- ' . expand('%:.:h') . '/'<CR>
-" Line search from project root directory
-nnoremap <silent> <leader>r/ <Cmd>Grep<CR>
-" Prefilled to type pattern/scope
-nnoremap <leader>r: :Grep
-
-" Scoped searches (Standard)
-nnoremap <leader>rs <Cmd>GrepScope<CR>
-" Search for word under cursor
-" Word with boundaries
-nnoremap <silent> <leader>rw <Cmd>execute 'GrepScope' '\b' . expand('<cword>') . '\b'<CR>
-" Word without boundaries
-" nnoremap <silent> <leader>rW <Cmd>execute 'GrepScope' expand('<cword>')<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
@@ -242,8 +227,6 @@ xnoremap p "_dP<Esc>
 "nnoremap <silent> <leader>C <Cmd>Commits<CR>
 " Bcommits --> current buffer
 " nnoremap <silent> <leader>c <Cmd>BCommits<CR>
-xnoremap <silent> <leader>rw y:<C-u>execute 'GrepScope' '\b' . getreg('"') . '\b'<CR>
-" xnoremap <silent> <leader>rW y:<C-u>execute 'GrepScope' getreg('"')<CR>
 xmap <leader><tab> <plug>(fzf-maps-x)
 
 " }}}1

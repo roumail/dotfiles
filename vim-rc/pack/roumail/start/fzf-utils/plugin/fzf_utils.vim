@@ -1,3 +1,10 @@
+" fzf-utils: live grep, scoped grep and an ignore toggle on top of fzf.vim.
+" Requires junegunn/fzf, junegunn/fzf.vim, ripgrep and fd.
+if exists('g:loaded_fzf_utils')
+  finish
+endif
+let g:loaded_fzf_utils = 1
+
 " Initialize FZF_DEFAULT_COMMAND if not set
 if empty($FZF_DEFAULT_COMMAND)
   call fzf_utils#fd#update_default_fd_command()
@@ -93,3 +100,29 @@ command! -bang -nargs=* Buffers
 "   :GrepScope pattern
 "   :GrepScope
 command! -nargs=* GrepScope call fzf_utils#rg_scope#run(<f-args>)
+
+" g:project_name (from pyproject.toml) drives the GrepScope scopes
+augroup fzf_utils_project
+  autocmd!
+  autocmd VimEnter * call fzf_utils#project#detect()
+augroup END
+
+" Key mappings; set g:fzf_utils_no_mappings = 1 to define your own instead
+if !get(g:, 'fzf_utils_no_mappings', 0)
+  nnoremap <silent> <leader>rr <Cmd>call fzf_utils#live_grep#replay()<CR>
+  " Fuzzy search scoped to the current buffer's directory
+  nnoremap <silent> <leader>r. <Cmd>execute 'Grep -- ' . expand('%:.:h') . '/'<CR>
+  " Line search from project root directory
+  nnoremap <silent> <leader>r/ <Cmd>Grep<CR>
+  " Prefilled to type pattern/scope
+  nnoremap <leader>r: :Grep
+  " Scoped searches (Standard)
+  nnoremap <leader>rs <Cmd>GrepScope<CR>
+  " Search for word under cursor
+  " Word with boundaries
+  nnoremap <silent> <leader>rw <Cmd>execute 'GrepScope' '\b' . expand('<cword>') . '\b'<CR>
+  " Word without boundaries
+  " nnoremap <silent> <leader>rW <Cmd>execute 'GrepScope' expand('<cword>')<CR>
+  xnoremap <silent> <leader>rw y:<C-u>execute 'GrepScope' '\b' . getreg('"') . '\b'<CR>
+  " xnoremap <silent> <leader>rW y:<C-u>execute 'GrepScope' getreg('"')<CR>
+endif
