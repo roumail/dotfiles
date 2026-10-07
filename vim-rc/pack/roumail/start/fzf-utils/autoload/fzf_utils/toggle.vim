@@ -2,15 +2,16 @@
 " g:fzf_include_ignored:
 "   1 = search in ignored files (rg -u, fd -I)
 "   0 = respect .gitignore (default)
-let s:fzf_include_ignored = get(g:, 'fzf_include_ignored', 0)
-
 function! fzf_utils#toggle#is_ignored_included() abort
-  return s:fzf_include_ignored
+  return get(g:, 'fzf_include_ignored', 0)
 endfunction
 
-" Update both fd and ripgrep
+" Flip g:fzf_include_ignored. rg reads it on every search; companions that
+" cache a command (fd) rebuild it on the FzfUtilsIgnoredToggled event
 function! fzf_utils#toggle#toggle_ignored() abort
-  let s:fzf_include_ignored = !s:fzf_include_ignored
-  call fzf_utils#fd#update_default_fd_command()
-  echo 'FZF include ignored: ' . (s:fzf_include_ignored ? 'on' : 'off')
+  let g:fzf_include_ignored = !get(g:, 'fzf_include_ignored', 0)
+  if exists('#User#FzfUtilsIgnoredToggled')
+    doautocmd <nomodeline> User FzfUtilsIgnoredToggled
+  endif
+  echo 'FZF include ignored: ' . (g:fzf_include_ignored ? 'on' : 'off')
 endfunction

@@ -1,5 +1,6 @@
 " pytest: run, debug and yank pytest targets from Python buffers.
-" Requires tpope/vim-dispatch and chkpyt.sh on $PATH.
+" Requires tpope/vim-dispatch and chkpyt.sh on $PATH; the repeat / log / strategy
+" mappings come from the dispatch-extras companion.
 if exists('g:loaded_pytest_tools')
   finish
 endif

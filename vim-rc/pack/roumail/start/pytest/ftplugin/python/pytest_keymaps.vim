@@ -9,9 +9,9 @@ if get(g:, 'pytest_no_mappings', 0) || expand('%:t') !~ '^test_'
 endif
 
 " Open log of last dispatch run as a buffer
-nnoremap <buffer> <localleader>dl :tabedit `=dispatch#request().file`<CR>
+nmap <buffer> <localleader>dl <Plug>(dispatch-extras-log)
 " Switch b/w tmux and terminal running strategy for Start (used for debugging)
-nnoremap <buffer> <localleader>cs <Cmd>call pytest#dispatch#toggle_strategy()<CR>
+nmap <buffer> <localleader>cs <Plug>(dispatch-extras-toggle-start-strategy)
 nnoremap <buffer> <localleader>rm :RunPytestScope method<CR>
 nnoremap <buffer> <localleader>rc :RunPytestScope class<CR>
 nnoremap <buffer> <localleader>rf :RunPytestScope function<CR>
@@ -30,10 +30,9 @@ nnoremap <buffer> <localleader>tf :RunPytestScopeTrace function<CR>
 nnoremap <buffer> <localleader>tt :RunPytestScopeTrace file<CR>
 
 " rerun last start command (debug)
-nnoremap <buffer> <localleader>rs <Cmd>call pytest#dispatch#RepeatLast()<CR>
+nmap <buffer> <localleader>rs <Plug>(dispatch-extras-repeat-start)
 " rerun last dispatch command (run)
-" https://github.com/tpope/vim-dispatch/issues/80#issuecomment-290958499
-nnoremap <buffer> <localleader>rd :Copen \| Dispatch<CR>
+nmap <buffer> <localleader>rd <Plug>(dispatch-extras-repeat-dispatch)
 
 " Yank test paths
 nnoremap <buffer> <localleader>ym :YankTestMethod<CR>
