@@ -103,4 +103,25 @@ link_tree() {
   fi
   ln -sf "$file" "$dst/$rel"
 done
+  prune_dangling_links "$src" "$dst"
+}
+
+# Remove symlinks under $dst that point into $src but whose target no longer
+# exists (e.g. a file deleted or moved in the repo after a git pull).
+# Dangling links pointing elsewhere are left alone.
+prune_dangling_links() {
+  local src="$1"
+  local dst="$2"
+  [ -d "$dst" ] || return 0
+  find "$dst" -type l -print0 | while IFS= read -r -d '' link; do
+  target="$(readlink "$link")"
+  case "$target" in
+    "$src"/*)
+      if [ ! -e "$link" ]; then
+        rm "$link"
+        echo "  ✗ Pruned dangling link: ${link#$dst/}"
+      fi
+      ;;
+  esac
+done
 }

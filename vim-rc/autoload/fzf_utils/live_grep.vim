@@ -1,8 +1,10 @@
 let s:last_bang = 0
 let s:last_args = []
+" fzf appends the accepted query here; read back in s:on_exit
+let s:history_file = tempname()
 
 function! fzf_utils#live_grep#replay() abort
-  " Injected via autocommand from maintained fzf fork
+  " Populated by s:on_exit after each accepted live grep
   let l:query = getreg('/')
 
   " Get only the options from the last run, discard the old pattern.
@@ -34,6 +36,35 @@ function! s:split_args(arg_list) abort
   return [pattern, options]
 endfunction
 
+" Copy the accepted fzf query into the search register and history so that
+" replay, n/N and :History/ see it. Called by fzf before the sink opens the
+" selected file.
+function! s:on_exit(code) abort
+  if a:code != 0 || !filereadable(s:history_file)
+    return
+  endif
+  let l:lines = readfile(s:history_file)
+  if empty(l:lines) || empty(l:lines[-1])
+    return
+  endif
+  call setreg('/', l:lines[-1])
+  call histadd('/', l:lines[-1])
+endfunction
+
+" Add query capture to an fzf.vim spec (e.g. from fzf#vim#with_preview).
+" fzf appends the accepted query to s:history_file; s:on_exit reads it back.
+function! fzf_utils#live_grep#capture_query(spec) abort
+  let l:opts = ['--history', s:history_file, '--history-size', '50',
+        \ '--bind', 'ctrl-n:down']
+  if type(get(a:spec, 'options', [])) == v:t_list
+    let a:spec.options = get(a:spec, 'options', []) + l:opts
+  else
+    let a:spec.options .= ' ' . join(map(l:opts, 'fzf#shellescape(v:val)'))
+  endif
+  let a:spec.exit = function('s:on_exit')
+  return a:spec
+endfunction
+
 function! fzf_utils#live_grep#parse_args(arg_list) abort
   " Step 1: Split into pattern and options based on --
   let [pattern, options] = s:split_args(a:arg_list)
@@ -43,11 +74,9 @@ function! fzf_utils#live_grep#parse_args(arg_list) abort
 
   for item in options
     if item =~ '/$' || item =~ '^\.\{0,2\}/'  " Matches paths ending with / or starting with ./, .., or /
-        " Keep original syntax, just add it as a -g "path/**" glob
-        call add(rg_options, '-g')
-      " Remove trailing slash if present before adding /**
-      let path = substitute(item, '/$', '', '')
-      call add(rg_options, shellescape(path . '/**'))
+      " Pass as an rg path argument; a -g glob can't express ./, ../ or
+      " absolute paths. Safe because the query always follows -e.
+      call add(rg_options, shellescape(item))
     else
       " Keep regular rg flags as-is
       call add(rg_options, item)
@@ -74,7 +103,6 @@ function! fzf_utils#live_grep#interactive(bang, ...) abort
   let l:preview_opts = fzf#vim#with_preview({
         \ 'options': [
         \   '--delimiter', ':', '--nth', '4..', '--with-nth', '1,2',
-        \   '--phony',
         \   '--prompt', 'Regex> ',
         \   '--header', 'C-r (regex) | C-f (fixed) | C-w (word)',
         \   '--bind', 'ctrl-f:change-prompt(Fixed> )+reload(' . l:cmd_fixed . ' {q})',
@@ -82,8 +110,10 @@ function! fzf_utils#live_grep#interactive(bang, ...) abort
         \   '--bind', 'ctrl-r:change-prompt(Regex> )+reload(' . l:cmd_regex . ' {q})',
         \ ]
         \ }, 'right,70%,border-left,+{2}+4/3,~4', 'ctrl-p')
+  call fzf_utils#live_grep#capture_query(l:preview_opts)
 
-  call fzf#vim#grep2(l:prefix, l:pattern, l:preview_opts, a:bang)
+  " Start in regex mode; '-e' keeps the query from being read as a path or flag
+  call fzf#vim#grep2(l:cmd_regex, l:pattern, l:preview_opts, a:bang)
 endfunction
 
 " Convenience wrapper - always fullscreen

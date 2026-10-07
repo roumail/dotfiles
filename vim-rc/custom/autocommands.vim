@@ -1,13 +1,3 @@
-" Set @/ register for vim search integration
-function! s:fzf_query_to_search() abort
-  let pattern = fzf#vim#get_event().query
-
-  call setreg('/', pattern)
-  call histadd('/', pattern)
-endfunction
-
-autocmd User FzfQuery call s:fzf_query_to_search()
-
 " Understand jsconc
 autocmd FileType json syntax match Comment +\/\/.\+$+
 
@@ -74,8 +64,3 @@ augroup DetectPythonProject
   autocmd VimEnter * call DetectProjectName()
 augroup END
 
-" Make this more specific
-" augroup pytest_parse
-"     autocmd!
-"     autocmd QuickFixCmdPost dispatch call ParsePytestFailures()
-" augroup END

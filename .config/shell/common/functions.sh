@@ -44,8 +44,24 @@ __wezterm_custom_preexec() {
   # normalize basename
   resolved="${resolved##*/}"
 
+  # resolve shell functions that wrap a program
+  case "$resolved" in
+    v) resolved="vim" ;;
+  esac
+
   __wezterm_set_user_var WEZTERM_PROG "$resolved"
   __wezterm_set_user_var WEZTERM_CMD "$1"
+}
+
+# Open vim on changed git files (fzf GFiles?), or the current dir when outside
+# a repo or the tree is clean
+unalias v 2>/dev/null
+v() {
+  if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
+    vim -c 'GFiles?'
+  else
+    vim .
+  fi
 }
 
 precmd_functions+=(__wezterm_custom_precmd)

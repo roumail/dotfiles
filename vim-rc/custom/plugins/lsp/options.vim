@@ -2,8 +2,9 @@
 
 let g:lsp_use_native_client = 1
 let g:lsp_auto_enable = 1
-let g:lsp_log_verbose = 1
-let g:lsp_log_file = expand('~/vim-lsp.log')
+" Logging off by default; uncomment both to debug
+" let g:lsp_log_verbose = 1
+" let g:lsp_log_file = expand('~/vim-lsp.log')
 let g:lsp_diagnostics_enabled = 1
 " highlight link lspReference Search
 let g:lsp_diagnostics_highlights_enabled = 1

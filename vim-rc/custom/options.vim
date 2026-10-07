@@ -1,18 +1,17 @@
 " General settings
-set nocompatible
+" vim-sensible covers wildmenu, incsearch, ruler, syntax and filetype detection
 set mouse=a
 set nowrap                " globally disable wrapping
 set ignorecase                  " Search ignoring case
 set smartcase                   " Do not ignore case if the search patter is uppercase
-set noswapfile                  " Do not leave any backup files
-" set noswapfile                  " Do not leave any backup files
+set noswapfile                  " Do not create swap files
+" Used if swap files are re-enabled
 " https://itsfoss.gitlab.io/blog/vim-doesnt-terminate-when-terminal-is-forcefully-closed/
 " the // tells vim to create subdirectories for each file under these
 " subdirectories
 " Note: directories must exist!
 set backupdir=~/.vim/backup//
 set directory=~/.vim/swap//
-" set noswapfile                  " Do not leave any backup files
 set tabstop=4                   " Set the width of a tab character
 set shiftwidth=4                " Set the number of spaces for auto-indents
 set expandtab                   " Use spaces instead of tab characters
@@ -26,8 +25,6 @@ set sessionoptions-=options
 set autowrite
 " Autocomplete for files in subdirectories
 set path+=**
-" Show matching files when we tab complete
-set wildmenu
 set wildmode=longest,list,full  " enhanced command-line completion
 set completeopt=menuone,noselect
 " set completeopt=menuone,popuphidden,noinsert,noselect
@@ -64,7 +61,6 @@ set signcolumn=yes
 set listchars=tab:»·,trail:·,extends:→,precedes:←
 set number " relativenumber
 set hlsearch              " Highlight search results
-set incsearch             " Incremental search (highlight as you type)
 set splitbelow splitright " Open splits below and to the right
 
 
@@ -83,17 +79,11 @@ let &t_EI = "\e[2 q"      " Block cursor in Normal mode
 
 " set nohlsearch
 set foldmethod=indent
-set ruler
 set shortmess-=S           " allow search count messages
 set nowrapscan             " Don't wrap search at end of file
 set foldnestmax=3
 set foldlevel=99
 set showmatch             " Highlight matching parentheses, brackets, and braces
-syntax on
-" Allow customization via ~/.vim/ftplugin/
-" filetype on
-" filetype plugin on
-filetype plugin indent on
 
 " Set netrw config
 let g:goyo_width = 95
