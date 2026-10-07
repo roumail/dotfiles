@@ -16,41 +16,6 @@ augroup vimrc-remember-cursor-position
         \ endif
 augroup END
 
-function! s:WithPreservedCursor(Callback) abort
-  if &readonly || !&modifiable
-    return
-  endif
-
-  let save_cursor = getpos('.')
-  try
-    call call(a:Callback, [])
-  finally
-    call setpos('.', save_cursor)
-  endtry
-endfunction
-
-function! s:StripTrailingWhitespace() abort
-  " :let b:strip_trailing_whitespace = 0
-  " Skip if explicitly disabled for this buffer
-  if get(b:, 'strip_trailing_whitespace', 1) == 0
-      return
-  endif
-  silent! %s/\v\S\zs[ \t]+$//e
-endfunction
-
-function! s:StripTrailingCR() abort
-  if search('\r$', 'nw')
-    silent! %s/\r$//e
-  endif
-endfunction
-
-" BufReadPost,BufWinLeave
-augroup buffer_cleanup
-  autocmd!
-  autocmd BufWritePre * call s:WithPreservedCursor(function('s:StripTrailingCR'))
-  autocmd BufWritePre * call s:WithPreservedCursor(function('s:StripTrailingWhitespace'))
-augroup END
-
 " Make sure all types of requirements.txt files get syntax highlighting.
 autocmd BufNewFile,BufRead requirements*.txt set ft=python
 

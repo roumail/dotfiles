@@ -74,13 +74,13 @@ nnoremap [2 ?\V{{{2<CR>
 nnoremap <leader>q :wq<CR>
 " buffer switching
 " Switch to the alternate (last used) buffer, skipping netrw listings
-nnoremap <silent> gb <Cmd>call AltBuffer()<CR>
+nmap gb <Plug>(buffer-tools-alt)
 
 " bd ends up closing the current window too
 " nnoremap <leader>bc :bd<CR>
 " nnoremap <silent> <leader>bc :bp\| bd #<CR>
 " This function skips terminal windows and netrw
-nnoremap <silent> <leader>bc :call SmartFilterClose()<CR>
+nmap <leader>bc <Plug>(buffer-tools-close)
 nnoremap <leader>bC :bufdo bd<CR>
 
 " Split opening
@@ -95,7 +95,7 @@ nnoremap <leader>l <C-w>l
 " inverse of terminal mode
 nnoremap <S-Tab> :tabnext<CR>
 
-nnoremap <silent> yoq :call ToggleQuickfix()<CR>
+nmap yoq <Plug>(qf-tools-toggle)
 
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
@@ -186,7 +186,7 @@ function! s:on_lsp_buffer_enabled() abort
   " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
 
   " refer to doc to add more commands
-  nnoremap <buffer> <leader>md :MyToggleLSPDiagnostics<CR>zz
+  nmap <buffer> <leader>md <Plug>(lsp-extras-toggle-diagnostics)zz
 endfunction
 
 augroup lsp_install
