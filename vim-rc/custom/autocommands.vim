@@ -58,9 +58,3 @@ autocmd BufNewFile,BufRead requirements*.txt set ft=python
 autocmd BufNewFile,BufRead .*aliases* set ft=sh
 
 autocmd BufReadPost fugitive://* set bufhidden=delete
-
-augroup DetectPythonProject
-  autocmd!
-  autocmd VimEnter * call DetectProjectName()
-augroup END
-

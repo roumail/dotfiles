@@ -1,7 +1,20 @@
+" vim dispatch
+compiler pytest
+" https://github.com/tpope/vim-dispatch/issues/315
+let b:dispatch = '-compiler=pytest'
+" Set default dispach strategy for start to be terminal, not tmux
+let g:dispatch_no_tmux_start = 1
+
 if exists('b:loaded_python_pytest_ftplugin')
   finish
 endif
 let b:loaded_python_pytest_ftplugin = 1
+
+augroup pytest_parse
+  autocmd!
+  " This runs AFTER dispatch completes and populates quickfix
+  autocmd QuickFixCmdPost dispatch call pytest#failures#Parse()
+augroup END
 
 " Copy test paths to clipboard/register without running
 command! -buffer YankTestMethod call pytest#common#YankTestPath('method')
