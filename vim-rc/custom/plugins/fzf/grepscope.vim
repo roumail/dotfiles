@@ -1,4 +1,4 @@
-" Project strategies for :GrepScope (pack/roumail/start/fzf-utils-grepscope).
+" Project strategies for :GrepScope (pack/roumail/start/fzf-utils-rg).
 " Tried in registration order; the first whose detect() returns a name wins.
 
 " Python: the project is named in the nearest pyproject.toml

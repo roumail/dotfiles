@@ -8,10 +8,15 @@ if get(g:, 'pytest_no_mappings', 0) || expand('%:t') !~ '^test_'
   finish
 endif
 
-" Open log of last dispatch run as a buffer
-nmap <buffer> <localleader>dl <Plug>(dispatch-extras-log)
-" Switch b/w tmux and terminal running strategy for Start (used for debugging)
-nmap <buffer> <localleader>cs <Plug>(dispatch-extras-toggle-start-strategy)
+" The dispatch-extras mappings are only added when that plugin is installed
+let s:extras = !empty(maparg('<Plug>(dispatch-extras-log)', 'n'))
+
+if s:extras
+  " Open log of last dispatch run as a buffer
+  nmap <buffer> <localleader>dl <Plug>(dispatch-extras-log)
+  " Switch b/w tmux and terminal running strategy for Start (used for debugging)
+  nmap <buffer> <localleader>cs <Plug>(dispatch-extras-toggle-start-strategy)
+endif
 nnoremap <buffer> <localleader>rm :RunPytestScope method<CR>
 nnoremap <buffer> <localleader>rc :RunPytestScope class<CR>
 nnoremap <buffer> <localleader>rf :RunPytestScope function<CR>
@@ -29,10 +34,12 @@ nnoremap <buffer> <localleader>tc :RunPytestScopeTrace class<CR>
 nnoremap <buffer> <localleader>tf :RunPytestScopeTrace function<CR>
 nnoremap <buffer> <localleader>tt :RunPytestScopeTrace file<CR>
 
-" rerun last start command (debug)
-nmap <buffer> <localleader>rs <Plug>(dispatch-extras-repeat-start)
-" rerun last dispatch command (run)
-nmap <buffer> <localleader>rd <Plug>(dispatch-extras-repeat-dispatch)
+if s:extras
+  " rerun last start command (debug)
+  nmap <buffer> <localleader>rs <Plug>(dispatch-extras-repeat-start)
+  " rerun last dispatch command (run)
+  nmap <buffer> <localleader>rd <Plug>(dispatch-extras-repeat-dispatch)
+endif
 
 " Yank test paths
 nnoremap <buffer> <localleader>ym :YankTestMethod<CR>

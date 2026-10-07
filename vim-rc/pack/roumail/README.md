@@ -1,33 +1,33 @@
 # roumail Vim package
 
-Six small plugins under `start/`, loaded automatically by Vim (`:h packages`).
-Two families; an indented plugin needs the one above it installed.
+Four small plugins under `start/`, loaded automatically by Vim (`:h packages`).
+Each one is grouped by what it is for and installs on its own; none requires
+another from this package.
 
 ```
 junegunn/fzf.vim
-├── fzf-utils               :FzfToggleIgnored (rg + fd), previewed :Files / :Buffers
-├── fzf-utils-fd            fd as the fzf file source                    (needs fd)
-└── fzf-utils-rg            :Grep (live), :Rg (static), replay           (needs rg)
-    └── fzf-utils-grepscope   :GrepScope, registry of project strategies
+├── fzf-utils        find files: :FzfToggleIgnored, previewed :Files / :Buffers,
+│                    fd as the fzf file source                        (needs fd)
+└── fzf-utils-rg     search contents: :Grep (live), :Rg (static), replay,
+                     :GrepScope with its registry of project strategies (needs rg)
 
 tpope/vim-dispatch
-└── dispatch-extras         repeat last :Start, Start strategy toggle, open log
-    └── pytest              run / debug / yank pytest targets            (needs chkpyt.sh)
+├── dispatch-extras  repeat last :Start, Start strategy toggle, open log
+└── pytest           run / debug / yank pytest targets            (needs chkpyt.sh)
 ```
 
-The fd and rg plugins work without fzf-utils (they read `g:fzf_include_ignored`
-directly); it only adds the command that flips it.
+The two fzf plugins share one setting, `g:fzf_include_ignored`: fzf-utils-rg
+reads it on every search, and `:FzfToggleIgnored` (fzf-utils) flips it. pytest
+adds the dispatch-extras mappings listed below only when dispatch-extras is
+installed.
 
 ## fzf-utils
 
 - `:FzfToggleIgnored` flips `g:fzf_include_ignored` (default `0`: skip ignored files)
   and fires `User FzfUtilsIgnoredToggled`.
 - `:Files[!]`, `:Buffers[!]`: fzf.vim's commands with a preview window.
-
-## fzf-utils-fd
-
-Sets `$FZF_DEFAULT_COMMAND` to an `fd` command unless it is already set, and
-rebuilds it when the ignore toggle flips.
+- Sets `$FZF_DEFAULT_COMMAND` to an `fd` command unless it is already set, and
+  rebuilds it when the ignore toggle flips.
 
 ## fzf-utils-rg
 
@@ -43,7 +43,7 @@ rebuilds it when the ignore toggle flips.
 | `<leader>r:` | Prefill `:Grep` on the command line |
 | `<leader>rr` | Replay the last live grep with its last query |
 
-## fzf-utils-grepscope
+### :GrepScope
 
 `:GrepScope [pattern]` shows a menu of scopes, then runs `:Grep` in the one you
 pick. `all` is always offered; the rest comes from the detected project. With no
@@ -80,7 +80,7 @@ on it live in the dotfiles config (`custom/plugins/fzf/grepscope.vim`,
 
 ## dispatch-extras
 
-Binds no keys itself; it provides `<Plug>` mappings for companions or your vimrc.
+Binds no keys itself; it provides `<Plug>` mappings for pytest or your vimrc.
 
 | Mapping | Action |
 | --- | --- |
@@ -112,7 +112,7 @@ calls to show expected | actual in a diff tab.
 | `<localleader>t` + `m` `c` `f` `t` | Same with `--trace` |
 | `<localleader>d` + `m` `c` `f` `t` | Same with `--pdb` |
 | `<localleader>y` + `m` `c` `f` `F` | Yank method / class / function / file node id |
-| `<localleader>rd`, `<localleader>rs` | dispatch-extras: repeat the last `:Dispatch` / `:Start` |
-| `<localleader>dl`, `<localleader>cs` | dispatch-extras: open the last log / toggle the `:Start` strategy |
+| `<localleader>rd`, `<localleader>rs` | With dispatch-extras: repeat the last `:Dispatch` / `:Start` |
+| `<localleader>dl`, `<localleader>cs` | With dispatch-extras: open the last log / toggle the `:Start` strategy |
 
 `let g:pytest_no_mappings = 1` skips them.
