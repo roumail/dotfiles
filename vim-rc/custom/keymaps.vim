@@ -119,6 +119,21 @@ nnoremap <leader>ob <Cmd>Buffers<CR>
 " Browse search history (populated by live grep queries too)
 nnoremap <silent> <leader>rh <Cmd>History/<CR>
 
+" Live grep (fzf-utils-rg)
+nmap <leader>rr <Plug>(fzf-utils-grep-replay)
+" Fuzzy search scoped to the current buffer's directory
+nmap <leader>r. <Plug>(fzf-utils-grep-dir)
+" Line search from project root directory
+nmap <leader>r/ <Plug>(fzf-utils-grep)
+" Prefilled to type pattern/scope
+nnoremap <leader>r: :Grep
+
+" Scoped searches (fzf-utils-grepscope)
+nmap <leader>rs <Plug>(fzf-utils-grepscope)
+" Word under cursor / selection, with word boundaries
+nmap <leader>rw <Plug>(fzf-utils-grepscope-word)
+xmap <leader>rw <Plug>(fzf-utils-grepscope-word)
+
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
 
