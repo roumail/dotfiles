@@ -8,7 +8,7 @@ junegunn/fzf.vim
 ├── fzf-utils               :FzfToggleIgnored (rg + fd), previewed :Files / :Buffers
 ├── fzf-utils-fd            fd as the fzf file source                    (needs fd)
 └── fzf-utils-rg            :Grep (live), :Rg (static), replay           (needs rg)
-    └── fzf-utils-grepscope   :GrepScope, project detection
+    └── fzf-utils-grepscope   :GrepScope, registry of project strategies
 
 tpope/vim-dispatch
 └── dispatch-extras         repeat last :Start, Start strategy toggle, open log
@@ -45,17 +45,36 @@ rebuilds it when the ignore toggle flips.
 
 ## fzf-utils-grepscope
 
-`:GrepScope [pattern]` picks a scope (all / project / tests, optionally Python
-only), then runs `:Grep` in it. It needs `g:project_name`, read at startup from
-the `name` in the nearest `pyproject.toml`; set it yourself (e.g. in
-`.vim.custom`) to override.
+`:GrepScope [pattern]` shows a menu of scopes, then runs `:Grep` in the one you
+pick. `all` is always offered; the rest comes from the detected project. With no
+project it falls back to `:Grep`.
+
+The plugin ships no idea of what a project is. You register strategies, and at
+startup the first one whose `detect()` returns a name becomes the project:
+
+```vim
+call fzf_utils#project#register('python', {
+      \ 'detect': function('s:pyproject_name'),
+      \ 'scopes': function('s:python_scopes'),
+      \ })
+```
+
+- `detect()` returns the project name, or `''` when this is not such a project.
+- `scopes(name)` returns the menu entries in order, as `[label, rg-args]` pairs,
+  e.g. `[['src', ['src/']], ['src go', ['src/', '-tgo']]]`. Arguments ending in
+  `/` are search paths, anything else is passed to ripgrep.
+
+Strategies are tried in registration order. The detected name is kept in
+`g:project_name`; set that yourself beforehand to override the name only.
+`fzf_utils#rg_scope#invoke(label [, pattern])` greps a scope without the menu,
+for mappings. The pyproject.toml strategy and the Python-buffer mappings built
+on it live in the dotfiles config (`custom/plugins/fzf/grepscope.vim`,
+`ftplugin/python/keymaps.vim`), not in the plugin.
 
 | Keys | Mode | Action |
 | --- | --- | --- |
 | `<leader>rs` | n | `:GrepScope` |
 | `<leader>rw` | n, x | `:GrepScope` for the word under the cursor / selection |
-| `<leader>rp`, `<leader>rt` | n | Python buffers: grep project / tests Python files |
-| `gw`, `gW` | n, x | Python buffers: word or selection in project / tests Python files |
 
 `let g:fzf_utils_no_mappings = 1` skips the mappings of the whole fzf-utils family.
 
