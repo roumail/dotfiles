@@ -28,9 +28,8 @@ command! FzfToggleIgnored call fzf_utils#toggle#toggle_ignored()
 "
 " Path shortcuts:
 "   Paths ending with '/' or starting with './', '../', or '/'
-"   are automatically converted to glob patterns:
-"      :Grep pattern -- src/
-"    → Becomes: -g "src/**"
+"   are passed to ripgrep as search paths:
+"      :Grep pattern -- src/ ../other/
 "
 " Mode switching (via keybinds in fzf):
 "   C-r: Regex mode (default)
@@ -68,9 +67,9 @@ command! -bang -nargs=* Grep call fzf_utils#live_grep#interactive(<bang>0, <f-ar
 " https://github.com/junegunn/fzf.vim/issues/1533#issuecomment-2015075571
 command! -bang -nargs=* Rg call fzf#vim#grep(
       \ fzf_utils#ripgrep#get_command() . " " . <q-args>,
-      \ fzf#vim#with_preview({
+      \ fzf_utils#live_grep#capture_query(fzf#vim#with_preview({
       \       'options': '--delimiter : --nth 4.. --preview-window +{2}-5,~3'
-      \       }, 'right:50%', 'ctrl-p'),
+      \       }, 'right:50%', 'ctrl-p')),
       \ <bang>0)
 
 " Similar to default FZF command, however FZF doesn't give preview

@@ -21,7 +21,7 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 " ============================================================
 " Normal mode {{{
 " ============================================================
-nnoremap zm :Goyo<CR>
+nnoremap <leader>z :Goyo<CR>
 nnoremap K i<CR><Esc>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x "_x
@@ -73,8 +73,8 @@ nnoremap [2 ?\V{{{2<CR>
 
 nnoremap <leader>q :wq<CR>
 " buffer switching
-" Switch to the alternate (last used) buffer
-nnoremap gb :b#<CR>
+" Switch to the alternate (last used) buffer, skipping netrw listings
+nnoremap <silent> gb <Cmd>call AltBuffer()<CR>
 
 " bd ends up closing the current window too
 " nnoremap <leader>bc :bd<CR>
@@ -127,7 +127,7 @@ nnoremap <silent> <leader>r/ <Cmd>Grep<CR>
 nnoremap <leader>r: :Grep
 
 " Scoped searches (Standard)
-nnoremap <leader>r <Cmd>GrepScope<CR>
+nnoremap <leader>rs <Cmd>GrepScope<CR>
 " Search for word under cursor
 " Word with boundaries
 nnoremap <silent> <leader>rw <Cmd>execute 'GrepScope' '\b' . expand('<cword>') . '\b'<CR>
@@ -215,7 +215,7 @@ vnoremap c "_c
 vnoremap g/ <Esc>/\%V
 "Search & replace inside visual selection
 "for example to replace the with THE in selection, complete the command :%s/\%Vthe/THE/g
-vnoremap <leader>r :s/
+vnoremap <leader>s :s/
 " vnoremap <leader>r <Esc>:%s/\%V
 " Move Visual blocks with J and K
 vnoremap J :m '>+1<CR>gv=gv

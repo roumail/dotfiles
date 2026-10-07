@@ -34,7 +34,7 @@ fzf_git_log() {
     --no-sort \
     --multi \
     --prompt 'Log(stat)> ' \
-    --header "enter/ctrl-o: Diff| ctrl-r: log/rebase order| ctrl-t: stat/patch" \
+    --header "enter/ctrl-o: Diff| ctrl-r: log/rebase order| alt-r: refresh| ctrl-t: stat/patch| ctrl-y: copy hash" \
     --preview 'git show --stat --oneline --color=always {1}' \
     --bind "ctrl-y:execute-silent(echo {+1} | tr ' ' '\n' | $copy_cmd)+abort" \
     --bind 'ctrl-t:transform:
@@ -49,7 +49,7 @@ fzf_git_log() {
               ' \
     --bind "enter:become(vim -c 'Git difftool -y {1}^ {1}' < /dev/tty > /dev/tty)" \
     --bind "ctrl-o:become(vim -c 'Gedit {1}' < /dev/tty > /dev/tty)" \
-    --bind "alt-r:reload($reload_cmd | tee '$tmpfile')" \
+    --bind "alt-r:reload([[ \$FZF_PROMPT =~ Rebase ]] && { $reload_cmd > '$tmpfile' && tac '$tmpfile'; } || $reload_cmd | tee '$tmpfile')" \
     --preview-window='right:60%:wrap' \
     < "$tmpfile"
   )

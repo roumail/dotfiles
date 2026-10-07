@@ -25,11 +25,9 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'mattn/vim-lsp-settings'
 Plug 'airblade/vim-gitgutter'
-" Use rg integration with fzf
-Plug 'roumail/fzf.vim'
+Plug 'junegunn/fzf.vim'
 " requires dependency installation using npm install -g livedown
 " Plug 'shime/vim-livedown'
-" Plug 'junegunn/fzf.vim'
 " Plug 'drewtempelmeyer/palenight.vim'
 Plug 'danilo-augusto/vim-afterglow'
 call plug#end()

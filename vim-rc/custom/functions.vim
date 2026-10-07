@@ -23,6 +23,33 @@ function! SmartFilterClose()
   execute 'silent! bdelete! ' . l:current
 endfunction
 
+" Switch to the alternate buffer, skipping netrw listings. If # is a netrw
+" buffer (or missing), fall back to the most recently used other buffer.
+function! s:is_netrw(nr) abort
+  return getbufvar(a:nr, '&filetype') ==# 'netrw'
+        \ || !empty(getbufvar(a:nr, 'netrw_curdir'))
+        \ || bufname(a:nr) =~# 'NetrwTreeListing'
+        \ || isdirectory(bufname(a:nr))
+endfunction
+
+function! s:is_alt_candidate(nr) abort
+  return a:nr > 0 && a:nr != bufnr('%') && bufexists(a:nr) && !s:is_netrw(a:nr)
+endfunction
+
+function! AltBuffer() abort
+  let l:target = bufnr('#')
+  if !s:is_alt_candidate(l:target)
+    let l:bufs = filter(getbufinfo({'buflisted': 1}),
+          \ 's:is_alt_candidate(v:val.bufnr)')
+    if empty(l:bufs)
+      echo 'No alternate buffer'
+      return
+    endif
+    let l:target = sort(l:bufs, {a, b -> b.lastused - a.lastused})[0].bufnr
+  endif
+  execute 'buffer ' . l:target
+endfunction
+
 function! s:list_buffers()
   redir => list
   silent ls
@@ -62,6 +89,32 @@ function! s:ScratchFrom(cmd)
 endfunction
 
 command! -nargs=+ ScratchFrom call s:ScratchFrom(<q-args>)
+
+" Copy a buffer into a new scratch buffer, keeping its filetype.
+" No argument or %: current buffer, limited to the range if one is given.
+" Otherwise: that whole buffer (name, number or #, <Tab> completes).
+function! s:ScratchBuf(bang, line1, line2, buf) abort
+  if empty(a:buf) || a:buf ==# '%'
+    let l:src = bufnr('%')
+    let l:lines = getline(a:line1, a:line2)
+  else
+    let l:src = a:buf =~# '^\d\+$' ? str2nr(a:buf) : bufnr(a:buf)
+    if l:src < 1 || !bufexists(l:src)
+      echoerr 'ScratchBuf: no buffer matching ' . a:buf
+      return
+    endif
+    call bufload(l:src)
+    let l:lines = getbufline(l:src, 1, '$')
+  endif
+  let l:ft = getbufvar(l:src, '&filetype')
+
+  call s:Scratch(a:bang)
+  call setline(1, l:lines)
+  let &l:filetype = l:ft
+endfunction
+
+command! -bang -range=% -nargs=? -complete=buffer ScratchBuf
+      \ call s:ScratchBuf(<bang>0, <line1>, <line2>, <q-args>)
 
 
 function! s:ScratchSave(bang, path) abort
@@ -170,6 +223,28 @@ endfunction
 
 command! -range=% NormalizeJsonString call NormalizeJsonString(<line1>, <line2>)
 command! -range=% NormalizePythonDict call NormalizePythonDict(<line1>, <line2>)
+
+" Reduce pytest output (or coverage test contexts) in the current buffer to
+" one line per test
+function! ParsePytestFailures()
+  " Pytest output: keep only FAILED / ERROR lines. Skipped for pasted coverage
+  " contexts, which have no such lines and would otherwise all be deleted
+  if search('^\(FAILED\|ERROR\) ', 'nw')
+    g!/^FAILED\|^ERROR/d
+    " Remove the FAILED/ERROR prefix
+    %s/^\(FAILED\|ERROR\) //e
+    " Remove the trailing error message (pytest separates it with ' - ')
+    %s/\s-.*$//e
+  endif
+  " Remove coverage context phase, e.g. test_foo[a-1]|run -> test_foo[a-1]
+  %s/|\(run\|setup\|teardown\)$//e
+  " Remove parametrization ids, e.g. test_foo[a-1] -> test_foo
+  %s/\[.*\]$//e
+  " Sort and remove duplicates
+  sort u
+endfunction
+
+command! ParsePytestFailures call ParsePytestFailures()
 
 " Called by pdb's `vdiff` (.pdbrc.py) from inside a :terminal via the terminal
 " API (:h terminal-api). Shows expected | actual in a single reused tab, so

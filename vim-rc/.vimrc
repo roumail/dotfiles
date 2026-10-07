@@ -95,11 +95,7 @@ call MySource('custom/keymaps.vim')
 """"""""""""""""""""""""""""""""""""""
 " Load project local configuration """
 """"""""""""""""""""""""""""""""""""""
-
-if exists('b:project_config_loaded')
-    finish
-endif
-let b:project_config_loaded = 1
+" Sourced once at startup from the directory vim was launched in
 if filereadable(".vim.custom")
     so .vim.custom
 endif
