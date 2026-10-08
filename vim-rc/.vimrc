@@ -86,13 +86,18 @@ endif
 "     set rtp+=/opt/homebrew/opt/fzf
 " endif
 
-call MySource('custom/plugins/airline/options.vim')
-call MySource('custom/plugins/dispatch/options.vim')
-call MySource('custom/plugins/fzf/options.vim')
-call MySource('custom/plugins/fzf/grepscope.vim')
-call MySource('custom/plugins/lsp/options.vim')
-call MySource('custom/plugins/lsp/diagnostics.vim')
-call MySource('custom/plugins/pytest/options.vim')
+for s:plugin_file in [
+            \ 'airline/options.vim',
+            \ 'dispatch/options.vim',
+            \ 'fzf/options.vim',
+            \ 'fzf/grepscope.vim',
+            \ 'lsp/options.vim',
+            \ 'lsp/diagnostics.vim',
+            \ 'pytest/options.vim',
+            \ ]
+    call MySource('custom/plugins/' . s:plugin_file)
+endfor
+unlet s:plugin_file
 
 " Load my keymaps last
 call MySource('custom/keymaps.vim')
