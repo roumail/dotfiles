@@ -79,12 +79,15 @@ if filereadable(expand('~/.vim.local'))
     source ~/.vim.local
 endif
 
-" Load fzf key maps ---
-if isdirectory('/opt/homebrew/opt/fzf')
-    set rtp+=/opt/homebrew/opt/fzf
-endif
+" fzf's Vim plugin comes from Plug 'junegunn/fzf' (custom/plug.vim). README-VIM
+" offers Homebrew's copy as an alternative, not an addition: added here it
+" sits after plugged/fzf in rtp and stops at the g:loaded_fzf guard.
+" if isdirectory('/opt/homebrew/opt/fzf')
+"     set rtp+=/opt/homebrew/opt/fzf
+" endif
 
 call MySource('custom/plugins/airline/options.vim')
+call MySource('custom/plugins/dispatch/options.vim')
 call MySource('custom/plugins/fzf/options.vim')
 call MySource('custom/plugins/fzf/grepscope.vim')
 call MySource('custom/plugins/lsp/options.vim')
