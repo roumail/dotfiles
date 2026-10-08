@@ -49,10 +49,6 @@ if g:os ==# 'Linux'
     endif
 endif
 
-function! MySource(file) abort
-    execute 'source ' . g:vimdir . '/' . a:file
-endfunction
-
 """"""""""""""""""""""""
 " Plugins (vim-plug) """
 """"""""""""""""""""""""
@@ -110,17 +106,6 @@ endif
 " Leader key
 let mapleader = " "
 
-"""""""""""""""""""""""""""""""""
-" Load general configurations """
-"""""""""""""""""""""""""""""""""
-call MySource('custom/options.vim')
-call MySource('custom/clipboard.vim')
-
-" Load machine-specific local overrides (e.g. g:github_enterprise_urls)
-if filereadable(expand('~/.vim.local'))
-    source ~/.vim.local
-endif
-
 " fzf's Vim plugin comes from Plug 'junegunn/fzf' above. README-VIM offers
 " Homebrew's copy as an alternative, not an addition: added here it sits after
 " plugged/fzf in rtp and stops at the g:loaded_fzf guard.
@@ -128,13 +113,10 @@ endif
 "     set rtp+=/opt/homebrew/opt/fzf
 " endif
 
-" Plugin settings live in plugin/<name>.vim, commands in plugin/commands.vim
-" and keymaps in after/plugin/keymaps.vim. Vim sources them after this file.
-
-""""""""""""""""""""""""""""""""""""""
-" Load project local configuration """
-""""""""""""""""""""""""""""""""""""""
-" Sourced once at startup from the directory vim was launched in
-if filereadable(".vim.custom")
-    so .vim.custom
-endif
+" Vim sources the rest after this file, from the runtimepath:
+"   plugin/options.vim, clipboard.vim   Vim and UI options
+"   plugin/<name>.vim                   plugin settings
+"   plugin/commands.vim                 commands
+"   plugin/autocommands.vim             autocommands
+"   after/plugin/keymaps.vim            keymaps, after every plugin
+"   after/plugin/local.vim              ~/.vim.local and .vim.custom, last
