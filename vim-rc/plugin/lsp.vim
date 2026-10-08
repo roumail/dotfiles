@@ -67,4 +67,21 @@ let g:lsp_settings = {
 \   }
 \ }
 
+" Diagnostics start in the per-buffer default (autoload/lsp_diagnostics_toggle.vim).
+" Set up once plugins have loaded, and only if vim-lsp is installed.
+function! s:init_diagnostics_toggle() abort
+  if !exists('g:lsp_loaded')
+    return
+  endif
+  augroup lsp_diagnostics_toggle
+    autocmd!
+    autocmd BufEnter * call lsp_diagnostics_toggle#apply_default()
+  augroup END
+  " The current buffer was entered before this ran
+  call lsp_diagnostics_toggle#apply_default()
+endfunction
 
+augroup lsp_diagnostics_toggle_init
+  autocmd!
+  autocmd VimEnter * ++once call s:init_diagnostics_toggle()
+augroup END
