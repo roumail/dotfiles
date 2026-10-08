@@ -5,4 +5,4 @@
 " .vim.custom there that makes :Files, :Grep and :Rg include ignored files from
 " the start (the same switch :FzfToggleIgnored flips):
 "
-"   let g:fzf_include_ignored = 1
+"   let g:fzf_utils_include_ignored = 1
