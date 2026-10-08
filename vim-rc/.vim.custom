@@ -2,7 +2,7 @@
 " Vim starts in (the name is in .gitignore, so these stay local).
 "
 " To work inside a directory that is normally gitignored, such as a .venv, put a
-" .vim.custom there that makes :FdFiles, :Grep and :Rg include ignored files from
+" .vim.custom there that makes :FdFiles, :Grep and :RgRaw include ignored files from
 " the start (the same switch :FzfToggleIgnored flips):
 "
 "   let g:fzf_utils_include_ignored = 1

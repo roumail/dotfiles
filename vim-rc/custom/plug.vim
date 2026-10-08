@@ -26,9 +26,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'mattn/vim-lsp-settings'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf.vim'
+" fzf-utils (:FdFiles) and fzf-utils-rg (:Grep, :RgRaw) add commands under
+" their own names and redefine none of fzf.vim's, so their order doesn't matter.
 Plug 'roumail/fzf-utils'
-" Replaces fzf.vim's :Rg with `command!`, so the plugin loaded last wins.
-" Plugins load in Plug order: keep it below fzf.vim.
 Plug 'roumail/fzf-utils-rg'
 Plug 'roumail/project-detect'
 Plug 'roumail/grepscope'
