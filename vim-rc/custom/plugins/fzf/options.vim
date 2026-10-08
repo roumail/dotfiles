@@ -66,3 +66,11 @@ endfunction
 " - When set, CTRL-N and CTRL-P will be bound to 'next-history' and
 "   'previous-history' instead of 'down' and 'up'.
 " let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+" :Rg is fzf-utils-rg's :RgRaw (raw rg arguments, ignore toggle, query saved to
+" :History/) instead of fzf.vim's. Defined at VimEnter: this file is sourced
+" before plugins load, so fzf.vim's `command! Rg` would otherwise replace it.
+augroup fzf_rg_alias
+  autocmd!
+  autocmd VimEnter * command! -bang -nargs=* Rg RgRaw<bang> <args>
+augroup END
