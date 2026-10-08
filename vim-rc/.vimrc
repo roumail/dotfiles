@@ -68,7 +68,6 @@ let mapleader = " "
 " Load general configurations """
 """""""""""""""""""""""""""""""""
 call MySource('custom/options.vim')
-call MySource('custom/autocommands.vim')
 call MySource('custom/clipboard.vim')
 
 """"""""""""""""""""""""""""""""
@@ -91,8 +90,6 @@ for s:plugin_file in glob(g:vimdir . '/custom/plugins/*/*.vim', 0, 1)
 endfor
 unlet s:plugin_file
 
-" Load my keymaps last
-call MySource('custom/keymaps.vim')
 """"""""""""""""""""""""""""""""""""""
 " Load project local configuration """
 """"""""""""""""""""""""""""""""""""""
