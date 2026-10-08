@@ -86,16 +86,8 @@ endif
 "     set rtp+=/opt/homebrew/opt/fzf
 " endif
 
-for s:plugin_file in [
-            \ 'airline/options.vim',
-            \ 'dispatch/options.vim',
-            \ 'fzf/options.vim',
-            \ 'fzf/grepscope.vim',
-            \ 'lsp/options.vim',
-            \ 'lsp/diagnostics.vim',
-            \ 'pytest/options.vim',
-            \ ]
-    call MySource('custom/plugins/' . s:plugin_file)
+for s:plugin_file in glob(g:vimdir . '/custom/plugins/*/*.vim', 0, 1)
+    execute 'source ' . fnameescape(s:plugin_file)
 endfor
 unlet s:plugin_file
 
