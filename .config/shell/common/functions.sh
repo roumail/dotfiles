@@ -53,13 +53,13 @@ __wezterm_custom_preexec() {
   __wezterm_set_user_var WEZTERM_CMD "$1"
 }
 
-# Open vim on changed git files (fzf GFiles?), or the current dir when outside
-# a repo or the tree is clean. The picker opens over netrw for the current dir,
-# so cancelling it leaves netrw instead of an empty buffer.
+# Open vim on the fugitive status window, or the current dir when outside a
+# repo or the tree is clean. The status window opens over netrw for the current
+# dir, so closing it leaves netrw instead of an empty buffer.
 unalias v 2>/dev/null
 v() {
   if [ -n "$(git status --porcelain 2>/dev/null)" ]; then
-    vim . -c 'GFiles?'
+    vim . -c 'Git'
   else
     vim .
   fi
