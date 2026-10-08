@@ -104,11 +104,11 @@ nmap ga <Plug>(EasyAlign)
 " fzf {{{1
 """""""""""""""""""
 
-" Look up file in current directory, often project root
-nnoremap <silent> <leader><leader> <Cmd>Files<CR>
+" Look up file in current directory, often project root (fd listing, fzf-utils)
+nmap <silent> <leader><leader> <Plug>(fzf-utils-files)
 
 " Search files only from the CURRENT buffer's directory
-" nnoremap <silent> <leader>. <Cmd>Files <C-r>=expand("%:h")<CR>/<CR>
+" nnoremap <silent> <leader>. <Cmd>FdFiles <C-r>=expand("%:h")<CR>/<CR>
 
 " status of current Git repository whilst also allowing easy navigation to modified files.
 nnoremap <silent> <leader>og <Cmd>GFiles?<CR>
