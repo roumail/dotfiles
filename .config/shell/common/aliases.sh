@@ -30,6 +30,11 @@ if command -v aider >/dev/null 2>&1; then
     alias AD='aider --chat-mode architect'
 fi
 
+# md2pdf notes.md [extra pandoc args] -> notes.pdf (needs: brew install pandoc, plus a PDF engine e.g. brew install --cask basictex)
+if command -v pandoc >/dev/null 2>&1; then
+    md2pdf() { pandoc "$1" -o "${1%.*}.pdf" "${@:2}"; }
+fi
+
 # ls aliases
 alias l='ls $LS_OPTIONS -lA'
 alias ll='ls $LS_OPTIONS -alF'
