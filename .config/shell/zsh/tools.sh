@@ -21,6 +21,8 @@ if command -v brew >/dev/null 2>&1; then
       source_dir "$BASE/plugins"
       source_if_exists "$BASE/$SHELL_NAME/keybindings.sh"
     }
+    # Read once when the plugin is sourced, so it must be set beforehand.
+    ZVM_SYSTEM_CLIPBOARD_ENABLED=true
     source "$zvm_path"
   fi
 fi
