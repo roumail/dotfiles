@@ -1,5 +1,5 @@
 " Project detection (roumail/project-detect) and the :GrepScope scopes for each
-" project type (roumail/fzf-utils-grepscope).
+" project type (roumail/grepscope).
 
 " Python: the project is named in the nearest pyproject.toml
 function! s:pyproject_name() abort
@@ -33,6 +33,6 @@ endfunction
 if !empty(globpath(&rtp, 'autoload/project_detect.vim'))
   call project_detect#register('python', {'detect': function('s:pyproject_name')})
 endif
-if !empty(globpath(&rtp, 'autoload/fzf_utils/rg_scope.vim'))
-  call fzf_utils#rg_scope#register('python', function('s:python_scopes'))
+if !empty(globpath(&rtp, 'autoload/grepscope.vim'))
+  call grepscope#register('python', function('s:python_scopes'))
 endif

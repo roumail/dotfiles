@@ -15,12 +15,12 @@ nmap <buffer> <localleader>dl <Plug>(dispatch-extras-log)
 " Switch b/w tmux and terminal running strategy for Start (used for debugging)
 nmap <buffer> <localleader>cs <Plug>(dispatch-extras-toggle-start-strategy)
 
-" Scoped grep (fzf-utils-grepscope). The scope is looked up when the key is
+" Scoped grep (grepscope). The scope is looked up when the key is
 " pressed; outside a project these print 'no scope' instead of grepping.
-nnoremap <buffer> <leader>rp <Cmd>call fzf_utils#rg_scope#invoke('project python')<CR>
-nnoremap <buffer> <leader>rt <Cmd>call fzf_utils#rg_scope#invoke('tests python')<CR>
+nnoremap <buffer> <leader>rp <Cmd>call grepscope#invoke('project python')<CR>
+nnoremap <buffer> <leader>rt <Cmd>call grepscope#invoke('tests python')<CR>
 " Word under the cursor / the selection
-nnoremap <buffer> gw <Cmd>call fzf_utils#rg_scope#invoke_word('project python')<CR>
-nnoremap <buffer> gW <Cmd>call fzf_utils#rg_scope#invoke_word('tests python')<CR>
-xnoremap <buffer> gw <Cmd>call fzf_utils#rg_scope#invoke_word('project python')<CR>
-xnoremap <buffer> gW <Cmd>call fzf_utils#rg_scope#invoke_word('tests python')<CR>
+nnoremap <buffer> gw <Cmd>call grepscope#invoke_word('project python')<CR>
+nnoremap <buffer> gW <Cmd>call grepscope#invoke_word('tests python')<CR>
+xnoremap <buffer> gw <Cmd>call grepscope#invoke_word('project python')<CR>
+xnoremap <buffer> gW <Cmd>call grepscope#invoke_word('tests python')<CR>
