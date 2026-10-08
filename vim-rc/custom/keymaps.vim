@@ -186,7 +186,7 @@ function! s:on_lsp_buffer_enabled() abort
   " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
 
   " refer to doc to add more commands
-  nmap <buffer> <leader>md <Plug>(lsp-extras-toggle-diagnostics)zz
+  nnoremap <buffer> <leader>md <Cmd>ToggleLspDiagnostics<CR>zz
 endfunction
 
 augroup lsp_install

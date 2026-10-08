@@ -2,8 +2,6 @@
 
 let g:lsp_use_native_client = 1
 let g:lsp_auto_enable = 1
-" Diagnostics off until toggled per buffer with <leader>md (vim-lsp-extras)
-let g:lsp_extras_diagnostics_default_on = 0
 " Hooks in the patched autoload/lsp files: don't open the quickfix / location
 " list after LSP results. {-> execute('botright copen')} restores it.
 let g:Lsp_copen_funcref = {-> 0}
