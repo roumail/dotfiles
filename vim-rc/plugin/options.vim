@@ -95,7 +95,12 @@ let g:netrw_liststyle = 3
 let g:netrw_bufsettings = 'noma nomod nu nowrap ro nobl'
 " reuse current window
 let g:netrw_browse_split = 0
-let g:netrw_list_hide=netrw_gitignore#Hide() .. ',\(^\|\s\s\)\zs\.\S\+,__pycache__/,.DS_Store'
+" vim-vinegar rebuilds g:netrw_list_hide from 'wildignore' when it loads, and
+" keeps only a trailing dotfiles pattern from ours: hidden names go in
+" 'wildignore' (which :find and file completion skip too), dotfiles stay
+" hidden until gh
+set wildignore+=__pycache__,.DS_Store
+let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+'
 let g:netrw_altv = 1  " Open splits to the right
 "let g:netrw_winsize = -25
 " https://github.com/tpope/vim-rhubarb/issues/74

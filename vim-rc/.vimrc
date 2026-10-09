@@ -49,12 +49,54 @@ if g:os ==# 'Linux'
     endif
 endif
 
-function! MySource(file) abort
-    execute 'source ' . g:vimdir . '/' . a:file
-endfunction
-
-" Load plugin initialization
-call MySource('custom/plug.vim')
+""""""""""""""""""""""""
+" Plugins (vim-plug) """
+""""""""""""""""""""""""
+call plug#begin(g:vimdir . '/plugged')
+" Plugin list
+" Plug 'sheerun/vim-polyglot'
+Plug 'instant-markdown/vim-instant-markdown', {'for': 'markdown', 'do': 'yarn install'}
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-rhubarb'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-tbone'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-rsi'
+Plug 'junegunn/vim-peekaboo'
+Plug 'junegunn/vim-easy-align'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/fzf'
+" Couldn't get it to work
+" Plug 'yegappan/lsp'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'mattn/vim-lsp-settings'
+Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/fzf.vim'
+" fzf-utils (:FdFiles, :Grep, :RgRaw) adds commands under its own names and
+" redefines none of fzf.vim's, so its order doesn't matter.
+Plug 'roumail/fzf-utils'
+Plug 'roumail/project-detect'
+Plug 'roumail/grepscope'
+Plug 'roumail/dispatch-extras'
+Plug 'roumail/pytest.vim'
+Plug 'roumail/scratch.vim'
+Plug 'roumail/buffer-tools'
+Plug 'roumail/qf-tools'
+Plug 'roumail/text-tools'
+Plug 'roumail/glow-preview'
+" requires dependency installation using npm install -g livedown
+" Plug 'shime/vim-livedown'
+" Plug 'drewtempelmeyer/palenight.vim'
+Plug 'danilo-augusto/vim-afterglow'
+call plug#end()
 
 " Add netrw via packadd
 if exists(':packadd')
@@ -64,41 +106,17 @@ endif
 " Leader key
 let mapleader = " "
 
-"""""""""""""""""""""""""""""""""
-" Load general configurations """
-"""""""""""""""""""""""""""""""""
-call MySource('custom/options.vim')
-call MySource('custom/autocommands.vim')
-call MySource('custom/clipboard.vim')
-
-""""""""""""""""""""""""""""""""
-" Load plugin configurations """
-""""""""""""""""""""""""""""""""
-" Load machine-specific local overrides (e.g. g:github_enterprise_urls)
-if filereadable(expand('~/.vim.local'))
-    source ~/.vim.local
-endif
-
-" fzf's Vim plugin comes from Plug 'junegunn/fzf' (custom/plug.vim). README-VIM
-" offers Homebrew's copy as an alternative, not an addition: added here it
-" sits after plugged/fzf in rtp and stops at the g:loaded_fzf guard.
+" fzf's Vim plugin comes from Plug 'junegunn/fzf' above. README-VIM offers
+" Homebrew's copy as an alternative, not an addition: added here it sits after
+" plugged/fzf in rtp and stops at the g:loaded_fzf guard.
 " if isdirectory('/opt/homebrew/opt/fzf')
 "     set rtp+=/opt/homebrew/opt/fzf
 " endif
 
-call MySource('custom/plugins/airline/options.vim')
-call MySource('custom/plugins/dispatch/options.vim')
-call MySource('custom/plugins/fzf/options.vim')
-call MySource('custom/plugins/fzf/grepscope.vim')
-call MySource('custom/plugins/lsp/options.vim')
-call MySource('custom/plugins/pytest/options.vim')
-
-" Load my keymaps last
-call MySource('custom/keymaps.vim')
-""""""""""""""""""""""""""""""""""""""
-" Load project local configuration """
-""""""""""""""""""""""""""""""""""""""
-" Sourced once at startup from the directory vim was launched in
-if filereadable(".vim.custom")
-    so .vim.custom
-endif
+" Vim sources the rest after this file, from the runtimepath:
+"   plugin/options.vim, clipboard.vim   Vim and UI options
+"   plugin/<name>.vim                   plugin settings
+"   plugin/commands.vim                 commands
+"   plugin/autocommands.vim             autocommands
+"   after/plugin/keymaps.vim            keymaps, after every plugin
+"   after/plugin/local.vim              ~/.vim.local and .vim.custom, last
