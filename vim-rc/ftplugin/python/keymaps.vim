@@ -14,13 +14,3 @@ nmap <buffer> <localleader>rs <Plug>(dispatch-extras-repeat-start)
 nmap <buffer> <localleader>dl <Plug>(dispatch-extras-log)
 " Switch b/w tmux and terminal running strategy for Start (used for debugging)
 nmap <buffer> <localleader>cs <Plug>(dispatch-extras-toggle-start-strategy)
-
-" Scoped grep (fzf-utils). The scope is looked up when the key is
-" pressed; outside a project these print 'no scope' instead of grepping.
-nnoremap <buffer> <leader>rp <Cmd>call fzf_utils#rg#scope#grep('project python')<CR>
-nnoremap <buffer> <leader>rt <Cmd>call fzf_utils#rg#scope#grep('tests python')<CR>
-" Word under the cursor / the selection
-nnoremap <buffer> gw <Cmd>call fzf_utils#rg#scope#grep('project python', fzf_utils#rg#live_grep#word_pattern())<CR>
-nnoremap <buffer> gW <Cmd>call fzf_utils#rg#scope#grep('tests python', fzf_utils#rg#live_grep#word_pattern())<CR>
-xnoremap <buffer> gw <Cmd>call fzf_utils#rg#scope#grep('project python', fzf_utils#rg#live_grep#word_pattern())<CR>
-xnoremap <buffer> gW <Cmd>call fzf_utils#rg#scope#grep('tests python', fzf_utils#rg#live_grep#word_pattern())<CR>
