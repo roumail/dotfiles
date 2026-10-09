@@ -2,8 +2,6 @@
 
 let g:lsp_use_native_client = 1
 let g:lsp_auto_enable = 1
-" Diagnostics off until toggled per buffer with <leader>md (vim-lsp-extras)
-let g:lsp_extras_diagnostics_default_on = 0
 " Hooks in the patched autoload/lsp files: don't open the quickfix / location
 " list after LSP results. {-> execute('botright copen')} restores it.
 let g:Lsp_copen_funcref = {-> 0}
@@ -69,4 +67,21 @@ let g:lsp_settings = {
 \   }
 \ }
 
+" Diagnostics start in the per-buffer default (autoload/lsp_diagnostics_toggle.vim).
+" Set up once plugins have loaded, and only if vim-lsp is installed.
+function! s:init_diagnostics_toggle() abort
+  if !exists('g:lsp_loaded')
+    return
+  endif
+  augroup lsp_diagnostics_toggle
+    autocmd!
+    autocmd BufEnter * call lsp_diagnostics_toggle#apply_default()
+  augroup END
+  " The current buffer was entered before this ran
+  call lsp_diagnostics_toggle#apply_default()
+endfunction
 
+augroup lsp_diagnostics_toggle_init
+  autocmd!
+  autocmd VimEnter * ++once call s:init_diagnostics_toggle()
+augroup END

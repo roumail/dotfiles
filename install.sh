@@ -118,14 +118,7 @@ done
 
 echo "Installing $SHELL_NAME entrypoint: $RC_FILE"
 
-# Backup existing RC if it exists and is not a symlink
-if [ -f "$RC_FILE" ] && [ ! -L "$RC_FILE" ]; then
-  cp "$RC_FILE" "${RC_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
-  echo "✓ Backed up existing $RC_FILE"
-fi
-
-# Write new RC
-cat > "$RC_FILE" <<EOF
+RC_CONTENT=$(cat <<EOF
 #!/usr/bin/env $SHELL_NAME
 # Managed by dotfiles - do not edit
 
@@ -133,8 +126,20 @@ export SHELL_CONFIG_BASE="\$HOME/.config/shell"
 BOOTLOADER="\$SHELL_CONFIG_BASE/init.sh"
 [ -f "\$BOOTLOADER" ] && source "\$BOOTLOADER"
 EOF
+)
 
-echo "✓ Installed new $RC_FILE"
+if [ -f "$RC_FILE" ] && [ "$(cat "$RC_FILE")" = "$RC_CONTENT" ]; then
+  echo "✓ $RC_FILE already up to date"
+else
+  # Backup existing RC if it exists and is not a symlink
+  if [ -f "$RC_FILE" ] && [ ! -L "$RC_FILE" ]; then
+    cp "$RC_FILE" "${RC_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
+    echo "✓ Backed up existing $RC_FILE"
+  fi
+
+  printf '%s\n' "$RC_CONTENT" > "$RC_FILE"
+  echo "✓ Installed new $RC_FILE"
+fi
 
 # Symlink dotfiles from dots/ to $HOME
 echo ""

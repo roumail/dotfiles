@@ -119,7 +119,7 @@ nnoremap <leader>ob <Cmd>Buffers<CR>
 " Browse search history (populated by live grep queries too)
 nnoremap <silent> <leader>rh <Cmd>History/<CR>
 
-" Live grep (fzf-utils-rg)
+" Live grep (fzf-utils)
 nmap <leader>rr <Plug>(fzf-utils-grep-replay)
 " Fuzzy search scoped to the current buffer's directory
 nmap <leader>r. <Plug>(fzf-utils-grep-dir)
@@ -186,7 +186,7 @@ function! s:on_lsp_buffer_enabled() abort
   " autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
 
   " refer to doc to add more commands
-  nmap <buffer> <leader>md <Plug>(lsp-extras-toggle-diagnostics)zz
+  nnoremap <buffer> <leader>md <Cmd>ToggleLspDiagnostics<CR>zz
 endfunction
 
 augroup lsp_install
