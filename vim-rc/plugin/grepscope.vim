@@ -1,9 +1,12 @@
 " Project detection (roumail/project-detect) and the :GrepScope scopes for each
 " project type (roumail/grepscope).
 
-" Python: the project is named in the nearest pyproject.toml
+" Python: the project is named in the pyproject.toml of the working directory
+" (Vim is started at the project root). Not '.;', which is relative to the
+" current buffer: at VimEnter that can be fugitive's status window
+" (`vim . -c Git`), where nothing is found.
 function! s:pyproject_name() abort
-  let l:file = findfile('pyproject.toml', '.;')
+  let l:file = findfile('pyproject.toml', escape(getcwd(), ' ,\') . ';')
   if empty(l:file) || !filereadable(l:file)
     return ''
   endif
