@@ -128,11 +128,11 @@ nmap <leader>r/ <Plug>(fzf-utils-grep)
 " Prefilled to type pattern/scope
 nnoremap <leader>r: :Grep
 
-" Scoped searches (grepscope)
-nmap <leader>rs <Plug>(grepscope)
+" Scoped searches (:GrepScope)
+nnoremap <silent> <leader>rs <Cmd>GrepScope<CR>
 " Word under cursor / selection, with word boundaries
-nmap <leader>rw <Plug>(grepscope-word)
-xmap <leader>rw <Plug>(grepscope-word)
+nnoremap <silent> <leader>rw <Cmd>call grepscope#run(fzf_utils#rg#live_grep#word_pattern())<CR>
+xnoremap <silent> <leader>rw <Cmd>call grepscope#run(fzf_utils#rg#live_grep#word_pattern())<CR>
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
