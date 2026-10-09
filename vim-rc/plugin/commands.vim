@@ -8,3 +8,6 @@ augroup END
 
 " Per-buffer vim-lsp diagnostics toggle (autoload/lsp_diagnostics_toggle.vim)
 command! ToggleLspDiagnostics call lsp_diagnostics_toggle#toggle()
+
+" Pick a scope of the current project, then live grep in it (autoload/grepscope.vim)
+command! -nargs=? GrepScope call grepscope#run(<f-args>)

@@ -84,7 +84,6 @@ Plug 'junegunn/fzf.vim'
 " redefines none of fzf.vim's, so its order doesn't matter.
 Plug 'roumail/fzf-utils'
 Plug 'roumail/project-detect'
-Plug 'roumail/grepscope'
 Plug 'roumail/dispatch-extras'
 Plug 'roumail/pytest.vim'
 Plug 'roumail/scratch.vim'
