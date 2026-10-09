@@ -95,8 +95,6 @@ nnoremap <leader>l <C-w>l
 " inverse of terminal mode
 nnoremap <S-Tab> :tabnext<CR>
 
-nmap yoq <Plug>(qf-tools-toggle)
-
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
