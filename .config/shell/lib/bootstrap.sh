@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 source_dir() {
   [ -d "$1" ] || return
-  # Use process substitution instead of pipe to avoid subshell
+  # Use process substitution instead of pipe to avoid subshell;
+  # sort because find returns files in directory order
   while read -r f; do
       source_if_exists "$f"
-  done < <(find "$1" -maxdepth 1 -name '*.sh' -type f)
+  done < <(find "$1" -maxdepth 1 -name '*.sh' -type f | sort)
 }
 
 path_prepend() {
