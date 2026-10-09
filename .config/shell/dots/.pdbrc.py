@@ -1,3 +1,4 @@
+import ast
 import inspect
 import rich
 from rich.console import Console
@@ -70,6 +71,34 @@ def do_bottommost(self, arg):
     self.print_stack_entry(self.stack[self.curindex])
     self.lineno = None
     return
+
+_COMPOUND = (ast.If, ast.For, ast.AsyncFor, ast.While, ast.With, ast.AsyncWith,
+             ast.Try, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+
+def _statement_end(filename, lineno):
+    """Last line of the innermost simple statement spanning lineno, else None."""
+    import linecache
+    try:
+        tree = ast.parse("".join(linecache.getlines(filename)))
+    except (SyntaxError, ValueError):
+        return None
+    end = None
+    for node in ast.walk(tree):
+        if (isinstance(node, ast.stmt) and not isinstance(node, _COMPOUND)
+                and node.lineno <= lineno <= node.end_lineno):
+            end = node.end_lineno
+    return end
+
+def do_nn(self, arg):
+    """nn
+    Next statement: like `next`, but a multi-line statement counts as one step
+    instead of stopping on each of its lines."""
+    filename, lineno = _current_location(self)
+    end = _statement_end(filename, lineno)
+    if end is None or end == lineno:
+        return self.do_next(arg)
+    self.set_until(self.curframe, end + 1)
+    return 1
 
 def _copy_text(text):
     data = str(text).replace("\r", "").encode()
@@ -399,6 +428,7 @@ def do_myhelp(self, arg):
 _COMMANDS = {
     "ft": do_findtest,
     "bm": do_bottommost,
+    "nn": do_nn,
     "yank": do_yank,
     "pank": do_pank,
     "jsonpank": do_jsonpank,
