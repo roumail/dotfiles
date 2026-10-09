@@ -28,10 +28,8 @@ for plugin in "${COMMON_CORE[@]}"; do
   source_if_exists "$BASE/common/$plugin"
 done
 
-USER_SHELL=$(basename "$SHELL")
-
-
-if [ "$USER_SHELL" = "zsh" ]; then
+# The running shell, not the login shell in $SHELL
+if [ -n "$ZSH_VERSION" ]; then
   SHELL_NAME="zsh"
 elif [ -n "$BASH_VERSION" ]; then
   SHELL_NAME="bash"
