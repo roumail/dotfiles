@@ -72,9 +72,7 @@ nnoremap ]2 /\V{{{2<CR>
 nnoremap [2 ?\V{{{2<CR>
 
 nnoremap <leader>q :wq<CR>
-" buffer switching
-" Switch to the alternate (last used) buffer, skipping netrw listings
-nmap gb <Plug>(buffer-tools-alt)
+" buffer switching (gb, the alternate buffer, comes with buffer-tools)
 
 " bd ends up closing the current window too
 " nnoremap <leader>bc :bd<CR>
