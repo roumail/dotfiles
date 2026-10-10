@@ -130,10 +130,10 @@ nnoremap <leader>r: :Grep
 nnoremap <silent> <leader>rp <Cmd>call fzf_utils#rg#scope#code()<CR>
 nnoremap <silent> <leader>rt <Cmd>call fzf_utils#rg#scope#tests()<CR>
 " Scoped searches (:GrepScope)
-nnoremap <silent> <leader>rs <Cmd>GrepScope<CR>
+nmap <leader>rs <Plug>(fzf-utils-grep-scope)
 " Word under cursor / selection, with word boundaries
-nnoremap <silent> <leader>rw <Cmd>call grepscope#run(fzf_utils#rg#live_grep#word_pattern())<CR>
-xnoremap <silent> <leader>rw <Cmd>call grepscope#run(fzf_utils#rg#live_grep#word_pattern())<CR>
+nmap <leader>rw <Plug>(fzf-utils-grep-scope-word)
+xmap <leader>rw <Plug>(fzf-utils-grep-scope-word)
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
