@@ -15,7 +15,25 @@
 # Both directory flags are repeatable and accept an optional trailing slash.
 # --all-projects skips default exclusions, but keeps explicit ones.
 # --include-tests / --exclude-tests override the local default; last flag wins.
+# --wide-help shows only rgwide help; --help shows it followed by rg's help.
 # Other arguments pass through to rg; later -g options override matching globs.
+__rgwide_help() {
+  cat <<'EOF'
+Usage: rgwide [WRAPPER OPTIONS] [RG ARGUMENTS...]
+
+Wrapper options (must come before ripgrep arguments):
+  --include-dirs DIR   Remove the DIR/** default exclusion (repeatable)
+  --exclude-dirs DIR   Add a DIR/** exclusion; takes precedence (repeatable)
+  --all-projects       Skip default RG_WIDE_EXCLUDES, keep explicit exclusions
+  --include-tests      Search tests/ directories
+  --exclude-tests      Skip tests/ directories (last test flag wins)
+  --wide-help          Show only this help
+  --help               Show this help, then rg's help
+
+Config: RG_WIDE_EXCLUDES=('proj/**' ...), RG_WIDE_EXCLUDE_TESTS=true|false
+EOF
+}
+
 rgwide() {
   local glob directory include skip
   local exclude_tests="${RG_WIDE_EXCLUDE_TESTS:-true}"
@@ -32,6 +50,14 @@ rgwide() {
   esac
   while [ "$#" -gt 0 ]; do
     case "$1" in
+      --wide-help|--help)
+        __rgwide_help
+        if [ "$1" = --help ]; then
+          printf '\n--- rg --help ---\n'
+          command rg --help
+        fi
+        return 0
+        ;;
       --include-tests) exclude_tests=false ;;
       --exclude-tests) exclude_tests=true ;;
       --all-projects) all_projects=true ;;
