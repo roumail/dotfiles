@@ -99,6 +99,9 @@ install_dotconfig_dirs() {
   # wezterm
   mkdir -p "$DOT_CONFIG_DST/wezterm"
   link_tree "$DOT_CONFIG_SRC/wezterm" "$DOT_CONFIG_DST/wezterm"
+
+  # claude code reads user settings from ~/.claude, not ~/.config
+  link_file "$DOT_CONFIG_SRC/claude/settings.json" "$HOME/.claude/settings.json"
 }
 
 # Create ~/.config if it doesn't exist
