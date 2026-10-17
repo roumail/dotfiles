@@ -35,6 +35,17 @@ if command -v pandoc >/dev/null 2>&1; then
     md2pdf() { pandoc "$1" -o "${1%.*}.pdf" "${@:2}"; }
 fi
 
+# yank file...  or  cmd | yank -> system clipboard
+yank() {
+    local copy
+    if command -v pbcopy >/dev/null 2>&1; then copy=pbcopy
+    elif command -v wl-copy >/dev/null 2>&1; then copy=wl-copy
+    elif command -v xclip >/dev/null 2>&1; then copy='xclip -selection clipboard'
+    else echo "yank: no clipboard command found" >&2; return 1
+    fi
+    if [[ $# -gt 0 ]]; then cat -- "$@" | $copy; else $copy; fi
+}
+
 # ls aliases
 alias l='ls $LS_OPTIONS -lA'
 alias ll='ls $LS_OPTIONS -alF'
