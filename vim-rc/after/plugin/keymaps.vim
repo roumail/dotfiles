@@ -150,6 +150,9 @@ nmap <leader>cd <Plug>(git-review-diff-main)
 nmap <leader>cf <Plug>(git-review-changes-main)
 " Commits on the branch
 nmap <leader>cl <Plug>(git-review-log-main)
+" Comment on the line / selection, into the 'Review' quickfix list
+nmap <leader>cc <Plug>(git-review-comment)
+xmap <leader>cc <Plug>(git-review-comment)
 
 " }}}1
 
