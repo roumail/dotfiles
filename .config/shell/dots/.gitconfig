@@ -18,7 +18,7 @@
     poh = "!f() { git push origin HEAD \"$@\"; }; f"
     ci = !git commit -m 'ci: empty commit' --no-verify --allow-empty && git push && git reset --soft HEAD~ && git push --force-with-lease
     # Fetch origin
-    # f = "!git fetch origin"
+    fo = fetch origin
 
     # merge from origin directly
     mom = merge origin/master
