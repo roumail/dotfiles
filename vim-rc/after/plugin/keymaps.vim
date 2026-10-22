@@ -139,6 +139,21 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 " }}}1
 
 """""""""""""""""""
+" git {{{1
+"""""""""""""""""""
+
+" Stage hunks: index | working tree (git-review)
+nmap <leader>gs <Plug>(git-review-diff-this)
+" Review the branch against the merge-base with main/master
+nmap <leader>gm <Plug>(git-review-diff-main)
+nmap <leader>gc <Plug>(git-review-changes-main)
+nmap <leader>gM <Plug>(git-review-review-main)
+nmap <leader>gh <Plug>(git-review-log-main)
+nmap <leader>gq <Plug>(git-review-diff-close)
+
+" }}}1
+
+"""""""""""""""""""
 " lsp {{{1
 """""""""""""""""""
 

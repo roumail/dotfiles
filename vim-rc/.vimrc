@@ -91,6 +91,7 @@ Plug 'roumail/buffer-tools'
 Plug 'roumail/qf-tools'
 Plug 'roumail/text-tools'
 Plug 'roumail/glow-preview'
+Plug 'roumail/git-review'
 " requires dependency installation using npm install -g livedown
 " Plug 'shime/vim-livedown'
 " Plug 'drewtempelmeyer/palenight.vim'
