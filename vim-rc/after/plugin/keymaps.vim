@@ -142,17 +142,17 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 " git {{{1
 """""""""""""""""""
 
-" Compare the branch against its merge-base with main/master (git-review).
+" Compare the branch against its merge-base with main/master (git-extras).
 " :DiffThis, :ReviewMain and :DiffClose are left as commands.
 " This file vs main
-nmap <leader>cd <Plug>(git-review-diff-main)
+nmap <leader>cd <Plug>(git-extras-diff-main)
 " Files changed on the branch, in quickfix
-nmap <leader>cf <Plug>(git-review-changes-main)
+nmap <leader>cf <Plug>(git-extras-changes-main)
 " Commits on the branch
-nmap <leader>cl <Plug>(git-review-log-main)
+nmap <leader>cl <Plug>(git-extras-log-main)
 " Comment on the line / selection, into the 'Review' quickfix list
-nmap <leader>cc <Plug>(git-review-comment)
-xmap <leader>cc <Plug>(git-review-comment)
+nmap <leader>cc <Plug>(git-extras-comment)
+xmap <leader>cc <Plug>(git-extras-comment)
 
 " }}}1
 
