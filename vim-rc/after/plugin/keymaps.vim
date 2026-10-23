@@ -142,17 +142,8 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 " git {{{1
 """""""""""""""""""
 
-" Compare the branch against its merge-base with main/master (git-extras).
-" :DiffThis, :ReviewMain and :DiffClose are left as commands.
-" This file vs main
-nmap <leader>cd <Plug>(git-extras-diff-main)
-" Files changed on the branch, in quickfix
-nmap <leader>cf <Plug>(git-extras-changes-main)
-" Commits on the branch
-nmap <leader>cl <Plug>(git-extras-log-main)
-" fzf.vim: all commits (alt-t: stat/patch preview), and the commits that
-" touched this file / these lines
-nnoremap <silent> <leader>cL <Cmd>Commits<CR>
+" git-extras is used through its commands (:Diff*, :Branch*, :Comment*, :PRs)
+" fzf.vim: the commits that touched this file / these lines
 nnoremap <silent> <leader>cb <Cmd>BCommits<CR>
 xnoremap <silent> <leader>cb :BCommits<CR>
 " Comment on the line / selection, into the 'Review' quickfix list
