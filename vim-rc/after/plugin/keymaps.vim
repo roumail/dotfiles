@@ -150,6 +150,18 @@ xmap <leader>cc <Plug>(git-extras-comment)
 " }}}1
 
 """""""""""""""""""
+" ai {{{1
+"""""""""""""""""""
+
+" vim-prompts: types :Ai / :AiDraft (:'<,'>Ai from visual) to finish
+nmap <leader>aa <Plug>(prompts-ask)
+xmap <leader>aa <Plug>(prompts-ask)
+nmap <leader>ad <Plug>(prompts-draft)
+xmap <leader>ad <Plug>(prompts-draft)
+
+" }}}1
+
+"""""""""""""""""""
 " lsp {{{1
 """""""""""""""""""
 
