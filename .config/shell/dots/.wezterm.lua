@@ -28,7 +28,14 @@ local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-projec
 wez_tmux.apply_to_config(config)
 wez_ws_alt.apply_to_config(config)
 
+-- set_config_overrides also fires window-config-reloaded, skip those
+local overriding_window = {}
+
 wezterm.on("window-config-reloaded", function(window, pane)
+  if overriding_window[window:window_id()] then
+    overriding_window[window:window_id()] = nil
+    return
+  end
   wez_sb_alert.notify("Config reloaded")
 end)
 
@@ -137,21 +144,27 @@ wezterm.on('copy-cmd', function(window, pane)
   end
 end)
 
--- Mark a workspace as persistent to give it a distinct background.
--- Overrides belong to the GUI window, not the workspace, so they're
--- reapplied whenever the window shows a different workspace.
--- wezterm.GLOBAL survives config reloads, not restarts.
-local PINNED_KEY = "pinned_workspaces"
+-- Mark a tab as persistent to give it a distinct background.
+-- Overrides belong to the GUI window, not the tab, so they're
+-- reapplied whenever the window shows a different tab or workspace.
+-- wezterm.GLOBAL survives config reloads, not restarts, and only
+-- takes string keys, hence tostring on tab ids.
+local PINNED_KEY = "pinned_tabs"
 local pinned_colors = { background = "#171b22" }
-local applied_by_window = {}
 
-local function apply_workspace_colors(window)
-  local pinned = (wezterm.GLOBAL[PINNED_KEY] or {})[window:active_workspace()] == true
-  local window_id = window:window_id()
-  if applied_by_window[window_id] == pinned then return end
-  applied_by_window[window_id] = pinned
+local function is_pinned(tab)
+  return (wezterm.GLOBAL[PINNED_KEY] or {})[tostring(tab:tab_id())] == true
+end
 
+local function apply_tab_colors(window)
+  local tab = window:active_tab()
+  if not tab then return end
+  local pinned = is_pinned(tab)
   local overrides = window:get_config_overrides() or {}
+  -- Compare against the window, not a cache: window_id() is the mux
+  -- window, which changes with the workspace while the overrides don't
+  if (overrides.colors ~= nil) == pinned then return end
+
   if pinned then
     -- `colors` is replaced wholesale, keep tabline's tab_bar colors
     local colors = {}
@@ -161,21 +174,24 @@ local function apply_workspace_colors(window)
   else
     overrides.colors = nil
   end
+  overriding_window[window:window_id()] = true
   window:set_config_overrides(overrides)
 end
 
-wezterm.on('toggle-workspace-colors', function(window, pane)
-  local workspace = window:active_workspace()
+wezterm.on('toggle-tab-colors', function(window, pane)
+  local tab = window:active_tab()
+  if not tab then return end
+  local id = tostring(tab:tab_id())
   local pinned = {}
-  for name, v in pairs(wezterm.GLOBAL[PINNED_KEY] or {}) do pinned[name] = v end
-  pinned[workspace] = not pinned[workspace] or nil
+  for k, v in pairs(wezterm.GLOBAL[PINNED_KEY] or {}) do pinned[k] = v end
+  pinned[id] = not pinned[id] or nil
   wezterm.GLOBAL[PINNED_KEY] = pinned
-  apply_workspace_colors(window)
-  wez_sb_alert.notify((pinned[workspace] and "Pinned " or "Unpinned ") .. workspace)
+  apply_tab_colors(window)
+  wez_sb_alert.notify((pinned[id] and "Pinned tab " or "Unpinned tab ") .. tab:get_title())
 end)
 
 wezterm.on('update-status', function(window, pane)
-  apply_workspace_colors(window)
+  apply_tab_colors(window)
 end)
 
 local my_keys = {
@@ -256,7 +272,7 @@ local my_keys = {
   { key = "f", mods = "LEADER", action = wezterm.action.Search("CurrentSelectionOrEmptyString") },
   { key = "y", mods = "LEADER", action = wezterm.action.EmitEvent 'copy-cmd' },
   { key = "Y", mods = "LEADER|SHIFT", action = wezterm.action.EmitEvent 'copy-cwd'},
-  { key = "m", mods = "LEADER", action = wezterm.action.EmitEvent 'toggle-workspace-colors' },
+  { key = "m", mods = "LEADER", action = wezterm.action.EmitEvent 'toggle-tab-colors' },
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },
