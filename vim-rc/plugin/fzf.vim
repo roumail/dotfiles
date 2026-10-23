@@ -22,6 +22,19 @@ let g:fzf_action = {
 let g:fzf_vim = {}
 " Avoid matching on file name
 let g:fzf_vim.rg_options = '--nth 4..'
+" :Commits previews the commit's --stat (e.g. to check a rebase); alt-t
+" switches between stat and patch. ctrl-t stays 'tab split' (g:fzf_action).
+let s:commit = '$(echo {} | grep -o "[a-f0-9]\{7,\}" | head -1)'
+let g:fzf_vim.commits_options = [
+      \ '--preview-label', ' stat ',
+      \ '--preview', 'case "$FZF_PREVIEW_LABEL" in'
+      \   . ' *patch*) git show --color=always --format=format: ' . s:commit
+      \   . (executable('delta') ? ' | delta --width $FZF_PREVIEW_COLUMNS' : '') . ';;'
+      \   . ' *) git show --stat --color=always --format="%h %s%n" ' . s:commit . ';;'
+      \   . ' esac',
+      \ '--bind', 'alt-t:transform-preview-label~case "$FZF_PREVIEW_LABEL" in'
+      \   . ' *stat*) echo " patch ";; *) echo " stat ";; esac~+refresh-preview',
+      \ ]
 
 " Customize fzf colors to match your color scheme
 " - fzf#wrap translates this to a set of `--color` options
