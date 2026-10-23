@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# Fuzzy-pick leftovers from install.sh (*.backup.<stamp>) and vim's
+# backup/swap files, preview what they hold that the live file doesn't,
+# TAB to mark several, ENTER to delete them in one go.
+set -euo pipefail
+
+STAMP='*.backup.[0-9]*_[0-9]*'
+TILDE="~"
+
+# Where install.sh's link_file / link_dir / RC backup can leave a backup
+candidates() {
+  find "$HOME" "$HOME/.claude" "$HOME/.local/bin" \
+    -maxdepth 1 -name "$STAMP" -print 2>/dev/null || true
+  find "$HOME/.config" "$HOME/.vim" \
+    -name "$STAMP" -prune -print 2>/dev/null || true
+  find "$HOME/.vim/backup" "$HOME/.vim/swap" \
+    -mindepth 1 -maxdepth 1 -print 2>/dev/null || true
+}
+
+# The live file a candidate was taken from (empty if unknown)
+original_of() {
+  local f="$1" name
+  case "$f" in
+    *.backup.[0-9]*_[0-9]*) echo "${f%.backup.*}" ;;
+    "$HOME/.vim/backup/"*)
+      # backupdir=~/.vim/backup// names files after their full path, % for /
+      name="${f##*/}"; name="${name%\~}"
+      echo "${name//%//}"
+      ;;
+    "$HOME/.vim/swap/"*)
+      name="${f##*/}"; name="${name%.sw?}"
+      echo "${name//%//}"
+      ;;
+  esac
+}
+
+status_of() {
+  local f="$1" orig
+  orig=$(original_of "$f")
+  case "$f" in
+    "$HOME/.vim/swap/"*) echo "swap"; return ;;
+  esac
+  if [ -z "$orig" ] || [ ! -e "$orig" ]; then
+    echo "orphan"
+  elif diff -rq "$f" "$orig" >/dev/null 2>&1; then
+    echo "same"
+  else
+    echo "differs"
+  fi
+}
+
+list() {
+  local f
+  candidates | sort -u | while IFS= read -r f; do
+    printf '%s\t%s\t%s\n' "$(status_of "$f")" "${f/#$HOME/$TILDE}" "$f"
+  done
+}
+
+preview() {
+  local f="$1" orig
+  orig=$(original_of "$f")
+  echo "backup: ${f/#$HOME/$TILDE}"
+  echo "live:   ${orig/#$HOME/$TILDE}"
+  echo
+  case "$f" in
+    "$HOME/.vim/swap/"*)
+      ls -l "$f"
+      return
+      ;;
+  esac
+  if [ -z "$orig" ] || [ ! -e "$orig" ]; then
+    if [ -d "$f" ]; then find "$f" | head -200; else bat --color=always --style=plain "$f"; fi
+    return
+  fi
+  if diff -rq "$f" "$orig" >/dev/null 2>&1; then
+    echo "Identical to the live file: safe to delete."
+    return
+  fi
+  # '-' lines exist only in the backup: that's what deleting it would lose
+  git diff --no-index --color=always -- "$f" "$(realpath "$orig")" | delta || true
+}
+
+case "${1:-}" in
+  --list) list; exit ;;
+  --preview) preview "$2"; exit ;;
+esac
+
+self="$0"
+selected=$(list | fzf --multi --ansi --reverse --delimiter '\t' --with-nth 1,2 \
+  --border-label ' TRIM DOTS ' \
+  --header 'TAB (mark) │ CTRL-A (mark all) │ ENTER (delete marked) │ CTRL-/ (toggle preview)
+same = identical to live file │ differs = preview "-" lines exist only in backup' \
+  --bind 'ctrl-a:select-all' \
+  --bind 'ctrl-/:change-preview-window(hidden|)' \
+  --preview-window right,60% \
+  --preview "'$self' --preview {3}" |
+  cut -f3) || exit 0
+
+[ -n "$selected" ] || exit 0
+
+echo "$selected" | sed "s|^$HOME|~|"
+read -r -p "Delete $(echo "$selected" | wc -l | tr -d ' ') item(s)? (y/N) " reply
+[[ $reply =~ ^[Yy]$ ]] || exit 0
+
+while IFS= read -r f; do
+  command rm -rf -- "$f"
+done <<< "$selected"
+echo "✓ Deleted"
