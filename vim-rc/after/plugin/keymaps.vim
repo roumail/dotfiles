@@ -143,9 +143,6 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 """""""""""""""""""
 
 " git-extras is used through its commands (:Diff*, :Branch*, :Comment*, :PRs)
-" fzf.vim: the commits that touched this file / these lines
-nnoremap <silent> <leader>cb <Cmd>BCommits<CR>
-xnoremap <silent> <leader>cb :BCommits<CR>
 " Comment on the line / selection, into the 'Review' quickfix list
 nmap <leader>cc <Plug>(git-extras-comment)
 xmap <leader>cc <Plug>(git-extras-comment)
