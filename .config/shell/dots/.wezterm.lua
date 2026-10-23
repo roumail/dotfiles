@@ -137,6 +137,47 @@ wezterm.on('copy-cmd', function(window, pane)
   end
 end)
 
+-- Mark a workspace as persistent to give it a distinct background.
+-- Overrides belong to the GUI window, not the workspace, so they're
+-- reapplied whenever the window shows a different workspace.
+-- wezterm.GLOBAL survives config reloads, not restarts.
+local PINNED_KEY = "pinned_workspaces"
+local pinned_colors = { background = "#171b22" }
+local applied_by_window = {}
+
+local function apply_workspace_colors(window)
+  local pinned = (wezterm.GLOBAL[PINNED_KEY] or {})[window:active_workspace()] == true
+  local window_id = window:window_id()
+  if applied_by_window[window_id] == pinned then return end
+  applied_by_window[window_id] = pinned
+
+  local overrides = window:get_config_overrides() or {}
+  if pinned then
+    -- `colors` is replaced wholesale, keep tabline's tab_bar colors
+    local colors = {}
+    for k, v in pairs(config.colors or {}) do colors[k] = v end
+    for k, v in pairs(pinned_colors) do colors[k] = v end
+    overrides.colors = colors
+  else
+    overrides.colors = nil
+  end
+  window:set_config_overrides(overrides)
+end
+
+wezterm.on('toggle-workspace-colors', function(window, pane)
+  local workspace = window:active_workspace()
+  local pinned = {}
+  for name, v in pairs(wezterm.GLOBAL[PINNED_KEY] or {}) do pinned[name] = v end
+  pinned[workspace] = not pinned[workspace] or nil
+  wezterm.GLOBAL[PINNED_KEY] = pinned
+  apply_workspace_colors(window)
+  wez_sb_alert.notify((pinned[workspace] and "Pinned " or "Unpinned ") .. workspace)
+end)
+
+wezterm.on('update-status', function(window, pane)
+  apply_workspace_colors(window)
+end)
+
 local my_keys = {
   {
     key = "p",
@@ -215,6 +256,7 @@ local my_keys = {
   { key = "f", mods = "LEADER", action = wezterm.action.Search("CurrentSelectionOrEmptyString") },
   { key = "y", mods = "LEADER", action = wezterm.action.EmitEvent 'copy-cmd' },
   { key = "Y", mods = "LEADER|SHIFT", action = wezterm.action.EmitEvent 'copy-cwd'},
+  { key = "m", mods = "LEADER", action = wezterm.action.EmitEvent 'toggle-workspace-colors' },
 
   -- navigation
   { key = "h", mods = "LEADER", action = wezterm.action.ActivatePaneDirection "Left" },

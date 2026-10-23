@@ -31,6 +31,7 @@ set completeopt=menuone,noselect
 " Diff options
 set diffopt=filler
 set diffopt+=iwhiteall
+set diffopt+=vertical
 try
   set diffopt+=internal
   set diffopt+=algorithm:histogram
