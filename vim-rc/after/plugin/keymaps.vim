@@ -150,6 +150,11 @@ nmap <leader>cd <Plug>(git-extras-diff-main)
 nmap <leader>cf <Plug>(git-extras-changes-main)
 " Commits on the branch
 nmap <leader>cl <Plug>(git-extras-log-main)
+" fzf.vim: all commits (alt-t: stat/patch preview), and the commits that
+" touched this file / these lines
+nnoremap <silent> <leader>cL <Cmd>Commits<CR>
+nnoremap <silent> <leader>cb <Cmd>BCommits<CR>
+xnoremap <silent> <leader>cb :BCommits<CR>
 " Comment on the line / selection, into the 'Review' quickfix list
 nmap <leader>cc <Plug>(git-extras-comment)
 xmap <leader>cc <Plug>(git-extras-comment)
@@ -255,10 +260,6 @@ xnoremap p "_dP<Esc>
 " Visual mode
 " :History:, :History/ for command, and search history
 "nnoremap <leader>h :History<CR>
-" History of commits to current file, BCommits
-"nnoremap <silent> <leader>C <Cmd>Commits<CR>
-" Bcommits --> current buffer
-" nnoremap <silent> <leader>c <Cmd>BCommits<CR>
 xmap <leader><tab> <plug>(fzf-maps-x)
 
 " }}}1
