@@ -4,15 +4,19 @@
 # TAB to mark several, ENTER to delete them in one go.
 set -euo pipefail
 
-STAMP='*.backup.[0-9]*_[0-9]*'
 TILDE="~"
 
-# Where install.sh's link_file / link_dir / RC backup can leave a backup
+# $DOTFILES_BACKUPS: the list of backups install.sh made (backup_file)
+. "$(dirname "$(realpath "$0")")/../lib/bootstrap.sh"
+
+# The backups install.sh recorded that are still there, and vim's
 candidates() {
-  find "$HOME" "$HOME/.claude" "$HOME/.local/bin" \
-    -maxdepth 1 -name "$STAMP" -print 2>/dev/null || true
-  find "$HOME/.config" "$HOME/.vim" \
-    -name "$STAMP" -prune -print 2>/dev/null || true
+  local f
+  if [ -f "$DOTFILES_BACKUPS" ]; then
+    while IFS= read -r f; do
+      if [ -e "$f" ]; then echo "$f"; fi
+    done < "$DOTFILES_BACKUPS"
+  fi
   find "$HOME/.vim/backup" "$HOME/.vim/swap" \
     -mindepth 1 -maxdepth 1 -print 2>/dev/null || true
 }
@@ -105,4 +109,12 @@ read -r -p "Delete $(echo "$selected" | wc -l | tr -d ' ') item(s)? (y/N) " repl
 while IFS= read -r f; do
   command rm -rf -- "$f"
 done <<< "$selected"
+
+# Forget the deleted ones
+if [ -f "$DOTFILES_BACKUPS" ]; then
+  kept=$(while IFS= read -r f; do
+    if [ -e "$f" ]; then echo "$f"; fi
+  done < "$DOTFILES_BACKUPS" | sort -u)
+  printf '%s\n' "$kept" | sed '/^$/d' > "$DOTFILES_BACKUPS"
+fi
 echo "✓ Deleted"

@@ -36,6 +36,19 @@ source_if_exists() {
   [ -r "$1" ] && source "$1"
 }
 
+# Every backup install.sh makes, one path per line: trim-dots lists these
+DOTFILES_BACKUPS="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/backups"
+
+# Sets target aside as target.backup.<stamp> with mv, or cp to keep it, and
+# records it in $DOTFILES_BACKUPS; fails, leaving target as it was, if it can't
+backup_file() {
+  local how="$1" target="$2"
+  local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
+  "$how" "$target" "$backup" || return 1
+  mkdir -p "$(dirname "$DOTFILES_BACKUPS")"
+  printf '%s\n' "$backup" >> "$DOTFILES_BACKUPS"
+}
+
 link_file() {
   local src="$1"
   local target="$2"
@@ -47,9 +60,8 @@ link_file() {
     ln -sfn "$src" "$target"
     echo "  ↻ Refreshed symlink: $(basename "$target")"
   elif [ -e "$target" ]; then
-    local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
     # mv (not cp) also handles directories; never link if the backup failed
-    if ! mv "$target" "$backup"; then
+    if ! backup_file mv "$target"; then
       echo "  ✗ Backup failed, left untouched: $target" >&2
       return 0
     fi
@@ -79,8 +91,7 @@ link_dir() {
     echo
 
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-      local backup="${target}.backup.$(date +%Y%m%d_%H%M%S)"
-      if ! mv "$target" "$backup"; then
+      if ! backup_file mv "$target"; then
         echo "  ✗ Backup failed, left untouched: $target" >&2
         return 0
       fi

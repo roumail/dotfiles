@@ -136,7 +136,7 @@ install_agent_instructions() {
     fi
     # Keep a hand-written file (one without the header) before replacing it
     if [ -s "$target" ] && [ "$(head -n 1 "$target")" != "$header" ]; then
-      cp "$target" "${target}.backup.$(date +%Y%m%d_%H%M%S)"
+      backup_file cp "$target"
       echo "  ✓ Backed up existing $(basename "$target")"
     fi
     printf '%s\n' "$content" > "$target"
@@ -176,7 +176,7 @@ if [ -f "$RC_FILE" ] && [ "$(cat "$RC_FILE")" = "$RC_CONTENT" ]; then
 else
   # Backup existing RC if it exists and is not a symlink
   if [ -f "$RC_FILE" ] && [ ! -L "$RC_FILE" ]; then
-    cp "$RC_FILE" "${RC_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
+    backup_file cp "$RC_FILE"
     echo "✓ Backed up existing $RC_FILE"
   fi
 
