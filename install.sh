@@ -102,10 +102,46 @@ install_dotconfig_dirs() {
 
   # claude code reads user settings from ~/.claude, not ~/.config
   link_file "$DOT_CONFIG_SRC/claude/settings.json" "$HOME/.claude/settings.json"
+  # hooks settings.json runs, e.g. guard-git.py (each repo's agents.push, no PRs)
+  mkdir -p "$HOME/.claude/hooks"
+  link_tree "$DOT_CONFIG_SRC/claude/hooks" "$HOME/.claude/hooks"
 
-  # agent skills: copilot cli also reads ~/.claude/skills, so one tree serves both
-  mkdir -p "$DOT_CONFIG_SRC/agents/skills" "$HOME/.claude/skills"
+  # agent skills: copilot cli also reads ~/.claude/skills, so one tree serves both;
+  # local/skills holds this machine's own
+  mkdir -p "$DOT_CONFIG_SRC/agents/skills" "$DOT_CONFIG_SRC/agents/local/skills" "$HOME/.claude/skills"
   link_tree "$DOT_CONFIG_SRC/agents/skills" "$HOME/.claude/skills"
+  link_tree "$DOT_CONFIG_SRC/agents/local/skills" "$HOME/.claude/skills"
+
+  install_agent_instructions
+}
+
+# Agent rules: the shared AGENTS.md, then this machine's local/AGENTS.md,
+# written as each CLI's user instructions
+install_agent_instructions() {
+  local src="$DOT_CONFIG_SRC/agents"
+  local header="<!-- Managed by dotfiles: edit config/agents/AGENTS.md or local/AGENTS.md, then run install.sh -->"
+  local content target
+
+  install_local_file_from_example "$src/local/AGENTS.md.example" "$src/local/AGENTS.md"
+  content="$header"$'\n\n'"$(cat "$src/AGENTS.md")"
+  if [ -f "$src/local/AGENTS.md" ]; then
+    content+=$'\n\n'"$(cat "$src/local/AGENTS.md")"
+  fi
+
+  for target in "$HOME/.claude/CLAUDE.md" "$HOME/.copilot/copilot-instructions.md"; do
+    mkdir -p "$(dirname "$target")"
+    if [ -f "$target" ] && [ "$(cat "$target")" = "$content" ]; then
+      echo "  ✓ $(basename "$target") already up to date"
+      continue
+    fi
+    # Keep a hand-written file (one without the header) before replacing it
+    if [ -s "$target" ] && [ "$(head -n 1 "$target")" != "$header" ]; then
+      cp "$target" "${target}.backup.$(date +%Y%m%d_%H%M%S)"
+      echo "  ✓ Backed up existing $(basename "$target")"
+    fi
+    printf '%s\n' "$content" > "$target"
+    echo "  ✓ Wrote $target"
+  done
 }
 
 # Create ~/.config if it doesn't exist

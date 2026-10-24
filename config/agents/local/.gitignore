@@ -1,0 +1,5 @@
+# Ignore all files in local/ except examples and dotfiles
+*
+!*.example
+!.gitkeep
+!.gitignore

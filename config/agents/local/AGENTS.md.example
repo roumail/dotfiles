@@ -1,0 +1,9 @@
+## This machine
+
+Rules for this machine only, added after the shared ones. Copy to
+local/AGENTS.md (install.sh does it once) and re-run install.sh after edits.
+
+<!-- e.g. on a work machine:
+- Don't install packages (brew, npm -g, pip) without asking.
+- Don't send code or file contents to web services.
+-->
