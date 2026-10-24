@@ -102,6 +102,10 @@ install_dotconfig_dirs() {
 
   # claude code reads user settings from ~/.claude, not ~/.config
   link_file "$DOT_CONFIG_SRC/claude/settings.json" "$HOME/.claude/settings.json"
+
+  # agent skills: copilot cli also reads ~/.claude/skills, so one tree serves both
+  mkdir -p "$DOT_CONFIG_SRC/agents/skills" "$HOME/.claude/skills"
+  link_tree "$DOT_CONFIG_SRC/agents/skills" "$HOME/.claude/skills"
 }
 
 # Create ~/.config if it doesn't exist
