@@ -106,11 +106,15 @@ install_dotconfig_dirs() {
   mkdir -p "$HOME/.claude/hooks"
   link_tree "$DOT_CONFIG_SRC/claude/hooks" "$HOME/.claude/hooks"
 
-  # agent skills: copilot cli also reads ~/.claude/skills, so one tree serves both;
-  # local/skills holds this machine's own
-  mkdir -p "$DOT_CONFIG_SRC/agents/skills" "$DOT_CONFIG_SRC/agents/local/skills" "$HOME/.claude/skills"
-  link_tree "$DOT_CONFIG_SRC/agents/skills" "$HOME/.claude/skills"
-  link_tree "$DOT_CONFIG_SRC/agents/local/skills" "$HOME/.claude/skills"
+  # agent skills, shared and this machine's own (local/skills), for claude
+  # code and copilot cli
+  mkdir -p "$DOT_CONFIG_SRC/agents/skills" "$DOT_CONFIG_SRC/agents/local/skills"
+  local skills_dir
+  for skills_dir in "$HOME/.claude/skills" "$HOME/.copilot/skills"; do
+    mkdir -p "$skills_dir"
+    link_tree "$DOT_CONFIG_SRC/agents/skills" "$skills_dir"
+    link_tree "$DOT_CONFIG_SRC/agents/local/skills" "$skills_dir"
+  done
 
   install_agent_instructions
 }

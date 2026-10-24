@@ -5,7 +5,8 @@ name: skill-name
 # What it does AND when to use it: the agent loads the body only when this
 # matches the task, so name the triggers (file types, verbs, tools). <=1024 chars.
 description: Does X for Y. Use when the user asks to ..., or when working with ...
-# Optional; both tools honour it. Omit to inherit the session's permissions.
+# Optional: tools it may use without asking. The syntax is each tool's own
+# (Claude: Bash(git:*), Read; Copilot: shell), so omit it in shared skills.
 # allowed-tools: Bash(git:*), Read
 ---
 

@@ -60,3 +60,8 @@
 	    tool = vimdiff
 [http]
 	postBuffer = 524288000
+
+# This machine's own settings (e.g. agents.push), never committed; last, so
+# they win. Set them with `git config --file ~/.gitconfig.local ...`
+[include]
+	path = ~/.gitconfig.local
