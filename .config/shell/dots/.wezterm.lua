@@ -25,8 +25,16 @@ local wez_sb_alert= wezterm.plugin.require("https://github.com/roumail/wez-statu
 local wez_ws_alt = wezterm.plugin.require("https://github.com/roumail/wez-project-spaces")
 -- local wez_ws_alt = wezterm.plugin.require("file:///Users/rohailtaimour/.config/wezterm/plugins/wez-project-spaces")
 -- local wez_ws_alt = require("plugins.wez-project-spaces.plugin")
+local wez_timer = wezterm.plugin.require("https://github.com/roumail/wez-timer")
+-- local wez_timer = wezterm.plugin.require("file:///Users/rohailtaimour/.config/wezterm/plugins/wez-timer")
 wez_tmux.apply_to_config(config)
 wez_ws_alt.apply_to_config(config)
+wez_timer.apply_to_config(config, {
+  on_done = function(window, message)
+    window:toast_notification("wezterm", message, nil, 5000)
+    wez_sb_alert.notify(message, { timeout = 10 })
+  end,
+})
 
 -- set_config_overrides also fires window-config-reloaded, skip those
 local overriding_window = {}
@@ -48,6 +56,7 @@ local status_sections = {
   tab_inactive = { 'index',  helpers.processed_name },
   tabline_x = {
     wez_sb_alert.component(),
+    wez_timer.component(),
   },
   tabline_y = {},
   tabline_z = { "datetime" },
