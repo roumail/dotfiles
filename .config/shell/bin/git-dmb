@@ -13,6 +13,12 @@ if [ -z "$default_branch" ]; then
     exit 1
 fi
 
-git branch --merged "origin/$default_branch" \
-    | grep -v -e "$default_branch" -e '\*' \
-    | xargs git branch -d
+# for-each-ref, not `git branch`: its `*`/`+` markers break parsing.
+# Skip the default branch and anything checked out in a worktree.
+git for-each-ref --merged "origin/$default_branch" \
+    --format='%(refname:short)%09%(worktreepath)' refs/heads \
+    | while IFS=$'\t' read -r branch worktree; do
+        [ "$branch" = "$default_branch" ] && continue
+        [ -n "$worktree" ] && continue
+        git branch -d "$branch"
+    done
