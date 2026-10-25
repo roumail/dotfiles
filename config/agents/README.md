@@ -12,7 +12,7 @@ Rules and skills for coding agent CLIs (Copilot CLI, Claude Code), set up by
 | `local/AGENTS.md` | Empty, like `AGENTS.md` (gitignored) | Appended to the instructions above |
 | `local/skills/` | This machine's own skills (gitignored) | Linked with the shared ones |
 | `../vim-prompts/` | The rules, for vim-prompts | Linked into `~/.config/vim-prompts/` |
-| `../claude/hooks/guard-git.py` | Claude Code only: blocks pushes `agents.push` doesn't allow, and PRs | Linked into `~/.claude/hooks/` |
+| `../claude/examples/guard-git.py` | Example hook for Claude Code: blocks pushes `agents.push` doesn't allow, and PRs | Not installed; its docstring says how |
 
 ## On a fresh machine
 
@@ -25,7 +25,9 @@ Rules and skills for coding agent CLIs (Copilot CLI, Claude Code), set up by
    cd dotfiles && ./install.sh
    ```
    This links the skills and the rules, and writes the CLIs' (empty)
-   instructions.
+   instructions. Run again, it updates a local file still unedited from an
+   older example. It refuses while the dotfiles have uncommitted changes;
+   `./install.sh --dirty` installs them anyway, to try a change out.
 3. Add the `includeIf` for the plugins' folder ([Rules](#rules)), and this
    machine's own rules, if any, the same way.
 4. Choose how far agents may push (see [Push policy](#push-policy)). For a
@@ -62,11 +64,11 @@ plain file). A repo's own setting wins over the machine's.
 Opening pull requests is never allowed, whatever the value, and commits carry
 no attribution.
 
-**What enforces it.** Asked through `:Ai`, an agent is told to check
-`agents.push` before pushing ([Rules](#rules)); started any other way, it
-isn't told. Only Claude Code is stopped either way: it runs `guard-git.py`
-before every shell command, which blocks what the policy doesn't allow, and
-`settings.json` turns its attribution off.
+**What enforces it.** Nothing: asked through `:Ai`, an agent is told to
+check `agents.push` before pushing ([Rules](#rules)); started any other way,
+it isn't told. `../claude/examples/guard-git.py` is a Claude Code hook that
+blocks what the policy doesn't allow, whatever the agent was told; it isn't
+installed. Claude Code's attribution is off in `settings.json` either way.
 
 ## Rules
 

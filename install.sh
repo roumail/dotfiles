@@ -17,6 +17,14 @@ USER_SHELL=$(basename "$SHELL")
 PROJECTS_DIR="$HOME/projects"
 EVERYTHING_FZF_DIR="$PROJECTS_DIR/everything.fzf"
 
+# Links point at the working tree and copies are taken from it, so what is
+# installed is what is committed; --dirty installs uncommitted changes too
+if [ "$1" != "--dirty" ] && [ -n "$(git -C "$DOTFILES_DIR" status --porcelain)" ]; then
+  echo "✗ $DOTFILES_DIR has uncommitted changes; commit or stash them, or run with --dirty:" >&2
+  git -C "$DOTFILES_DIR" status --short >&2
+  exit 1
+fi
+
 check_required_tools() {
   # cargo, npm, coreutils (mac - tac)
   local required_tools=("fzf" "uv" "bat" "starship" "wezterm" "git" "vim" "curl" "fd" "rg" "delta" "gh")
@@ -67,11 +75,27 @@ install_local_file_from_example() {
   local example_file="$1"
   local target_file="$2"
 
-  if [ -f "$example_file" ] && [ ! -e "$target_file" ]; then
+  [ -f "$example_file" ] || return 0
+  if [ ! -e "$target_file" ]; then
     cp "$example_file" "$target_file"
     chmod 600 "$target_file" || true
     echo "✓ Created $target_file from example"
+  elif ! cmp -s "$example_file" "$target_file" && is_old_example "$example_file" "$target_file"; then
+    cp "$example_file" "$target_file"
+    echo "✓ Updated $target_file: it was an unedited copy of an older example"
   fi
+}
+
+# Whether file is, byte for byte, a version of example the repo has had
+is_old_example() {
+  local dir name path commit
+  dir="$(dirname "$1")" name="$(basename "$1")"
+  path="$(git -C "$dir" ls-files --full-name -- "$name" 2>/dev/null)"
+  [ -n "$path" ] || return 1
+  for commit in $(git -C "$dir" log --format=%H -- "$name"); do
+    git -C "$dir" show "$commit:$path" 2>/dev/null | cmp -s - "$2" && return 0
+  done
+  return 1
 }
 
 install_dotconfig_dirs() {
@@ -106,9 +130,9 @@ install_dotconfig_dirs() {
 
   # claude code reads user settings from ~/.claude, not ~/.config
   link_file "$DOT_CONFIG_SRC/claude/settings.json" "$HOME/.claude/settings.json"
-  # hooks settings.json runs, e.g. guard-git.py (each repo's agents.push, no PRs)
-  mkdir -p "$HOME/.claude/hooks"
-  link_tree "$DOT_CONFIG_SRC/claude/hooks" "$HOME/.claude/hooks"
+
+  # guard-git.py was linked here before it became an example
+  prune_dangling_links "$DOT_CONFIG_SRC/claude/hooks" "$HOME/.claude/hooks"
 
   # agent skills, shared and this machine's own (local/skills), for claude
   # code and copilot cli

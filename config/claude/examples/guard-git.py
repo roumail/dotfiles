@@ -6,7 +6,14 @@ agents.push is git config, so per clone (.git/config) with a default in
 ~/.gitconfig: `none` (no pushes), `branch` (the default: branches, not
 main/master) or `main` (anything). It reads the whole command, so it also
 catches `cd repo && git push` and a bare `git push` while on main. Exit 2
-blocks the call and shows stderr to Claude.
+blocks the call and shows stderr to Claude. A directory it can't read, such
+as `git -C $DIR`, gets the default policy.
+
+An example, not installed. To use it, copy it to ~/.claude/hooks/ and add to
+~/.claude/settings.json (https://docs.claude.com/en/docs/claude-code/hooks):
+
+  "hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command",
+    "command": "python3 \"$HOME/.claude/hooks/guard-git.py\""}]}]}
 """
 import json
 import os
@@ -19,7 +26,7 @@ PROTECTED = {"main", "master"}
 
 
 def block(reason):
-    print(f"Blocked by guard-git: {reason}. See ~/.claude/CLAUDE.md (Git); "
+    print(f"Blocked by guard-git: {reason}. See the git rules (~/.config/vim-prompts/git.md); "
           "the user can change it with `git config agents.push`.", file=sys.stderr)
     sys.exit(2)
 
