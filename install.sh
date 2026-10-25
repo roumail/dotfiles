@@ -100,6 +100,10 @@ install_dotconfig_dirs() {
   mkdir -p "$DOT_CONFIG_DST/wezterm"
   link_tree "$DOT_CONFIG_SRC/wezterm" "$DOT_CONFIG_DST/wezterm"
 
+  # vim-prompts rules, named by git config (config/agents/README.md)
+  mkdir -p "$DOT_CONFIG_DST/vim-prompts"
+  link_tree "$DOT_CONFIG_SRC/vim-prompts" "$DOT_CONFIG_DST/vim-prompts"
+
   # claude code reads user settings from ~/.claude, not ~/.config
   link_file "$DOT_CONFIG_SRC/claude/settings.json" "$HOME/.claude/settings.json"
   # hooks settings.json runs, e.g. guard-git.py (each repo's agents.push, no PRs)

@@ -77,6 +77,37 @@ told to check `agents.push` before pushing, but nothing stops a push it
 decides to make. Claude Code also runs `guard-git.py` before every shell
 command, which blocks what the policy doesn't allow.
 
+## vim-prompts rules
+
+[vim-prompts](https://github.com/roumail/vim-prompts) adds rules to every
+`:Ai` ask from git config's `vim-prompts.rules`. The rules are kept here, in
+`config/vim-prompts/`, and `install.sh` links them into
+`~/.config/vim-prompts/`:
+
+| File | What it is |
+| --- | --- |
+| `comments.md` | When a comment earns its place |
+| `vim-plugins.gitconfig` | Sets `vim-prompts.rules` to `comments.md` |
+
+Where the repos it applies to live differs per machine, so the `includeIf`
+that applies it goes in `~/.gitconfig.local`:
+
+```sh
+git config -f ~/.gitconfig.local \
+  'includeIf.gitdir:~/home/2_AREAS/work/vim-plugins/.path' \
+  '~/.config/vim-prompts/vim-plugins.gitconfig'
+```
+
+The trailing `/` takes in every repo below the folder, worktrees included.
+Check it in one of them, and outside, where nothing should be listed:
+
+```sh
+git config --show-origin --get-regexp '^vim-prompts\.'
+```
+
+`:AiPersonas` in Vim shows the same. A named file that is missing refuses
+every ask, so run `install.sh` before adding the `includeIf`.
+
 ## Adding a skill
 
 ```sh
