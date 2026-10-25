@@ -6,7 +6,7 @@ description: Wrap up work done on a git branch and hand it back for landing. Use
 # Finish a branch
 
 The work ends on its branch. Landing it on main, pushing main and opening a
-pull request are the user's to do, never the agent's.
+pull request are the user's to do, not the agent's, unless explicitly configured otherwise.
 
 ## Steps
 
