@@ -61,6 +61,10 @@
 [http]
 	postBuffer = 524288000
 
+# vim-prompts: rules for every :Ai ask (config/agents/README.md#rules)
+[vim-prompts]
+	rules = ~/.config/vim-prompts/git.md
+
 # This machine's own settings (e.g. agents.push), never committed; last, so
 # they win. Set them with `git config --file ~/.gitconfig.local ...`
 [include]

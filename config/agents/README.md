@@ -1,19 +1,18 @@
 # Agents: skills and instructions
 
-Shared rules and skills for coding agent CLIs (Copilot CLI, Claude Code), set
-up by `install.sh`.
+Rules and skills for coding agent CLIs (Copilot CLI, Claude Code), set up by
+`install.sh`. The rules reach an agent only through vim-prompts' `:Ai`
+([Rules](#rules)).
 
 | Path | What it is | Installed as |
 | --- | --- | --- |
-| `AGENTS.md` | Rules every session follows (git: pushing, PRs, attribution) | Written, with `local/AGENTS.md` after it, to `~/.copilot/copilot-instructions.md` and `~/.claude/CLAUDE.md` |
+| `AGENTS.md` | Empty: rules are in `../vim-prompts/` | Written, with `local/AGENTS.md` after it, to `~/.copilot/copilot-instructions.md` and `~/.claude/CLAUDE.md` |
 | `skills/<name>/SKILL.md` | Skills, loaded when a task matches their description | Linked into `~/.copilot/skills/` and `~/.claude/skills/` |
 | `SKILL.template.md` | Start for a new skill | Not installed |
-| `local/AGENTS.md` | This machine's extra rules (gitignored) | Appended to the instructions above |
+| `local/AGENTS.md` | Empty, like `AGENTS.md` (gitignored) | Appended to the instructions above |
 | `local/skills/` | This machine's own skills (gitignored) | Linked with the shared ones |
+| `../vim-prompts/` | The rules, for vim-prompts | Linked into `~/.config/vim-prompts/` |
 | `../claude/hooks/guard-git.py` | Claude Code only: blocks pushes `agents.push` doesn't allow, and PRs | Linked into `~/.claude/hooks/` |
-
-The instructions files are generated: edit `AGENTS.md` or `local/AGENTS.md`,
-then run `install.sh` again. Don't edit the copies in your home directory.
 
 ## On a fresh machine
 
@@ -25,26 +24,17 @@ then run `install.sh` again. Don't edit the copies in your home directory.
    git clone git@github.com:roumail/dotfiles.git
    cd dotfiles && ./install.sh
    ```
-   This creates `config/agents/local/AGENTS.md` from the example, writes
-   `~/.copilot/copilot-instructions.md`, and links the skills.
-3. Add this machine's restrictions to `config/agents/local/AGENTS.md` (e.g.
-   no installing packages, no sending code to web services), then run
-   `./install.sh` again.
+   This links the skills and the rules, and writes the CLIs' (empty)
+   instructions.
+3. Add the `includeIf` for the plugins' folder ([Rules](#rules)), and this
+   machine's own rules, if any, the same way.
 4. Choose how far agents may push (see [Push policy](#push-policy)). For a
    machine where they shouldn't push at all:
    ```sh
    git config --file ~/.gitconfig.local agents.push none
    ```
-5. Check Copilot picked everything up. Start `copilot` in any repo, then:
-   - `/instructions` lists `~/.copilot/copilot-instructions.md`.
-   - `/skills list` lists `finish-branch`. If it doesn't,
-     `/skills info finish-branch` says why; skills are symlinks, so check the
-     link in `~/.copilot/skills/finish-branch/` resolves.
-   - Ask "what are your rules for git pushes?". It should describe
-     `agents.push`.
-
-   Copilot reads instructions when a session starts. After changing them,
-   start a new session (`/new`), or exit and run `copilot --continue`.
+5. Check vim-prompts picked the rules up: `:AiPersonas` in Vim lists them,
+   with where each is set.
 6. Clear leftovers when you're happy: `trim-dots` lists the files install.sh
    backed up (e.g. a `copilot-instructions.md` you'd written yourself) and
    deletes the ones you pick.
@@ -72,25 +62,30 @@ plain file). A repo's own setting wins over the machine's.
 Opening pull requests is never allowed, whatever the value, and commits carry
 no attribution.
 
-**What enforces it.** On Copilot the rules are instructions only: Copilot is
-told to check `agents.push` before pushing, but nothing stops a push it
-decides to make. Claude Code also runs `guard-git.py` before every shell
-command, which blocks what the policy doesn't allow.
+**What enforces it.** Asked through `:Ai`, an agent is told to check
+`agents.push` before pushing ([Rules](#rules)); started any other way, it
+isn't told. Only Claude Code is stopped either way: it runs `guard-git.py`
+before every shell command, which blocks what the policy doesn't allow, and
+`settings.json` turns its attribution off.
 
-## vim-prompts rules
+## Rules
 
-[vim-prompts](https://github.com/roumail/vim-prompts) adds rules to every
-`:Ai` ask from git config's `vim-prompts.rules`. The rules are kept here, in
-`config/vim-prompts/`, and `install.sh` links them into
+The rules are vim-prompts rules: git config's `vim-prompts.rules` names them,
+and [vim-prompts](https://github.com/roumail/vim-prompts) puts them in the
+prompt of every `:Ai` ask. The CLIs' own instructions (`AGENTS.md`) are
+empty, so a rule is never given twice. The cost: a session started any other
+way (`claude`, `copilot`, Copilot in VS Code) gets none of them.
+
+They are kept in `config/vim-prompts/`, which `install.sh` links into
 `~/.config/vim-prompts/`:
 
-| File | What it is |
-| --- | --- |
-| `comments.md` | When a comment earns its place |
-| `vim-plugins.gitconfig` | Sets `vim-prompts.rules` to `comments.md` |
+| File | Rules | Applied by |
+| --- | --- | --- |
+| `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
+| `comments.md` | When a comment earns its place | `vim-plugins.gitconfig`, for the repos below a folder |
 
-Where the repos it applies to live differs per machine, so the `includeIf`
-that applies it goes in `~/.gitconfig.local`:
+Where those repos live differs per machine, so the `includeIf` that applies
+`vim-plugins.gitconfig` goes in `~/.gitconfig.local`:
 
 ```sh
 git config -f ~/.gitconfig.local \
@@ -99,7 +94,8 @@ git config -f ~/.gitconfig.local \
 ```
 
 The trailing `/` takes in every repo below the folder, worktrees included.
-Check it in one of them, and outside, where nothing should be listed:
+`~/.gitconfig.local` is included last, so its rules come after `git.md`, as
+vim-prompts wants the more specific ones. Check what applies in a repo:
 
 ```sh
 git config --show-origin --get-regexp '^vim-prompts\.'

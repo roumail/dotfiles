@@ -100,7 +100,7 @@ install_dotconfig_dirs() {
   mkdir -p "$DOT_CONFIG_DST/wezterm"
   link_tree "$DOT_CONFIG_SRC/wezterm" "$DOT_CONFIG_DST/wezterm"
 
-  # vim-prompts rules, named by git config (config/agents/README.md)
+  # vim-prompts rules, named by git config (config/agents/README.md#rules)
   mkdir -p "$DOT_CONFIG_DST/vim-prompts"
   link_tree "$DOT_CONFIG_SRC/vim-prompts" "$DOT_CONFIG_DST/vim-prompts"
 
@@ -123,8 +123,8 @@ install_dotconfig_dirs() {
   install_agent_instructions
 }
 
-# Agent rules: the shared AGENTS.md, then this machine's local/AGENTS.md,
-# written as each CLI's user instructions
+# Each CLI's user instructions, from AGENTS.md and local/AGENTS.md: kept
+# empty, the rules go through vim-prompts (config/agents/README.md#rules)
 install_agent_instructions() {
   local src="$DOT_CONFIG_SRC/agents"
   local header="<!-- Managed by dotfiles: edit config/agents/AGENTS.md or local/AGENTS.md, then run install.sh -->"
