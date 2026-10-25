@@ -1,12 +1,13 @@
 ---
 name: finish-branch
-description: Wrap up work done on a git branch and hand it back for landing. Use when a task's commits are done, when asked to merge, land or finish a branch, or to get changes onto main.
+description: Wrap up work done on a git branch, then land it or hand it back for landing. Use when a task's commits are done, when asked to merge, land or finish a branch, or to get changes onto main.
 ---
 
 # Finish a branch
 
-The work ends on its branch. Landing it on main, pushing main and opening a
-pull request are the user's to do, not the agent's, unless explicitly configured otherwise.
+The work ends on its branch. Landing it on main and pushing main are the
+user's to do, unless the repo's `agents.push` is `main` and the user asked
+for it. Opening a pull request is always theirs.
 
 ## Steps
 
@@ -20,14 +21,17 @@ pull request are the user's to do, not the agent's, unless explicitly configured
 3. Push the branch only if the user asked for it, and only if the repo's
    `git config --get agents.push` (unset: `branch`) allows it: not when it
    is `none`. Then `git push -u origin <branch>`, never with a pull request.
-4. End with the command that lands it, for the user to run:
+4. Land it:
    ```sh
    git switch main && git merge --ff-only <branch>
    ```
-   Say it adds the commits to main with no merge commit, and that pushing
-   main is up to them.
+   It adds the commits to main with no merge commit.
+   - If `agents.push` is `main` and the user asked to land or push main,
+     run it, then `git push origin main`.
+   - Otherwise end with it, for the user to run, and say pushing main is up
+     to them.
 
 ## Conventions
 
-- Don't run the merge, even when it is a fast-forward: offer it.
+- Only a fast-forward: never a merge commit, and never rebase unless asked.
 - No attribution trailers in any commit made on the way.
