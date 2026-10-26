@@ -96,7 +96,7 @@ git config --show-origin --get-regexp '^vim-prompts\.'
 ```
 
 `:AiPersonas` in Vim shows the same. A named file that is missing refuses
-every ask, so run `install.sh` before adding the `includeIf`.
+every ask, so run `install.sh` before naming it.
 
 ## Adding a skill
 
