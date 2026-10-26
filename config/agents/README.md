@@ -86,17 +86,28 @@ They are kept in `config/vim-prompts/`, which `install.sh` links into
 | `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
 | `comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it |
 
-`comments.md` is named per machine, in `~/.gitconfig.local`:
+`comments.md` is not in the dotfiles' `.gitconfig`, so it doesn't follow you
+to every machine. Each machine that wants it names it in `~/.gitconfig.local`,
+in one of two ways:
 
-```sh
-git config -f ~/.gitconfig.local --add vim-prompts.rules '~/.config/vim-prompts/comments.md'
-```
+- **Every repo on the machine:**
+
+  ```sh
+  git config -f ~/.gitconfig.local --add vim-prompts.rules '~/.config/vim-prompts/comments.md'
+  ```
+
+- **Only the repos below a folder:** name it in a file of its own, outside
+  the dotfiles, and include that file for the folder. The trailing `/` takes
+  in every repo below it, worktrees included.
+
+  ```sh
+  git config -f ~/.gitconfig-comments vim-prompts.rules '~/.config/vim-prompts/comments.md'
+  git config -f ~/.gitconfig.local \
+    'includeIf.gitdir:~/home/2_AREAS/work/vim-plugins/.path' '~/.gitconfig-comments'
+  ```
 
 `~/.gitconfig.local` is included last, so its rules come after `git.md`, as
-vim-prompts wants the more specific ones. To apply a rules file only to the
-repos below a folder instead, name it in a file of its own and include that
-with an `includeIf "gitdir:<folder>/"` in `~/.gitconfig.local`. Check what
-applies in a repo:
+vim-prompts wants the more specific ones. Check what applies in a repo:
 
 ```sh
 git config --show-origin --get-regexp '^vim-prompts\.'
