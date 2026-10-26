@@ -64,6 +64,7 @@
 # vim-prompts: rules for every :Ai ask (config/agents/README.md#rules)
 [vim-prompts]
 	rules = ~/.config/vim-prompts/git.md
+	rules = ~/.config/vim-prompts/comments.md
 
 # This machine's own settings (e.g. agents.push), never committed; last, so
 # they win. Set them with `git config --file ~/.gitconfig.local ...`

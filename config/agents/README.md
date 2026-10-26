@@ -84,20 +84,12 @@ They are kept in `config/vim-prompts/`, which `install.sh` links into
 | File | Rules | Applied by |
 | --- | --- | --- |
 | `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
-| `comments.md` | When a comment earns its place | `vim-plugins.gitconfig`, for the repos below a folder |
+| `comments.md` | When a comment earns its place | `~/.gitconfig` (the dotfiles'), for every repo |
 
-Where those repos live differs per machine, so the `includeIf` that applies
-`vim-plugins.gitconfig` goes in `~/.gitconfig.local`:
-
-```sh
-git config -f ~/.gitconfig.local \
-  'includeIf.gitdir:~/home/2_AREAS/work/vim-plugins/.path' \
-  '~/.config/vim-prompts/vim-plugins.gitconfig'
-```
-
-The trailing `/` takes in every repo below the folder, worktrees included.
-`~/.gitconfig.local` is included last, so its rules come after `git.md`, as
-vim-prompts wants the more specific ones. Check what applies in a repo:
+Both are generic, so they apply on every machine. Machine-specific rules go
+in a rules file named in `~/.gitconfig.local`, which is included last, so its
+rules come after these, as vim-prompts wants the more specific ones. Check
+what applies in a repo:
 
 ```sh
 git config --show-origin --get-regexp '^vim-prompts\.'
