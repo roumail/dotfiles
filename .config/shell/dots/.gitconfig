@@ -69,3 +69,8 @@
 # they win. Set them with `git config --file ~/.gitconfig.local ...`
 [include]
 	path = ~/.gitconfig.local
+
+# Last, so it wins over the machine's default identity in ~/.gitconfig.local.
+[includeIf "gitdir:~/projects/personal/"]
+	path = ~/.config/shell/dots/personal.gitconfig
+	path = ~/.config/shell/local/personal.gitconfig

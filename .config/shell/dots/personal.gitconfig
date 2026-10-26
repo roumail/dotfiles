@@ -1,0 +1,4 @@
+# Identity for personal repos (included last by .gitconfig).
+# The email is in ../local/personal.gitconfig, which is not in git.
+[user]
+	name = roumail
