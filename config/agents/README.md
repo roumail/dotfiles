@@ -84,27 +84,26 @@ They are kept in `config/vim-prompts/`, which `install.sh` links into
 | File | Rules | Applied by |
 | --- | --- | --- |
 | `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
-| `comments.md` | When a comment earns its place | `vim-plugins.gitconfig`, for the repos below a folder |
+| `comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it |
 
-Where those repos live differs per machine, so the `includeIf` that applies
-`vim-plugins.gitconfig` goes in `~/.gitconfig.local`:
+`comments.md` is named per machine, in `~/.gitconfig.local`:
 
 ```sh
-git config -f ~/.gitconfig.local \
-  'includeIf.gitdir:~/home/2_AREAS/work/vim-plugins/.path' \
-  '~/.config/vim-prompts/vim-plugins.gitconfig'
+git config -f ~/.gitconfig.local --add vim-prompts.rules '~/.config/vim-prompts/comments.md'
 ```
 
-The trailing `/` takes in every repo below the folder, worktrees included.
 `~/.gitconfig.local` is included last, so its rules come after `git.md`, as
-vim-prompts wants the more specific ones. Check what applies in a repo:
+vim-prompts wants the more specific ones. To apply a rules file only to the
+repos below a folder instead, name it in a file of its own and include that
+with an `includeIf "gitdir:<folder>/"` in `~/.gitconfig.local`. Check what
+applies in a repo:
 
 ```sh
 git config --show-origin --get-regexp '^vim-prompts\.'
 ```
 
 `:AiPersonas` in Vim shows the same. A named file that is missing refuses
-every ask, so run `install.sh` before adding the `includeIf`.
+every ask, so run `install.sh` before naming it.
 
 ## Adding a skill
 
