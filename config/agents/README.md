@@ -79,21 +79,32 @@ empty, so a rule is never given twice. The cost: a session started any other
 way (`claude`, `copilot`, Copilot in VS Code) gets none of them.
 
 They are kept in `config/vim-prompts/`, which `install.sh` links into
-`~/.config/vim-prompts/`:
+`~/.config/vim-prompts/`. A file at the top goes with every ask; those in
+`library/` go when an ask names them (`:Ai #rule:comments ...`), on machines
+that name the library:
 
 | File | Rules | Applied by |
 | --- | --- | --- |
 | `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
-| `comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it |
+| `library/comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it |
 
-`comments.md` is not in the dotfiles' `.gitconfig`, so it doesn't follow you
-to every machine. Each machine that wants it names it in `~/.gitconfig.local`,
-in one of two ways:
+Nothing in `library/` is named in the dotfiles' `.gitconfig`, so it doesn't
+follow you to every machine. A machine names it in `~/.gitconfig.local`:
+
+```sh
+git config -f ~/.gitconfig.local --add vim-prompts.library '~/.config/vim-prompts/library'
+```
+
+Name the library rather than copying its files into another one, so there is
+one copy to edit. A team's library keeps a `comments.md` of its own only if it
+is meant to differ from this one.
+
+A file of the library can also go with every ask, as a rule:
 
 - **Every repo on the machine:**
 
   ```sh
-  git config -f ~/.gitconfig.local --add vim-prompts.rules '~/.config/vim-prompts/comments.md'
+  git config -f ~/.gitconfig.local --add vim-prompts.rules '~/.config/vim-prompts/library/comments.md'
   ```
 
 - **Only the repos below a folder:** name it in a file of its own, outside
@@ -101,7 +112,7 @@ in one of two ways:
   in every repo below it, worktrees included.
 
   ```sh
-  git config -f ~/.gitconfig-comments vim-prompts.rules '~/.config/vim-prompts/comments.md'
+  git config -f ~/.gitconfig-comments vim-prompts.rules '~/.config/vim-prompts/library/comments.md'
   git config -f ~/.gitconfig.local \
     'includeIf.gitdir:~/home/2_AREAS/work/vim-plugins/.path' '~/.gitconfig-comments'
   ```
