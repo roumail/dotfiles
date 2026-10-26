@@ -170,3 +170,19 @@ v() {
 
 precmd_functions+=(__wezterm_custom_precmd)
 preexec_functions+=(__wezterm_custom_preexec)
+
+# ai: start your coding agent (claude or copilot) in Vim, given your
+# vim-prompts rules first, the way `claude` alone never is. Run it in the
+# folder or repository to work on:
+#   ai                         the rules, then it waits for your question
+#   ai why is the build slow   the rules and your question
+#   ai /review                 a persona instead of /default
+#   ai @README.md tidy this    files to read, as :Ai takes them
+#   ai /review '#changes'      quote a #source: unquoted, the shell drops it
+# Ctrl-D or /exit ends the agent, then :q leaves Vim.
+ai() {
+  case "${1:-}" in
+    /*) vim +"Ai $*" ;;
+    *) vim +"Ai /default $*" ;;
+  esac
+}
