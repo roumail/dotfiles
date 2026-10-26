@@ -129,6 +129,8 @@ augroup ColorOverrides
 augroup END
 
 let g:afterglow_italic_comments=1
+" Leave the background to the terminal, so wezterm's pinned-tab color shows through
+let g:afterglow_inherit_background=1
 colorscheme afterglow
 " colorscheme palenight
 " let g:palenight_terminal_italics=1
