@@ -1,0 +1,4 @@
+# Email for personal repos, kept out of git. Copy this file to
+# personal.gitconfig (same folder) and replace the address.
+[user]
+	email = you@example.com
