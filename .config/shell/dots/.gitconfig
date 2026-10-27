@@ -33,6 +33,11 @@
 
     # create and switch
     swc = switch -c
+
+    # archive a worktree (. for this one): a dated lock, hidden from CTRL-G CTRL-W until ALT-A
+    # g wt-archive <worktree> [reason...] / g wt-unarchive [worktree]
+    wt-archive = "!f() { [ $# -gt 0 ] || { echo 'usage: git wt-archive <worktree> [reason...]' >&2; return 1; }; cd \"./$GIT_PREFIX\" && w=$1 && shift && git worktree lock --reason \"$(date +%F)${*:+: $*}\" \"$w\"; }; f"
+    wt-unarchive = "!f() { cd \"./$GIT_PREFIX\" && git worktree unlock \"${1:-.}\"; }; f"
 	ll="!git log --graph --format='%C(yellow)%h%C(red)%d%C(reset) - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)'"
 
 

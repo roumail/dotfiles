@@ -68,6 +68,35 @@ if [[ $1 == --list ]]; then
     hashes() {
       git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=$(__fzf_git_color) "$@" $LIST_OPTS
     }
+    # Locked worktrees count as archived (git wt-archive). $1 is active, archived or all.
+    # Rows: path \t A (archived) or - \t display, newest commit first
+    worktrees() {
+      local root
+      root=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
+      awk -v view="$1" -v root="$root" -v home="$HOME" '
+        function emit(  name, d) {
+          if (path == "" || bare) return
+          if ((view == "active" && locked) || (view == "archived" && !locked)) return
+          if (path == root) name = "."
+          else if (index(path, root "/") == 1) name = substr(path, length(root) + 2)
+          else if (index(path, home "/") == 1) name = "~" substr(path, length(home) + 1)
+          else name = path
+          split(date[path], d, "\t")
+          printf "%d\t%s\t%s\t\033[33m%s\033[0m \033[1m%s\033[0m%s \033[32m%s\033[0m \033[2m%s\033[0m\n", \
+            d[1], path, (locked ? "A" : "-"), (locked ? "A" : " "), name, \
+            (branch == name ? "" : " \033[36m[" branch "]\033[0m"), d[2], reason
+        }
+        FNR == NR { split($0, f, "\t"); date[f[1]] = f[2] "\t" f[3]; next }
+        /^worktree / { emit(); path = substr($0, 10); branch = ""; bare = locked = 0; reason = ""; next }
+        /^branch /   { branch = substr($0, 19); next }
+        /^detached/  { branch = "detached"; next }
+        /^bare/      { bare = 1; next }
+        /^locked/    { locked = 1; reason = substr($0, 8); next }
+        END { emit() }
+      ' <(git for-each-ref --format=$'%(worktreepath)\t%(committerdate:unix)\t%(committerdate:relative)' refs/heads) \
+        <(git worktree list --porcelain) |
+        sort -t$'\t' -k1,1nr | cut -f2-
+    }
     case "$1" in
       branches)
         echo 'CTRL-O (open in browser) ╱ ALT-A (show all branches)'
@@ -96,6 +125,9 @@ if [[ $1 == --list ]]; then
       all-refs)
         echo 'CTRL-O (open in browser) ╱ ALT-E (examine in editor)'
         refs
+        ;;
+      active-worktrees|archived-worktrees|all-worktrees)
+        worktrees "${1%-worktrees}"
         ;;
       *) exit 1 ;;
     esac
@@ -351,16 +383,23 @@ _fzf_git_each_ref() {
 
 _fzf_git_worktrees() {
   _fzf_git_check || return
-  git worktree list | _fzf_git_fzf \
+  # The prompt names the view, so reloads keep showing it.
+  # From the CTRL-G widget the terminal is in zle's mode, without echo; ALT-S turns it on for read.
+  local list="bash '$__fzf_git' --list \"\${FZF_PROMPT%> }-worktrees\""
+  bash "$__fzf_git" --list active-worktrees | _fzf_git_fzf --ansi \
     --border-label '🌴 Worktrees ' \
-    --header 'CTRL-X (remove worktree)' \
-    --bind 'ctrl-x:reload(git worktree remove {1} > /dev/null; git worktree list)' \
+    --prompt 'active> ' \
+    --delimiter '\t' --with-nth 3.. \
+    --header 'ALT-A (active/archived/all) ╱ ALT-S (archive/unarchive) ╱ CTRL-X (remove worktree)' \
+    --bind "alt-a:transform:case \$FZF_PROMPT in active*) v=archived ;; archived*) v=all ;; *) v=active ;; esac; echo \"change-prompt(\$v> )+reload:bash '$__fzf_git' --list \$v-worktrees\"" \
+    --bind "alt-s:execute~if [ {2} = A ]; then git wt-unarchive {1}; else printf 'Archive reason: '; stty echo icanon </dev/tty >/dev/tty 2>/dev/null; read -r r; git wt-archive {1} \"\$r\"; fi~+reload($list)" \
+    --bind "ctrl-x:reload:git worktree remove {1} > /dev/null; $list" \
     --preview "
       git -c color.status=$(__fzf_git_color .) -C {1} status --short --branch
       echo
-      git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' {2} --
+      git -C {1} log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' HEAD --
     " "$@" |
-  awk '{print $1}'
+  cut -f1
 }
 
 _fzf_git_list_bindings() {
