@@ -11,8 +11,7 @@ inoremap jq <Esc>:wq<CR>
 """""""""""""""""""
 " fzf {{{1
 """""""""""""""""""
-" inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
-imap <c-x><c-f> <plug>(fzf-complete-path)
+inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
 imap <c-x><c-l> <plug>(fzf-complete-line)
 "imap <c-x><c-k> <plug>(fzf-complete-word)
 
