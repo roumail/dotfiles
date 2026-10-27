@@ -146,6 +146,9 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 " vim-review: comment on the line / selection, into the 'Review' quickfix list
 nmap <leader>cc <Plug>(review-comment)
 xmap <leader>cc <Plug>(review-comment)
+" ... in an editor split instead; picks up what <Esc> left at the prompt
+nmap <leader>cd <Plug>(review-comment-draft)
+xmap <leader>cd <Plug>(review-comment-draft)
 
 " }}}1
 
@@ -268,7 +271,11 @@ xmap <leader><tab> <plug>(fzf-maps-x)
 " ============================================================
 " Terminal mode {{{
 " ============================================================
-tnoremap <Esc><Esc> <C-w>N
+" Agents (claude, copilot) use Esc Esc themselves: it goes through to them
+function! s:esc_esc() abort
+  return bufname() =~# '^!''\=\%(\S*/\)\=\%(claude\|copilot\)\>' ? "\<Esc>\<Esc>" : "\<C-w>N"
+endfunction
+tnoremap <expr> <Esc><Esc> <SID>esc_esc()
 tnoremap <S-Tab> <C-w>:tabprevious<CR>
 tnoremap <Esc>h <C-w>h
 tnoremap <Esc>j <C-w>j
