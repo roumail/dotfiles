@@ -181,8 +181,10 @@ preexec_functions+=(__wezterm_custom_preexec)
 #   ai /review '#changes'      quote a #source: unquoted, the shell drops it
 # Ctrl-D or /exit ends the agent, then :q leaves Vim.
 ai() {
+  # `vim .` rather than a bare vim: Fugitive finds the repository from a
+  # buffer, and #changes, #comments and #diff_pairs have nothing without one.
   case "${1:-}" in
-    /*) vim +"Ai $*" ;;
-    *) vim +"Ai /default $*" ;;
+    /*) vim . +"Ai $*" ;;
+    *) vim . +"Ai /default $*" ;;
   esac
 }
