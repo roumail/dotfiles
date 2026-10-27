@@ -275,6 +275,7 @@ function! s:esc_esc() abort
   return bufname() =~# '^!''\=\%(\S*/\)\=\%(claude\|copilot\)\>' ? "\<Esc>\<Esc>" : "\<C-w>N"
 endfunction
 tnoremap <expr> <Esc><Esc> <SID>esc_esc()
+tnoremap <Esc>n <C-w>N
 tnoremap <S-Tab> <C-w>:tabprevious<CR>
 tnoremap <Esc>h <C-w>h
 tnoremap <Esc>j <C-w>j
