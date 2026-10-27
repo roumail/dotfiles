@@ -10,3 +10,21 @@ bindkey '^[[B'  history-beginning-search-forward
 # Alt+Backspace: delete last path component (unix-filename-rubout)
 bindkey '\e^?'  backward-kill-word
 
+# ai and aid (common/functions.sh) take the rest of the line as typed, as
+# :Ai does in Vim: unquoted, zsh would end it at a #source
+# (interactivecomments), wait at an apostrophe and glob a ?. Quoted whole
+# before it runs; a line recalled from history is quoted already.
+function _ai_raw_line {
+  [[ $BUFFER =~ '^(aid?) +(.*[^ ])' ]] || return 0
+  local rest=$match[2]
+  [[ ${(qq)${(Q)rest}} == "$rest" ]] || BUFFER="$match[1] ${(qq)rest}"
+}
+# Once, before zsh-vi-mode's init, which keeps this zle-line-finish inside
+# its own; again (from zvm_after_init) it would replace zsh-vi-mode's
+autoload -Uz add-zle-hook-widget
+() {
+  local hooks
+  zstyle -a zle-line-finish widgets hooks
+  [[ " ${hooks[*]} " == *:_ai_raw_line\ * ]] || add-zle-hook-widget line-finish _ai_raw_line
+}
+

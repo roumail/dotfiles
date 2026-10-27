@@ -176,15 +176,21 @@ preexec_functions+=(__wezterm_custom_preexec)
 # folder or repository to work on:
 #   ai                         the rules, then it waits for your question
 #   ai why is the build slow   the rules and your question
-#   ai /review                 a persona instead of /default
+#   ai /review #changes        a persona instead of /default, a #source
 #   ai @README.md tidy this    files to read, as :Ai takes them
-#   ai /review '#changes'      quote a #source: unquoted, the shell drops it
+# aid takes the same and opens the prompt in :AiDraft to write in; :wq sends.
+# In zsh the rest of the line goes as typed, as in Vim: no quoting, an
+# apostrophe or a ? is fine (zsh/keybindings.sh). In bash, quote it.
 # Ctrl-D or /exit ends the agent, then :q leaves Vim.
-ai() {
+ai() { _ai Ai "$@"; }
+aid() { _ai AiDraft "$@"; }
+_ai() {
+  local cmd=$1
+  shift
   # `vim .` rather than a bare vim: Fugitive finds the repository from a
   # buffer, and #changes, #comments and #diff_pairs have nothing without one.
   case "${1:-}" in
-    /*) vim . +"Ai $*" ;;
-    *) vim . +"Ai /default $*" ;;
+    /*) vim . +"$cmd $*" ;;
+    *) vim . +"$cmd /default $*" ;;
   esac
 }
