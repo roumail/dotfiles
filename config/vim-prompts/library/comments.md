@@ -1,6 +1,10 @@
 ## Comments
 
-Write a comment only where it earns its place, and remove the ones that don't:
+Prefer no comment to an inline comment, and an inline comment to a docstring.
+Never add a docstring: a function's name, signature and tests say what it does.
+A comment goes only where the rules below say it earns its place; they are the
+whole spec, so don't write one for any other reason (a docstring per function,
+a header per module, a comment per step). Remove the ones that don't earn it:
 
 - **Point at a document** when reading it is what made the code make sense: a
   spec, an upstream issue, a `:help` topic.
