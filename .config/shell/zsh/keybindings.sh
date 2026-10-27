@@ -9,6 +9,8 @@ bindkey '^[[A'  history-beginning-search-backward
 bindkey '^[[B'  history-beginning-search-forward
 # Alt+Backspace: delete last path component (unix-filename-rubout)
 bindkey '\e^?'  backward-kill-word
+# Alt+d: delete next word (kill-word); vi insert mode has no binding for it
+bindkey '\ed'   kill-word
 
 # ai and aid (common/functions.sh) take the rest of the line as typed, as
 # :Ai does in Vim: unquoted, zsh would end it at a #source
