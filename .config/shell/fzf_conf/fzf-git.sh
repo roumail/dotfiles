@@ -59,8 +59,11 @@ __fzf_git_pager() {
 if [[ $1 == --list ]]; then
   shift
   if [[ $# -eq 1 ]]; then
+    # With MINE set, only branches whose last commit was authored by user.email
     branches() {
-      git branch "$@" --sort=-committerdate --sort=-HEAD --format=$'%(HEAD) %(color:yellow)%(refname:short) %(color:green)(%(committerdate:relative))\t%(color:blue)%(subject)%(color:reset)' --color=$(__fzf_git_color) | column -ts$'\t'
+      git branch "$@" --sort=-committerdate --sort=-HEAD --format=$'%(authoremail)\t%(HEAD) %(color:yellow)%(refname:short) %(color:green)(%(committerdate:relative))\t%(color:blue)%(subject)%(color:reset)' --color=$(__fzf_git_color) |
+        awk -F'\t' -v me="${MINE:+<$(git config user.email)>}" '!me || tolower($1) == tolower(me)' |
+        cut -f2- | column -ts$'\t'
     }
     refs() {
       git for-each-ref "$@" --sort=-creatordate --sort=-HEAD --color=$(__fzf_git_color) --format=$'%(if:equals=refs/remotes)%(refname:rstrip=-2)%(then)%(color:magenta)remote-branch%(else)%(if:equals=refs/heads)%(refname:rstrip=-2)%(then)%(color:brightgreen)branch%(else)%(if:equals=refs/tags)%(refname:rstrip=-2)%(then)%(color:brightcyan)tag%(else)%(if:equals=refs/stash)%(refname:rstrip=-2)%(then)%(color:brightred)stash%(else)%(color:white)%(refname:rstrip=-2)%(end)%(end)%(end)%(end)\t%(color:yellow)%(refname:short) %(color:green)(%(creatordate:relative))\t%(color:blue)%(subject)%(color:reset)' | column -ts$'\t'
@@ -98,14 +101,14 @@ if [[ $1 == --list ]]; then
         sort -t$'\t' -k1,1nr | cut -f2-
     }
     case "$1" in
-      branches)
-        echo 'CTRL-O (open in browser) ╱ ALT-A (show all branches)'
-        echo 'ALT-H (list commit hashes)'
+      branches|local-branches)
+        echo 'CTRL-O (open in browser) ╱ ALT-A (local/all) ╱ ALT-M (mine/everyone)'
+        echo 'ALT-H (list commit hashes) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)'
         branches
         ;;
       all-branches)
-        echo 'CTRL-O (open in browser) ╱ ALT-ENTER (accept without remote)'
-        echo 'ALT-H (list commit hashes)'
+        echo 'CTRL-O (open in browser) ╱ ALT-ENTER (accept without remote) ╱ ALT-A (local/all) ╱ ALT-M (mine/everyone)'
+        echo 'ALT-H (list commit hashes) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)'
         branches -a
         ;;
       hashes)
@@ -272,9 +275,14 @@ _fzf_git_branches() {
   local shell
   [[ -n ${BASH_VERSION:-} ]] && shell=bash || shell=zsh
 
+  # The prompt names the view (local or all, +mine), so reloads keep showing it.
+  # CTRL-X asks before forcing an unmerged branch; stty as in _fzf_git_worktrees.
+  local list="p=\${FZF_PROMPT%> }; MINE=\${p#\${p%+mine}} bash '$__fzf_git' --list \${p%+mine}-branches"
+  local ask="stty echo icanon </dev/tty >/dev/tty 2>/dev/null; read -r a"
   bash "$__fzf_git" --list branches |
   __fzf_git_fzf=$(declare -f _fzf_git_fzf) _fzf_git_fzf --ansi \
     --border-label '🌲 Branches ' \
+    --prompt 'local> ' \
     --header-lines 2 \
     --tiebreak begin \
     --preview-window down,border-top,40% \
@@ -282,7 +290,10 @@ _fzf_git_branches() {
     --no-hscroll \
     --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' \
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list branch {}" \
-    --bind "alt-a:change-border-label(🌳 All branches)+reload:bash \"$__fzf_git\" --list all-branches" \
+    --bind "alt-a:transform-prompt~p=\${FZF_PROMPT%> }; case \$p in all*) echo \"local\${p#all}> \" ;; *) echo \"all\${p#local}> \" ;; esac~+reload:$list" \
+    --bind "alt-m:transform-prompt~p=\${FZF_PROMPT%> }; case \$p in *+mine) echo \"\${p%+mine}> \" ;; *) echo \"\$p+mine> \" ;; esac~+reload:$list" \
+    --bind "ctrl-x:execute~for b in \$(printf '%s\n' {+} | cut -c3- | cut -d' ' -f1); do git show-ref -q --verify \"refs/heads/\$b\" || { echo \"skip \$b: not a local branch\"; continue; }; git branch -d \"\$b\" && continue; printf 'Force delete %s? [y/N] ' \"\$b\"; $ask; [ \"\$a\" = y ] && git branch -D \"\$b\"; done~+reload:$list" \
+    --bind "alt-d:execute~git dmb; printf 'Press enter '; $ask~+reload:$list" \
     --bind "alt-h:become:LIST_OPTS=\$(cut -c3- <<< {} | cut -d' ' -f1) $shell \"$__fzf_git\" --run hashes" \
     --bind "alt-enter:become:printf '%s\n' {+} | cut -c3- | sed 's@[^/]*/@@'" \
     --preview "git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' \$(cut -c3- <<< {} | cut -d' ' -f1) --" "$@" |
