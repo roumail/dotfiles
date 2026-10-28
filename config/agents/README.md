@@ -87,7 +87,6 @@ that name the library:
 | --- | --- | --- |
 | `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
 | `library/comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it |
-| `library/review-file.md` | Review comments also written to a file that vim-review's `:CommentsLoad` opens as a quickfix list, on their lines | `~/.gitconfig.local`, as above; a persona names it (`/review`) |
 
 Nothing in `library/` is named in the dotfiles' `.gitconfig`, so it doesn't
 follow you to every machine. A machine names it in `~/.gitconfig.local`:
