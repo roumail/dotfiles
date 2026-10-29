@@ -1,6 +1,6 @@
 ---
 name: finish-branch
-description: Wrap up work already committed on a git branch other than main, then land it or hand it back for landing. Use when asked to merge, land or finish such a branch. Not a reason to create a branch: in repos where commits go straight to main, there is nothing to finish.
+description: Wrap up work already committed on a git branch other than main, then land it or hand it back for landing. Use when asked to merge, land or finish such a branch. Not a reason to create a branch; in repos where commits go straight to main, there is nothing to finish.
 ---
 
 # Finish a branch
