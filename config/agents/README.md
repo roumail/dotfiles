@@ -87,12 +87,20 @@ that name the library:
 | --- | --- | --- |
 | `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
 | `library/comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it |
+| `library/testing.md` | How tests are written, in any language | as above; a persona names it (`/draft`, `/review`, `/tests`) |
+| `library/pytest.md` | The same, for pytest | as above |
+| `library/running-tests.md` | The policy for running tests anywhere | as above |
+| `library/style.md` | How code is structured; library code versus application code | as above |
+| `library/review.md` | What I look for in a review and how I word comments | as above |
+| `personas/` | `/draft`, `/review`, `/challenge`, `/tests`, `/migrations`, `/dead-code`, `/schema` | `~/.gitconfig.local`, as above |
 
-Nothing in `library/` is named in the dotfiles' `.gitconfig`, so it doesn't
-follow you to every machine. A machine names it in `~/.gitconfig.local`:
+Nothing in `library/` or `personas/` is named in the dotfiles' `.gitconfig`,
+so neither follows you to every machine. A machine names them in
+`~/.gitconfig.local`:
 
 ```sh
 git config -f ~/.gitconfig.local --add vim-prompts.library '~/.config/vim-prompts/library'
+git config -f ~/.gitconfig.local --add vim-prompts.personas '~/.config/vim-prompts/personas'
 ```
 
 Name the library rather than copying its files into another one, so there is
