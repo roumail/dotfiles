@@ -200,13 +200,14 @@ _ai() {
 # rv [branch]: review in a free scratch worktree (git wt-review), left as <CR>
 # on a :PRs row leaves it: the branch's PR checked out by gh, in :BranchDiff.
 # origin/branch works too, as CTRL-G CTRL-B inserts it. No branch opens :PRs
-# to pick one.
+# to pick one. git-extras defines its commands at VimEnter, after +cmd runs,
+# so they run from a VimEnter of their own.
 rv() {
   local dir
   dir=$(git wt-review) && cd "$dir" || return
   if [ -n "${1:-}" ]; then
-    gh pr checkout "${1#origin/}" && vim . +BranchDiff
+    gh pr checkout "${1#origin/}" && vim . +'au VimEnter * ++once ++nested BranchDiff'
   else
-    vim . +PRs
+    vim . +'au VimEnter * ++once ++nested PRs'
   fi
 }
