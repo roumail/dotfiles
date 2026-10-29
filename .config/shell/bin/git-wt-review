@@ -1,0 +1,56 @@
+#!/bin/bash
+# Check out origin/<branch> (default: the default branch) detached in a free
+# scratch worktree, wiping what's there, and print its path:
+#   cd "$(git wt-review feature-x)"
+# origin/feature-x works too, as fzf-git's CTRL-G CTRL-B inserts it.
+# Worktrees are review, review-2, ... up to WT_REVIEW_SLOTS (4), beside the
+# others in a bare-repo layout, made when first needed. One is busy while a
+# process (a shell, vim) has its cwd inside it, unless it's the one you're in.
+
+set -euo pipefail
+
+# Load git helper functions
+BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
+[ -r "$BASE/common/git.sh" ] && . "$BASE/common/git.sh"
+
+BARE=$(cd "$(git_get_bare_dir)" && pwd)
+if [ "$(git --git-dir="$BARE" rev-parse --is-bare-repository)" != true ]; then
+    echo "Error: $BARE is not a bare repo" >&2
+    exit 1
+fi
+ROOT=$(dirname "$BARE")
+HERE=$(git rev-parse --show-toplevel 2>/dev/null || true)
+BRANCH=${1:-$(git_get_default_branch "$BARE")}
+BRANCH=${BRANCH#origin/}
+
+git --git-dir="$BARE" fetch -q --prune origin
+
+CWDS=$(lsof -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')
+in_use() {
+    printf '%s\n' "$CWDS" | awk -v d="$1" '$0 == d || index($0, d "/") == 1 { f = 1 } END { exit !f }'
+}
+
+DIR=""
+for i in $(seq 1 "${WT_REVIEW_SLOTS:-4}"); do
+    d=$ROOT/review
+    [ "$i" -gt 1 ] && d=$d-$i
+    if [ "$d" = "$HERE" ] || ! in_use "$d"; then
+        DIR=$d
+        break
+    fi
+done
+
+if [ -z "$DIR" ]; then
+    echo "Error: All review worktrees are busy" >&2
+    exit 1
+fi
+
+if [ -d "$DIR" ]; then
+    git -C "$DIR" reset -q --hard
+    git -C "$DIR" clean -fdq
+    git -C "$DIR" checkout -q --detach "origin/$BRANCH"
+else
+    git --git-dir="$BARE" worktree add -q --detach "$DIR" "origin/$BRANCH" >&2
+fi
+
+echo "$DIR"

@@ -196,3 +196,11 @@ _ai() {
     *) vim . +"$cmd /default $*" ;;
   esac
 }
+
+# rv [branch]: review in a free scratch worktree (git wt-review). A branch
+# goes straight to /review; none opens :PRs on the default branch to pick one.
+rv() {
+  local dir
+  dir=$(git wt-review "$@") && cd "$dir" || return
+  if [ -n "${1:-}" ]; then ai /review; else vim . +PRs; fi
+}
