@@ -80,6 +80,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'mattn/vim-lsp-settings'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf.vim'
+" The startup warning roumail's plugins show when one they require isn't loaded
+Plug 'roumail/vim-requires'
 " fzf-utils (:FdFiles, :Grep, :RgRaw) adds commands under its own names and
 " redefines none of fzf.vim's, so its order doesn't matter.
 Plug 'roumail/fzf-utils'
