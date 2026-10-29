@@ -14,4 +14,5 @@
 - No attribution in commits: no `Co-authored-by:` trailers, no "Generated
   with" lines, no mention of an AI or agent in commit messages.
 - Getting a branch onto main is my call too: use the finish-branch skill.
-- When you commit, stage only the files you changed for the task, by name: never `git add -A`, `git add .` or `git commit -a`. Check `git diff --cached` first, and unstage anything that isn't part of the change, such as local config or test-setup tweaks. Never `pop`, `apply` or `drop` a stash: those are mine.
+- When you commit, stage only the files you changed for the task, by name: never `git add -A`, `git add .` or `git commit -a`. Check `git diff --cached` first, and unstage anything that isn't part of the change, such as local config or test-setup tweaks.
+- The use of stashes is permitted as long as other existing stashes aren't dropped.
