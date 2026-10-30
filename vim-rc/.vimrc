@@ -93,6 +93,8 @@ Plug 'roumail/buffer-tools'
 Plug 'roumail/qf-tools'
 Plug 'roumail/text-tools'
 Plug 'roumail/glow-preview'
+" The buffer :CommentDraft and :AiDraft write in
+Plug 'roumail/vim-draft'
 Plug 'roumail/vim-review'
 Plug 'roumail/git-extras'
 Plug 'roumail/vim-prompts'
