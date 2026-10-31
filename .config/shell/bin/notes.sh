@@ -306,8 +306,8 @@ find_in_notes() {
 
 key=ctrl-l
 query="$*"
-opts='--reverse --no-hscroll --no-multi --ansi --print-query --tiebreak=index'
-header_actions='ALT-N: new / ALT-C: duplicate / ALT-X: delete / ALT-R: rename / ALT-S: pin'
+opts='--reverse --no-hscroll --multi --ansi --print-query --tiebreak=index'
+header_actions='TAB: mark / ALT-N: new / ALT-C: duplicate / ALT-X: delete / ALT-R: rename / ALT-S: pin'
 expect_actions='alt-n,alt-c,alt-x,alt-r,alt-s'
 expect_list="ctrl-f,$expect_actions"
 expect_find="ctrl-l,$expect_actions"
@@ -352,8 +352,15 @@ while true; do
     [ "$lines" -lt 2 ] && continue
 
     newkey=$(head -2 <<< "$out" | tail -1)
-    # Extract filename from the last line, trimming trailing whitespace
-    selection=$(tail -1 <<< "$out")
+    # Selections start on line 3, one per marked note (TAB); everything
+    # but delete acts on the first
+    selection=$(sed -n 3p <<< "$out")
+    if [ "$key" = ctrl-l ]; then
+        marked=$(tail -n +3 <<< "$out")
+    else
+        # find lists a note once per matching line
+        marked=$(tail -n +3 <<< "$out" | cut -d: -f1 | awk '!seen[$0]++')
+    fi
 
     if [ "$key" = ctrl-l ]; then
         file="$selection"
@@ -365,7 +372,10 @@ while true; do
 
     case "$newkey" in
         ctrl-*) key=$newkey ;;
-        alt-x)  [ "$lines" -gt 2 ] && delete_note "$file" ;;
+        # fd 3, as delete_note reads its answer from stdin
+        alt-x)  [ "$lines" -gt 2 ] && while IFS= read -r -u 3 note; do
+                    delete_note "$note"
+                done 3<<< "$marked" ;;
         alt-r)  [ "$lines" -gt 2 ] && rename_note "$file" ;;
         alt-c)  [ "$lines" -gt 2 ] && copy_note "$file" ;;
         alt-n)  [ -n "$query" ] && create_note "$query";;
