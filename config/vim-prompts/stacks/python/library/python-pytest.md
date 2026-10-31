@@ -1,7 +1,6 @@
 ## pytest
 
-For Python code tested with pytest; ignore this rule anywhere else. The
-`testing` rule applies first; this is how it is done in pytest.
+The `testing` rule applies first; this is how it is done in pytest.
 
 - Group tests in classes: tests sharing setup share a class, with the setup in an autouse fixture on it.
 - When several classes need the same setup, extract a base class (like `CommonTest`) and inherit from it.

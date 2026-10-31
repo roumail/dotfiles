@@ -1,5 +1,5 @@
 ---
-context: ["rule:style", "rule:testing", "rule:running-tests", "rule:test-setup"]
+context: ["rule:style", "rule:testing", "rule:running-tests", "rule:test-setup", "rule:python-venv", "rule:python-mine"]
 mode: ask
 ---
 {rules}

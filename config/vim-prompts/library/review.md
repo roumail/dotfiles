@@ -7,7 +7,7 @@ Review as I do: a colleague reading the change, not a linter. Formatting and lin
 - **Names.** Flag names that mislead about what they hold (a variable called `now` that is a day later), and propose a better one.
 - **Prune.** Flag what can go: unused code, duplicates, redundant docstrings (the name says it), type-checker suppressions or annotation changes nobody explains, empty files, unrelated changes.
 - **Application or library.** Read the change as the kind of code it is (the `style` rule and the repository's description). In application code, flag a function called from one place, a parameter no entrypoint passes, and code no entrypoint reaches. In library code, flag a change to the public API that the dependents don't need, or that breaks one.
-- **Tests.** Check them against the `testing` rule (and `pytest`, for Python), and ask:
+- **Tests.** Check them against the `testing` rule (and the rule for the language's test framework, when one is sent), and ask:
   - Does it fail without the change? For the right reason?
   - In application code, does it drive an entrypoint, or call an internal function?
   - Is the assertion exact, so a failure says which value is wrong?

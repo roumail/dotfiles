@@ -1,5 +1,5 @@
 ---
-context: ["rule:review", "rule:style", "rule:comments", "rule:testing", "rule:pytest", comments_file]
+context: ["rule:review", "rule:style", "rule:comments", "rule:testing", comments_file]
 ---
 {base}
 

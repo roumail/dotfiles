@@ -1,5 +1,5 @@
 ---
-context: ["rule:style", "rule:comments", "rule:testing", "rule:pytest", "rule:running-tests", "rule:test-setup"]
+context: ["rule:style", "rule:comments", "rule:testing", "rule:running-tests", "rule:test-setup"]
 mode: agent
 ---
 {rules}
@@ -15,7 +15,7 @@ I am giving you a spec; draft an implementation of it in this worktree.
 - Anything in the spec that isn't code (merging or cherry-picking a branch, deploys) is mine to do: don't do it, and list it under "For me".
 - Read the repository's description and conventions in the rules above, and follow them. Its description says whether this is application or library code, and what the entrypoints are.
 - Write the tests first, as the `testing` rule describes, and see each fail for the right reason, except where another rule, such as `migrations`, says not to write tests. In application code, start from the entrypoint the spec is about, and write the scenario through it. Then write the code until they pass.
-- Run the tests as the `running-tests` and `test-setup` rules say, starting with its question about which virtualenv to use.
+- Run the tests as the `running-tests` and `test-setup` rules say, and as any rule for the language's environment does.
 - Write code as the `style` rule says for this kind of code, and comments only as the `comments` rule allows.
 - Follow the rules for every ask, such as a changelog entry where they ask for one.
 - Finish by saying what I should attack when I review this myself with `/review` (the weakest assumptions, and what the tests don't cover).
