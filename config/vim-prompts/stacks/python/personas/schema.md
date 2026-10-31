@@ -1,5 +1,5 @@
 ---
-context: [file, "rule:database", "rule:migrations", "rule:python-mine"]
+context: [file, "rule:database", "rule:migrations", "rule:python-local"]
 mode: ask
 ---
 {rules}

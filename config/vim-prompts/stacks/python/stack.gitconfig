@@ -1,5 +1,7 @@
 # The python stack: include it from a repo's or a group's config to turn it on
-# (stacks/README.md)
+# (stacks/README.md). local/ holds this machine's python-local.md, unpacked by
+# install.sh from python-local.md.example.
 [vim-prompts]
 	library = ~/.config/vim-prompts/stacks/python/library
 	personas = ~/.config/vim-prompts/stacks/python/personas
+	library = ~/.config/vim-prompts/local

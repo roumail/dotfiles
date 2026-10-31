@@ -93,7 +93,7 @@ that name the library:
 | `library/review.md` | What I look for in a review and how I word comments | as above |
 | `personas/` | `/draft`, `/review`, `/challenge`, `/tests`, `/migrations` | `~/.gitconfig.local`, as above |
 | `stacks/python/` | pytest, the virtualenv, and `/dead-code` and `/schema`; `/draft`, `/review` and `/tests` with them | each Python repo's config ([stacks](../vim-prompts/stacks/README.md)) |
-| `mine/library/` | My own setup for a stack (`python-mine`: the `Sa` alias), sent only where that stack is on | `~/.gitconfig.local`, as above |
+| `local/` | My own setup for a stack (`python-local.md`), unpacked from the stack's example, never committed | the stack's `stack.gitconfig` |
 
 Nothing in `library/` or `personas/` is named in the dotfiles' `.gitconfig`,
 so neither follows you to every machine. A machine names them in
@@ -102,7 +102,6 @@ so neither follows you to every machine. A machine names them in
 ```sh
 git config -f ~/.gitconfig.local --add vim-prompts.library '~/.config/vim-prompts/library'
 git config -f ~/.gitconfig.local --add vim-prompts.personas '~/.config/vim-prompts/personas'
-git config -f ~/.gitconfig.local --add vim-prompts.library '~/.config/vim-prompts/mine/library'
 ```
 
 Name the library rather than copying its files into another one, so there is

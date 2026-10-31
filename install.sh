@@ -124,7 +124,15 @@ install_dotconfig_dirs() {
   mkdir -p "$DOT_CONFIG_DST/wezterm"
   link_tree "$DOT_CONFIG_SRC/wezterm" "$DOT_CONFIG_DST/wezterm"
 
-  # vim-prompts rules, named by git config (config/agents/README.md#rules)
+  # vim-prompts rules, named by git config (config/agents/README.md#rules);
+  # each stack's examples unpacked into local/ first, so they are linked too
+  # (config/vim-prompts/stacks/README.md)
+  local example
+  for example in "$DOT_CONFIG_SRC"/vim-prompts/stacks/*/*.example; do
+    [ -f "$example" ] || continue
+    install_local_file_from_example "$example" \
+      "$DOT_CONFIG_SRC/vim-prompts/local/$(basename "${example%.example}")"
+  done
   mkdir -p "$DOT_CONFIG_DST/vim-prompts"
   link_tree "$DOT_CONFIG_SRC/vim-prompts" "$DOT_CONFIG_DST/vim-prompts"
 

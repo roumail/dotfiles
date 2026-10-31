@@ -7,12 +7,13 @@ in the order git config reads them:
 | --- | --- | --- | --- |
 | base | `../library/`, `../personas/` | How I work in any language: testing, style, review, comments | every repo (`~/.gitconfig.local`) |
 | stack | `stacks/<stack>/` | One ecosystem's way of doing what base says: its test framework, its environment, personas only it can run | per repo or group, by including `stack.gitconfig` |
-| mine | `../mine/library/` | My own setup: shell aliases, paths on my machines | every repo (`~/.gitconfig.local`) |
+| local | `../local/`, never committed | My own setup for a stack: shell aliases, paths on this machine | with the stack: its `stack.gitconfig` names `local/` too |
 | repo | the repo's config | What this repo is, and how to run its tests here | that repo |
 
 Base and stacks are opinionated but never personal: someone else could take
 them as they are. Anything that only makes sense on my machine goes in
-`mine`.
+`local`, as everywhere in these dotfiles (`~/.gitconfig.local`,
+`.config/shell/local/`); not git's `local` scope.
 
 ## Vocabulary
 
@@ -29,12 +30,22 @@ them as they are. Anything that only makes sense on my machine goes in
   | Hook | Supplied by | For |
   | --- | --- | --- |
   | `test-setup` | the repo | the command, services and local tweaks to run its tests |
-  | `<stack>-mine` | mine | my own setup for that stack, sent only where the stack is on |
+  | `<stack>-local` | local | my own setup for that stack, sent only where the stack is on |
 
-  Every persona of a stack takes `<stack>-mine`.
+  Every persona of a stack takes `<stack>-local`.
 - **Replace** a rule or persona by giving a later layer a file of the same
   name: a repo's `python-pytest.md` replaces the stack's in that repo only.
   **Add to** a rule only through a hook; rules have no `{base}`.
+
+## Unpacking a stack
+
+A stack is one folder; everything it needs outside the repo comes from an
+example in it. `install.sh` links the folder into `~/.config/vim-prompts/`
+and copies each `stacks/<stack>/*.example` into `local/` without the
+`.example` (`python-local.md.example` → `local/python-local.md`), unless that
+file is there already. Edit the copy: `local/` is ignored, so it stays on
+this machine. A copy left as the example says nothing worth following, and
+an empty one is not sent.
 
 ## Turning a stack on
 
@@ -56,6 +67,11 @@ show which stack each value comes from.
 
 ## Adding a stack
 
-`stacks/<stack>/` with a `stack.gitconfig` naming its `library/` and
-`personas/`, rules named `<stack>-<topic>`, personas extending base ones with
-`{base}` and taking `<stack>-mine`. Run `install.sh` to link it.
+`stacks/<stack>/` with:
+
+- `stack.gitconfig`, naming its `library/`, its `personas/` and `local/`;
+- `library/`, rules named `<stack>-<topic>`;
+- `personas/`, extending base ones with `{base}`, each taking `<stack>-local`;
+- `<stack>-local.md.example`, the start of the hook's local copy.
+
+Run `install.sh` to unpack it.
