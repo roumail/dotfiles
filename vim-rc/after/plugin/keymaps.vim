@@ -13,6 +13,8 @@ inoremap jq <Esc>:wq<CR>
 """""""""""""""""""
 inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
 imap <c-x><c-l> <plug>(fzf-complete-line)
+" vim-prompts: a persona, #source or flag, in an :AiDraft
+inoremap <expr> <c-x><c-a> fzf#vim#complete({'source': prompts#tokens(), 'prefix': '\S*$'})
 "imap <c-x><c-k> <plug>(fzf-complete-word)
 
 " }}}1

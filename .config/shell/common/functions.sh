@@ -178,7 +178,7 @@ preexec_functions+=(__wezterm_custom_preexec)
 #   ai why is the build slow   the rules and your question
 #   ai /review #changes        a persona instead of /default, a #source
 #   ai @README.md tidy this    files to read, as :Ai takes them
-# aid takes the same and opens the prompt in :AiDraft to write in; :wq sends.
+# aid takes the same and opens it as an :AiDraft, to go on writing the ask; :wq sends.
 # #comments has nothing here: review comments live in a running Vim
 # (:Comment, :CommentsLoad), and this Vim is new. Use :Ai in that Vim.
 # In zsh the rest of the line goes as typed, as in Vim: no quoting, an
