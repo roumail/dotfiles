@@ -28,8 +28,8 @@ Rules and skills for coding agent CLIs (Copilot CLI, Claude Code), set up by
    instructions. Run again, it updates a local file still unedited from an
    older example. It refuses while the dotfiles have uncommitted changes;
    `./install.sh --dirty` installs them anyway, to try a change out.
-3. Add the `includeIf` for the plugins' folder ([Rules](#rules)), and this
-   machine's own rules, if any, the same way.
+3. Name the library and the personas in `~/.gitconfig.local`
+   ([Rules](#rules)).
 4. Choose how far agents may push (see [Push policy](#push-policy)). For a
    machine where they shouldn't push at all:
    ```sh
@@ -86,8 +86,8 @@ that name the library:
 | File | Rules | Applied by |
 | --- | --- | --- |
 | `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
-| `library/comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it |
-| `library/testing.md` | How tests are written, in any language | as above; a persona names it (`/draft`, `/review`, `/tests`) |
+| `library/comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it; a persona names it (`/draft`, `/review`, `/tests`, `/migrations`) |
+| `library/testing.md` | How tests are written, in any language | as above |
 | `library/running-tests.md` | The policy for running tests anywhere | as above |
 | `library/style.md` | How code is structured; library code versus application code | as above |
 | `library/review.md` | What I look for in a review and how I word comments | as above |
@@ -108,23 +108,10 @@ Name the library rather than copying its files into another one, so there is
 one copy to edit. A team's library keeps a `comments.md` of its own only if it
 is meant to differ from this one.
 
-A file of the library can also go with every ask, as a rule:
-
-- **Every repo on the machine:**
-
-  ```sh
-  git config -f ~/.gitconfig.local --add vim-prompts.rules '~/.config/vim-prompts/library/comments.md'
-  ```
-
-- **Only the repos below a folder:** name it in a file of its own, outside
-  the dotfiles, and include that file for the folder. The trailing `/` takes
-  in every repo below it, worktrees included.
-
-  ```sh
-  git config -f ~/.gitconfig-comments vim-prompts.rules '~/.config/vim-prompts/library/comments.md'
-  git config -f ~/.gitconfig.local \
-    'includeIf.gitdir:~/home/2_AREAS/work/vim-plugins/.path' '~/.gitconfig-comments'
-  ```
+Only `git.md` goes with every ask: it holds wherever the agent is, whatever
+the task. How code is written (`style`, `comments`, `testing`) stays in the
+library, sent by the personas that write or review code and by `#rule:`, so
+a plain `:Ai` question gets none of them and a persona gets each once.
 
 `~/.gitconfig.local` is included last, so its rules come after `git.md`, as
 vim-prompts wants the more specific ones. Check what applies in a repo:
