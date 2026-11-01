@@ -276,7 +276,11 @@ function! s:esc_esc() abort
   return bufname() =~# '^!''\=\%(\S*/\)\=\%(claude\|copilot\)\>' ? "\<Esc>\<Esc>" : "\<C-w>N"
 endfunction
 tnoremap <expr> <Esc><Esc> <SID>esc_esc()
-tnoremap <Esc>n <C-w>N
+" Claude's classic renderer leaves its history in Vim's scrollback, which only
+" Terminal-Normal mode shows: the wheel goes there (copilot scrolls itself)
+tnoremap <expr> <ScrollWheelUp> bufname() =~# '^!''\=\%(\S*/\)\=claude\>'
+      \ ? "\<C-w>N3\<C-y>" : "\<ScrollWheelUp>"
+tnoremap <C-w>n <C-w>N
 tnoremap <S-Tab> <C-w>:tabprevious<CR>
 tnoremap <Esc>h <C-w>h
 tnoremap <Esc>j <C-w>j
