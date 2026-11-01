@@ -141,7 +141,8 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 " git {{{1
 """""""""""""""""""
 
-" git-extras is used through its commands (:Diff*, :Branch*, :PRs)
+" fugitive-extras and git-extras are used through their commands (:Diff*,
+" :Branch*, :PRs)
 " vim-review: comment on the line / selection, into the 'Review' quickfix list
 nmap <leader>cc <Plug>(review-comment)
 xmap <leader>cc <Plug>(review-comment)

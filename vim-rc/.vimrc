@@ -96,6 +96,7 @@ Plug 'roumail/glow-preview'
 " The buffer :CommentDraft and :AiDraft write in
 Plug 'roumail/vim-draft'
 Plug 'roumail/vim-review'
+Plug 'roumail/fugitive-extras'
 Plug 'roumail/git-extras'
 Plug 'roumail/vim-prompts'
 " requires dependency installation using npm install -g livedown
