@@ -2,6 +2,6 @@
 # (stacks/README.md). local/ holds this machine's python-local.md, unpacked by
 # install.sh from python-local.md.example.
 [vim-prompts]
-	library = ~/.config/vim-prompts/stacks/python/library
+	task-rules = ~/.config/vim-prompts/stacks/python/task-rules
 	personas = ~/.config/vim-prompts/stacks/python/personas
-	library = ~/.config/vim-prompts/local
+	task-rules = ~/.config/vim-prompts/local

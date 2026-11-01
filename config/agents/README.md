@@ -28,7 +28,7 @@ Rules and skills for coding agent CLIs (Copilot CLI, Claude Code), set up by
    instructions. Run again, it updates a local file still unedited from an
    older example. It refuses while the dotfiles have uncommitted changes;
    `./install.sh --dirty` installs them anyway, to try a change out.
-3. Name the library and the personas in `~/.gitconfig.local`
+3. Name the task rules and the personas in `~/.gitconfig.local`
    ([Rules](#rules)).
 4. Choose how far agents may push (see [Push policy](#push-policy)). For a
    machine where they shouldn't push at all:
@@ -80,37 +80,37 @@ way (`claude`, `copilot`, Copilot in VS Code) gets none of them.
 
 They are kept in `config/vim-prompts/`, which `install.sh` links into
 `~/.config/vim-prompts/`. A file at the top goes with every ask; those in
-`library/` go when an ask names them (`:Ai #rule:comments ...`), on machines
-that name the library:
+`task-rules/` go when an ask names them (`:Ai #rule:comments ...`), on
+machines that name the directory as `vim-prompts.task-rules`:
 
 | File | Rules | Applied by |
 | --- | --- | --- |
 | `git.md` | Pushing, PRs, attribution, landing a branch | `~/.gitconfig` (the dotfiles'), for every repo |
-| `library/comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it; a persona names it (`/draft`, `/review`, `/tests`, `/migrations`) |
-| `library/testing.md` | How tests are written, in any language | as above |
-| `library/running-tests.md` | The policy for running tests anywhere | as above |
-| `library/style.md` | How code is structured; library code versus application code | as above |
-| `library/review.md` | What I look for in a review and how I word comments | as above |
+| `task-rules/comments.md` | When a comment earns its place | `~/.gitconfig.local`, on each machine that wants it; a persona names it (`/draft`, `/review`, `/tests`, `/migrations`) |
+| `task-rules/testing.md` | How tests are written, in any language | as above |
+| `task-rules/running-tests.md` | The policy for running tests anywhere | as above |
+| `task-rules/style.md` | How code is structured; library code versus application code | as above |
+| `task-rules/review.md` | What I look for in a review and how I word comments | as above |
 | `personas/` | `/draft`, `/review`, `/challenge`, `/tests`, `/migrations` | `~/.gitconfig.local`, as above |
 | `stacks/python/` | pytest, the virtualenv, and `/dead-code` and `/schema`; `/draft`, `/review` and `/tests` with them | each Python repo's config ([stacks](../vim-prompts/stacks/README.md)) |
 | `local/` | My own setup for a stack (`python-local.md`), unpacked from the stack's example, never committed | the stack's `stack.gitconfig` |
 
-Nothing in `library/` or `personas/` is named in the dotfiles' `.gitconfig`,
+Nothing in `task-rules/` or `personas/` is named in the dotfiles' `.gitconfig`,
 so neither follows you to every machine. A machine names them in
 `~/.gitconfig.local`:
 
 ```sh
-git config -f ~/.gitconfig.local --add vim-prompts.library '~/.config/vim-prompts/library'
+git config -f ~/.gitconfig.local --add vim-prompts.task-rules '~/.config/vim-prompts/task-rules'
 git config -f ~/.gitconfig.local --add vim-prompts.personas '~/.config/vim-prompts/personas'
 ```
 
-Name the library rather than copying its files into another one, so there is
-one copy to edit. A team's library keeps a `comments.md` of its own only if it
-is meant to differ from this one.
+Name the directory rather than copying its files into another one, so there
+is one copy to edit. A team's task rules keep a `comments.md` of their own
+only if it is meant to differ from this one.
 
 Only `git.md` goes with every ask: it holds wherever the agent is, whatever
 the task. How code is written (`style`, `comments`, `testing`) stays in the
-library, sent by the personas that write or review code and by `#rule:`, so
+task rules, sent by the personas that write or review code and by `#rule:`, so
 a plain `:Ai` question gets none of them and a persona gets each once.
 
 `~/.gitconfig.local` is included last, so its rules come after `git.md`, as

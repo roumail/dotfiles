@@ -5,7 +5,7 @@ in the order git config reads them:
 
 | Layer | Where | What goes in it | Turned on |
 | --- | --- | --- | --- |
-| base | `../library/`, `../personas/` | How I work in any language: testing, style, review, comments | every repo (`~/.gitconfig.local`) |
+| base | `../task-rules/`, `../personas/` | How I work in any language: testing, style, review, comments | every repo (`~/.gitconfig.local`) |
 | stack | `stacks/<stack>/` | One ecosystem's way of doing what base says: its test framework, its environment, personas only it can run | per repo or group, by including `stack.gitconfig` |
 | local | `../local/`, never committed | My own setup for a stack: shell aliases, paths on this machine | with the stack: its `stack.gitconfig` names `local/` too |
 | repo | the repo's config | What this repo is, and how to run its tests here | that repo |
@@ -25,7 +25,7 @@ them as they are. Anything that only makes sense on my machine goes in
   A persona only one stack can run (`dead-code`, `schema`) lives in that
   stack whole.
 - **Hooks** are rules a layer asks for but never ships. A persona's rule that
-  no library has is left out, so a missing hook costs nothing:
+  no task-rules directory has is left out, so a missing hook costs nothing:
 
   | Hook | Supplied by | For |
   | --- | --- | --- |
@@ -69,8 +69,8 @@ show which stack each value comes from.
 
 `stacks/<stack>/` with:
 
-- `stack.gitconfig`, naming its `library/`, its `personas/` and `local/`;
-- `library/`, rules named `<stack>-<topic>`;
+- `stack.gitconfig`, naming its `task-rules/`, its `personas/` and `local/`;
+- `task-rules/`, rules named `<stack>-<topic>`;
 - `personas/`, extending base ones with `{base}`, each taking `<stack>-local`;
 - `<stack>-local.md.example`, the start of the hook's local copy.
 
