@@ -34,9 +34,9 @@ fzf_git_log() {
     --no-sort \
     --multi \
     --prompt 'Log(stat)> ' \
-    --header "enter/ctrl-o: Diff| ctrl-r: log/rebase order| alt-r: refresh| ctrl-t: stat/patch| ctrl-y: copy hash" \
+    --header "enter/ctrl-o: Diff| ctrl-r: log/rebase order| alt-r: refresh| ctrl-t: stat/patch| ctrl-y: copy hashes a,b" \
     --preview 'git show --stat --oneline --color=always {1}' \
-    --bind "ctrl-y:execute-silent(echo {+1} | tr ' ' '\n' | $copy_cmd)+abort" \
+    --bind "ctrl-y:execute-silent(printf %s \"\$(echo {+1} | tr ' ' ,)\" | $copy_cmd)+abort" \
     --bind 'ctrl-t:transform:
       [[ $FZF_PROMPT =~ stat ]] &&
         echo "change-prompt(${FZF_PROMPT/stat/patch})+change-preview(git show -p --color=always \{1})+refresh-preview" ||
