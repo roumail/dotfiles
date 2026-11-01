@@ -1,5 +1,5 @@
 ---
-context: [file, "rule:style", "rule:comments", "rule:migrations"]
+context: [file, "rule:style", "rule:comments", "rule:migrations", "rule:database"]
 ---
 {rules}
 
