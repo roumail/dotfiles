@@ -1,8 +1,14 @@
 # bindkey '^G' list-expand prevents binding to work on mac, hence removing this here
 bindkey -r '^G'
 
-# TAB cycles through completions (menu-complete)
-bindkey '^I'    menu-complete
+# TAB cycles through completions (menu-complete); fzf's widget takes `**<TAB>`
+# and hands every other TAB to menu-complete
+if zle -l fzf-completion; then
+  fzf_default_completion=menu-complete
+  bindkey '^I'  fzf-completion
+else
+  bindkey '^I'  menu-complete
+fi
 bindkey '^[[Z'  reverse-menu-complete
 # Arrow keys: history prefix search (history-search-backward/forward)
 bindkey '^[[A'  history-beginning-search-backward
