@@ -128,8 +128,8 @@ nmap <leader>r/ <Plug>(fzf-utils-grep)
 nnoremap <leader>r: :Grep
 
 " The project's code / tests, in its language (gw / gW come with fzf-utils)
-nnoremap <silent> <leader>rp <Cmd>call fzf_utils#rg#scope#code()<CR>
-nnoremap <silent> <leader>rt <Cmd>call fzf_utils#rg#scope#tests()<CR>
+nnoremap <silent> <leader>rp <Cmd>call fzf_utils#grep_code()<CR>
+nnoremap <silent> <leader>rt <Cmd>call fzf_utils#grep_tests()<CR>
 " Scoped searches (:GrepScope)
 nmap <leader>rs <Plug>(fzf-utils-grep-scope)
 " Word under cursor / selection, with word boundaries
