@@ -153,6 +153,13 @@ xmap <leader>cc <Plug>(review-comment)
 " ... in an editor split instead; picks up what <Esc> left at the prompt
 nmap <leader>cd <Plug>(review-comment-draft)
 xmap <leader>cd <Plug>(review-comment-draft)
+" gh-extras: the same keys reply to the thread under the cursor in a :Thread /
+" :Threads list (:Reply / :ReplyDraft, which a is too)
+augroup gh_extras_reply_keys
+  autocmd!
+  autocmd BufEnter gh-extras://thread* nmap <buffer> <leader>cc <Plug>(gh-extras-reply)
+  autocmd BufEnter gh-extras://thread* nmap <buffer> <leader>cd <Plug>(gh-extras-reply-draft)
+augroup END
 
 " }}}1
 
