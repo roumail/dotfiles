@@ -162,15 +162,22 @@ augroup gh_extras_reply_keys
 augroup END
 " vim-prompts: ... and to the agent's comment under the cursor in the
 " :AiComments list, or in a comment's thread (:AiReply / :AiReplyDraft). Every
-" quickfix window is qf, so the others (Review's) keep vim-review's
+" quickfix window is qf, so the others (Review's) keep vim-review's. Capitals
+" send to a session (:AiReply! / :AiReplyDraft!) instead of a one-off
 augroup prompts_reply_keys
   autocmd!
   autocmd FileType qf nmap <buffer><expr> <leader>cc
         \ prompts#comments#in_list() ? '<Plug>(prompts-reply)' : '<Plug>(review-comment)'
   autocmd FileType qf nmap <buffer><expr> <leader>cd
         \ prompts#comments#in_list() ? '<Plug>(prompts-reply-draft)' : '<Plug>(review-comment-draft)'
+  autocmd FileType qf nmap <buffer><expr> <leader>cC
+        \ prompts#comments#in_list() ? '<Plug>(prompts-reply-session)' : ''
+  autocmd FileType qf nmap <buffer><expr> <leader>cD
+        \ prompts#comments#in_list() ? '<Plug>(prompts-reply-draft-session)' : ''
   autocmd BufEnter ai-thread://* nmap <buffer> <leader>cc <Plug>(prompts-reply)
   autocmd BufEnter ai-thread://* nmap <buffer> <leader>cd <Plug>(prompts-reply-draft)
+  autocmd BufEnter ai-thread://* nmap <buffer> <leader>cC <Plug>(prompts-reply-session)
+  autocmd BufEnter ai-thread://* nmap <buffer> <leader>cD <Plug>(prompts-reply-draft-session)
 augroup END
 
 " }}}1
