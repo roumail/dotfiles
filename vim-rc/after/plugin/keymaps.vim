@@ -154,11 +154,23 @@ xmap <leader>cc <Plug>(review-comment)
 nmap <leader>cd <Plug>(review-comment-draft)
 xmap <leader>cd <Plug>(review-comment-draft)
 " gh-extras: the same keys reply to the thread under the cursor in a :Thread /
-" :Threads list (:Reply / :ReplyDraft, which a is too)
+" :Threads list (:Reply / :ReplyDraft)
 augroup gh_extras_reply_keys
   autocmd!
   autocmd BufEnter gh-extras://thread* nmap <buffer> <leader>cc <Plug>(gh-extras-reply)
   autocmd BufEnter gh-extras://thread* nmap <buffer> <leader>cd <Plug>(gh-extras-reply-draft)
+augroup END
+" vim-prompts: ... and to the agent's comment under the cursor in the
+" :AiComments list, or in a comment's thread (:AiReply / :AiReplyDraft). Every
+" quickfix window is qf, so the others (Review's) keep vim-review's
+augroup prompts_reply_keys
+  autocmd!
+  autocmd FileType qf nmap <buffer><expr> <leader>cc
+        \ prompts#comments#in_list() ? '<Plug>(prompts-reply)' : '<Plug>(review-comment)'
+  autocmd FileType qf nmap <buffer><expr> <leader>cd
+        \ prompts#comments#in_list() ? '<Plug>(prompts-reply-draft)' : '<Plug>(review-comment-draft)'
+  autocmd BufEnter ai-thread://* nmap <buffer> <leader>cc <Plug>(prompts-reply)
+  autocmd BufEnter ai-thread://* nmap <buffer> <leader>cd <Plug>(prompts-reply-draft)
 augroup END
 
 " }}}1
