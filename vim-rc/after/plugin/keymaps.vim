@@ -48,6 +48,13 @@ nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied!"<CR>
 nnoremap <leader>F :let @+ = expand('%:p')<CR>:echo "Absolute path copied!"<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
 
+" Move the window border right/left/down/up, from whichever window, on the
+" <C-w> resize keys (autoload/window_border.vim)
+nnoremap <silent> <C-w>> <Cmd>call window_border#move('r')<CR>
+nnoremap <silent> <C-w>< <Cmd>call window_border#move('l')<CR>
+nnoremap <silent> <C-w>+ <Cmd>call window_border#move('d')<CR>
+nnoremap <silent> <C-w>- <Cmd>call window_border#move('u')<CR>
+
 " open notes in a split
 nnoremap <leader>,n <Cmd>vertical term ++kill=term notes.sh<CR>
 " nnoremap <leader>,n <Cmd>vertical term ++kill=term notes.sh $NOTE_DIR<CR>
