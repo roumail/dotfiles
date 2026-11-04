@@ -11,7 +11,9 @@ inoremap jq <Esc>:wq<CR>
 """""""""""""""""""
 " fzf {{{1
 """""""""""""""""""
-inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files')
+" The file name before the cursor as \f reads 'isfname': fzf.vim's own reading
+" takes its @ (letters) for a literal @, so @file would search for @file
+inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files', fzf#wrap({'prefix': '\f*$'}))
 imap <c-x><c-l> <plug>(fzf-complete-line)
 " vim-prompts: personas, #sources and flags (<Tab> picks several), in an :AiDraft
 inoremap <expr> <c-x><c-a> fzf#vim#complete(prompts#fzf())
