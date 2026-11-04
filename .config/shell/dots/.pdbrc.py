@@ -1,7 +1,19 @@
 import ast
 import inspect
-import rich
-from rich.console import Console
+import sys
+
+# pdbpp swallows errors from this file, so a missing package would silently
+# leave you with a stock prompt and none of the commands below.
+try:
+    import rich
+    from rich.console import Console
+except ImportError as _e:
+    print(
+        f"\n!!! ~/.pdbrc.py NOT loaded: {_e}. "
+        "(`uv pip sync` removes packages missing from the requirements files.)\n",
+        file=sys.stderr,
+    )
+    raise
 from pdb import DefaultConfig, Pdb
 from pprint import pprint
 from functools import lru_cache
