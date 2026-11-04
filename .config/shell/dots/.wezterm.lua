@@ -241,8 +241,8 @@ local my_keys = {
     action = wezterm.action.QuitApplication,
   },
   {
-    key = "r",
-    mods = "LEADER",
+    key = "R",
+    mods = "LEADER|SHIFT",
     action = wezterm.action.ReloadConfiguration,
   },
   {
@@ -295,8 +295,8 @@ local my_keys = {
   { key = "<", mods = "LEADER|SHIFT", action = wezterm.action.MoveTabRelative(-1) },
   { key = ">", mods = "LEADER|SHIFT", action = wezterm.action.MoveTabRelative(1) },
   {
-    key = 'Z',
-    mods = 'LEADER|SHIFT',
+    key = 'r',
+    mods = 'LEADER',
     -- Activate the `resize_panes` keytable
     action = wezterm.action.ActivateKeyTable {
       name = 'resize_panes',
@@ -317,6 +317,9 @@ config.key_tables.resize_panes = {
     helpers.resize_pane('k', 'Up'),
     helpers.resize_pane('h', 'Left'),
     helpers.resize_pane('l', 'Right'),
+    -- Same keys as the Vim <C-w>< / <C-w>> window-border maps
+    helpers.resize_pane('<', 'Left', 'SHIFT'),
+    helpers.resize_pane('>', 'Right', 'SHIFT'),
 }
 
 local function make_typed_zone(direction, zone_type, zone_key, pair)

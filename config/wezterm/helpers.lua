@@ -105,9 +105,10 @@ function M.processed_name(tab)
   })
 end
 
-function M.resize_pane(key, direction)
+function M.resize_pane(key, direction, mods)
   return {
     key = key,
+    mods = mods,
     action = wezterm.action.AdjustPaneSize { direction, 3 }
   }
 end
