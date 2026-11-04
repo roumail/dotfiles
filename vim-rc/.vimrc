@@ -88,12 +88,12 @@ Plug 'roumail/fzf-utils'
 Plug 'roumail/project-detect'
 Plug 'roumail/dispatch-extras'
 Plug 'roumail/pytest.vim'
-Plug 'roumail/scratch.vim'
 Plug 'roumail/buffer-tools'
 Plug 'roumail/qf-tools'
 Plug 'roumail/text-tools'
 Plug 'roumail/glow-preview'
-" The buffer :CommentDraft and :AiDraft write in
+" Drafts (:CommentDraft, :AiDraft, replies) and scratches (:Scratch); :DraftSave
+" writes either to a file
 Plug 'roumail/vim-draft'
 Plug 'roumail/vim-review'
 Plug 'roumail/fugitive-extras'
