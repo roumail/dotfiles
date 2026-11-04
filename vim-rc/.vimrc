@@ -95,6 +95,9 @@ Plug 'roumail/glow-preview'
 " Drafts (:CommentDraft, :AiDraft, replies) and scratches (:Scratch); :DraftSave
 " writes either to a file
 Plug 'roumail/vim-draft'
+" The lists at the bottom (:PRs, :Threads, :Compares, :AiCommentsList), all
+" with the same keys: / filters, r refreshes, q closes
+Plug 'roumail/vim-lists'
 " The format review comments are saved in (fugitive-extras' :CommentsSave, and
 " the agent's #agent_comments)
 Plug 'roumail/vim-review'
