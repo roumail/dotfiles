@@ -13,7 +13,6 @@ setlocal syntax=
 " Coming from instant markdown, which uses a browser
 ":InstantMarkdownPreview to start and :InstantMarkdownStop
 let g:instant_markdown_autostart = 0
-let maplocalleader = "_"
 
 nmap <buffer> <localleader>p <Plug>(glow-preview)
 nmap <buffer> <localleader>P <Plug>(glow-preview-toggle-live)

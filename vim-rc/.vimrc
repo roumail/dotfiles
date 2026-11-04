@@ -110,8 +110,10 @@ if exists(':packadd')
   silent! packadd netrw
 endif
 
-" Leader key
+" Leader keys. The local leader starts the keys of a kind of buffer (test
+" files and pytest.vim's test lists, markdown), so it is the same in all
 let mapleader = " "
+let maplocalleader = "_"
 
 " fzf's Vim plugin comes from Plug 'junegunn/fzf' above. README-VIM offers
 " Homebrew's copy as an alternative, not an addition: added here it sits after

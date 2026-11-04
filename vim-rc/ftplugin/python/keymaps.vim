@@ -3,9 +3,6 @@ if exists('b:loaded_python_keymaps_ftplugin')
 endif
 let b:loaded_python_keymaps_ftplugin = 1
 
-" Used for test mappings
-let maplocalleader = "_"
-
 " dispatch-extras
 " rerun last dispatch command (run) / start command (debug)
 nmap <buffer> <localleader>rd <Plug>(dispatch-extras-repeat-dispatch)
