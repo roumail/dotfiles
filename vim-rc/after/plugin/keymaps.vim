@@ -154,12 +154,13 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 
 " fugitive-extras and gh-extras are used through their commands (:Diff*,
 " :Branch*, :PRs)
-" vim-review: comment on the line / selection, into the 'Review' quickfix list
-nmap <leader>cc <Plug>(review-comment)
-xmap <leader>cc <Plug>(review-comment)
+" fugitive-extras: comment on the line / selection, into the 'Review' quickfix
+" list
+nmap <leader>cc <Plug>(fugitive-extras-comment)
+xmap <leader>cc <Plug>(fugitive-extras-comment)
 " ... in an editor split instead; picks up what <Esc> left at the prompt
-nmap <leader>cd <Plug>(review-comment-draft)
-xmap <leader>cd <Plug>(review-comment-draft)
+nmap <leader>cd <Plug>(fugitive-extras-comment-draft)
+xmap <leader>cd <Plug>(fugitive-extras-comment-draft)
 " gh-extras: the same keys reply to the thread under the cursor in a :Thread /
 " :Threads list (:Reply / :ReplyDraft)
 augroup gh_extras_reply_keys
@@ -169,14 +170,14 @@ augroup gh_extras_reply_keys
 augroup END
 " vim-prompts: ... and to the agent's comment under the cursor in the
 " :AiComments list, or in a comment's thread (:AiReply / :AiReplyDraft). Every
-" quickfix window is qf, so the others (Review's) keep vim-review's. Capitals
+" quickfix window is qf, so the others (Review's) keep fugitive-extras'. Capitals
 " send to a session (:AiReply! / :AiReplyDraft!) instead of a one-off
 augroup prompts_reply_keys
   autocmd!
   autocmd FileType qf nmap <buffer><expr> <leader>cc
-        \ prompts#comments#in_list() ? '<Plug>(prompts-reply)' : '<Plug>(review-comment)'
+        \ prompts#comments#in_list() ? '<Plug>(prompts-reply)' : '<Plug>(fugitive-extras-comment)'
   autocmd FileType qf nmap <buffer><expr> <leader>cd
-        \ prompts#comments#in_list() ? '<Plug>(prompts-reply-draft)' : '<Plug>(review-comment-draft)'
+        \ prompts#comments#in_list() ? '<Plug>(prompts-reply-draft)' : '<Plug>(fugitive-extras-comment-draft)'
   autocmd FileType qf nmap <buffer><expr> <leader>cC
         \ prompts#comments#in_list() ? '<Plug>(prompts-reply-session)' : ''
   autocmd FileType qf nmap <buffer><expr> <leader>cD
