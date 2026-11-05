@@ -14,8 +14,7 @@ DOT_CONFIG_SRC="$DOTFILES_DIR/config"
 DOT_CONFIG_DST="$HOME/.config"
 SHELL_CONFIG_DEST="$DOT_CONFIG_DST/shell"
 USER_SHELL=$(basename "$SHELL")
-PROJECTS_DIR="$HOME/projects"
-EVERYTHING_FZF_DIR="$PROJECTS_DIR/everything.fzf"
+EVERYTHING_FZF_DIR="$HOME/.local/share/everything.fzf"
 
 # Links point at the working tree and copies are taken from it, so what is
 # installed is what is committed; --dirty installs uncommitted changes too
@@ -275,7 +274,7 @@ link_file "$VIM_CONFIG_SRC/.vimrc" "$HOME/.vimrc"
 # Add fzf helpers
 echo ""
 echo "Setting up everything.fzf..."
-mkdir -p "$PROJECTS_DIR"
+mkdir -p "$(dirname "$EVERYTHING_FZF_DIR")"
 if [ ! -d "$EVERYTHING_FZF_DIR/.git" ]; then
   git clone https://github.com/roumail/everything.fzf "$EVERYTHING_FZF_DIR"
 else
