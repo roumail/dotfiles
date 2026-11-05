@@ -90,6 +90,9 @@ Plug 'roumail/buffer-tools'
 Plug 'roumail/qf-tools'
 Plug 'roumail/text-tools'
 Plug 'roumail/glow-preview'
+" Where plugins work and keep their files (saved comments, prompts, saved
+" lists), per repository
+Plug 'roumail/vim-place'
 " Drafts (:CommentDraft, :AiDraft, replies) and scratches (:Scratch); :DraftSave
 " writes either to a file
 Plug 'roumail/vim-draft'
