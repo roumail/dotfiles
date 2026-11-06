@@ -11,14 +11,13 @@ inoremap jq <Esc>:wq<CR>
 """""""""""""""""""
 " fzf {{{1
 """""""""""""""""""
-" The file name before the cursor as \f reads 'isfname': fzf.vim's own reading
-" takes its @ (letters) for a literal @, so @file would search for @file
-inoremap <expr> <c-x><c-f> fzf#vim#complete#path('rg --files', fzf#wrap({'prefix': '\f*$'}))
-imap <c-x><c-l> <plug>(fzf-complete-line)
+" fzf-utils: Vim's own <c-x><c-f> / <c-x><c-l> in the command-line window (q:)
+imap <c-x><c-f> <Plug>(fzf-utils-complete-path)
+imap <c-x><c-l> <Plug>(fzf-utils-complete-line)
 " vim-prompts: personas, #sources and flags (<Tab> picks several), in an :AiDraft
-inoremap <expr> <c-x><c-a> fzf#vim#complete(prompts#fzf())
+inoremap <expr> <c-x><c-a> fzf_utils#complete#with('prompts#fzf')
 " vim-prompts: #commits:<hash>,<hash> from the log, in an :AiDraft
-inoremap <expr> <c-x><c-g> fzf#vim#complete(prompts#sources#commits#fzf())
+inoremap <expr> <c-x><c-g> fzf_utils#complete#with('prompts#sources#commits#fzf')
 "imap <c-x><c-k> <plug>(fzf-complete-word)
 
 " }}}1
