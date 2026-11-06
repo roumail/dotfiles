@@ -127,23 +127,31 @@ nnoremap <leader>ob <Cmd>Buffers<CR>
 " Browse search history (populated by live grep queries too)
 nnoremap <silent> <leader>rh <Cmd>History/<CR>
 
-" Live grep (fzf-utils)
-nmap <leader>rr <Plug>(fzf-utils-grep-replay)
-" Fuzzy search scoped to the current buffer's directory
-nmap <leader>r. <Plug>(fzf-utils-grep-dir)
-" Line search from project root directory
+" Live grep (fzf-utils): <leader>r, then where to search. Lowercase: type the
+" query. Uppercase: the word under the cursor / the selection, with word
+" boundaries
+" From the working directory
 nmap <leader>r/ <Plug>(fzf-utils-grep)
+nmap <leader>r? <Plug>(fzf-utils-grep-word)
+xmap <leader>r? <Plug>(fzf-utils-grep-word)
+" The project's code, in its language (project-detect)
+nmap <leader>rp <Plug>(fzf-utils-grep-code)
+nmap <leader>rP <Plug>(fzf-utils-grep-code-word)
+xmap <leader>rP <Plug>(fzf-utils-grep-code-word)
+" The project's tests, in its language
+nmap <leader>rt <Plug>(fzf-utils-grep-tests)
+nmap <leader>rT <Plug>(fzf-utils-grep-tests-word)
+xmap <leader>rT <Plug>(fzf-utils-grep-tests-word)
+" Pick a scope (:GrepScope)
+nmap <leader>rs <Plug>(fzf-utils-grep-scope)
+nmap <leader>rS <Plug>(fzf-utils-grep-scope-word)
+xmap <leader>rS <Plug>(fzf-utils-grep-scope-word)
+" The current buffer's directory
+nmap <leader>r. <Plug>(fzf-utils-grep-dir)
+" Replay the last live grep
+nmap <leader>rr <Plug>(fzf-utils-grep-replay)
 " Prefilled to type pattern/scope
 nnoremap <leader>r: :Grep
-
-" The project's code / tests, in its language (gw / gW come with fzf-utils)
-nnoremap <silent> <leader>rp <Cmd>call fzf_utils#grep_code()<CR>
-nnoremap <silent> <leader>rt <Cmd>call fzf_utils#grep_tests()<CR>
-" Scoped searches (:GrepScope)
-nmap <leader>rs <Plug>(fzf-utils-grep-scope)
-" Word under cursor / selection, with word boundaries
-nmap <leader>rw <Plug>(fzf-utils-grep-scope-word)
-xmap <leader>rw <Plug>(fzf-utils-grep-scope-word)
 
 " Mapping selecting mappings
 nmap <leader><tab> <plug>(fzf-maps-n)
