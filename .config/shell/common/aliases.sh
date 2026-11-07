@@ -24,6 +24,25 @@ if command -v notes.sh >/dev/null 2>&1; then
     alias n='notes.sh'
 fi
 
+# dj [duration [label]] -> today's daily journal, $NOTE_DIR/journal/YYYY-MM-DD.md,
+# in vim with Goyo. In wezterm it also pins the tab and starts a timer
+# (default "5m journal"); see DJ_SESSION in .wezterm.lua
+dj() {
+    local dir="${NOTE_DIR:?dj: NOTE_DIR not set}/journal"
+    local file
+    file="$dir/$(date +%F).md"
+    command mkdir -p "$dir" || return
+    [ -e "$file" ] || printf '# %s\n\n' "$(date '+%A %d %B %Y')" > "$file"
+    local wez=
+    if [ -n "${WEZTERM_PANE-}" ] && command -v __wezterm_set_user_var >/dev/null 2>&1; then
+        wez=1
+        __wezterm_set_user_var DJ_SESSION "${*:-5m journal}"
+    fi
+    vim +'normal! G' +Goyo "$file"
+    [ -n "$wez" ] && __wezterm_set_user_var DJ_SESSION ""
+    return 0
+}
+
 if command -v aider >/dev/null 2>&1; then
     alias ad='aider --chat-mode ask'
     alias AD='aider --chat-mode architect'
