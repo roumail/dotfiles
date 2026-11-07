@@ -19,20 +19,21 @@ them as they are. Anything that only makes sense on my machine goes in
 
 - **Stack rules are named `<stack>-<topic>`** (`python-pytest`,
   `python-venv`), so two stacks never hide each other's rules and
-  `#rule:<stack>-<Tab>` lists one stack's.
+  `+<stack>-<Tab>` lists one stack's.
 - **A stack extends a base persona** with a persona of the same name whose
   template is `{base}`, adding its rules to `context` (`personas/draft.md`).
   A persona only one stack can run (`dead-code`, `schema`) lives in that
   stack whole.
-- **Hooks** are rules a layer asks for but never ships. A persona's rule that
-  no task-rules directory has is left out, so a missing hook costs nothing:
+- **Hooks** are rules a layer asks for but never ships. A persona marks each
+  with `?` (`+test-setup?`), so where no task-rules directory has it, it is
+  left out and costs nothing; any other rule that is missing refuses the ask:
 
   | Hook | Supplied by | For |
   | --- | --- | --- |
   | `test-setup` | the repo | the command, services and local tweaks to run its tests |
   | `<stack>-local` | local | my own setup for that stack, sent only where the stack is on |
 
-  Every persona of a stack takes `<stack>-local`.
+  Every persona of a stack takes `+<stack>-local?`.
 - **Replace** a rule or persona by giving a later layer a file of the same
   name: a repo's `python-pytest.md` replaces the stack's in that repo only.
   **Add to** a rule only through a hook; rules have no `{base}`.
@@ -71,7 +72,7 @@ show which stack each value comes from.
 
 - `stack.gitconfig`, naming its `task-rules/`, its `personas/` and `local/`;
 - `task-rules/`, rules named `<stack>-<topic>`;
-- `personas/`, extending base ones with `{base}`, each taking `<stack>-local`;
+- `personas/`, extending base ones with `{base}`, each taking `+<stack>-local?`;
 - `<stack>-local.md.example`, the start of the hook's local copy.
 
 Run `install.sh` to unpack it.

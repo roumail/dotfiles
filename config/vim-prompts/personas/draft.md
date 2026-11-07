@@ -1,5 +1,5 @@
 ---
-context: ["rule:style", "rule:comments", "rule:testing", "rule:running-tests", "rule:test-setup"]
+context: [+style, +comments, +testing, +running-tests, +test-setup?]
 mode: agent
 ---
 {rules}
