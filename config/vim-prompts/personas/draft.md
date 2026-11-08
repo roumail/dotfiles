@@ -18,7 +18,7 @@ I am giving you a spec; draft an implementation of it in this worktree.
 - Run the tests as the `running-tests` and `test-setup` rules say, and as any rule for the language's environment does.
 - Write code as the `style` rule says for this kind of code, and comments only as the `comments` rule allows.
 - Follow the rules for every ask, such as a changelog entry where they ask for one.
-- Finish by saying what I should attack when I review this myself with `/review` (the weakest assumptions, and what the tests don't cover).
+- End with what you ran and its result, then "Not built" and "For me", leaving out any that are empty. Nothing else: no summary, no review notes, no open questions.
 - Leave the changes uncommitted. If I ask you to commit, commit as the git rules say: only the files you wrote for the change, by name, with local test-setup tweaks left out.
 
 {query}
