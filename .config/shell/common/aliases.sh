@@ -51,7 +51,7 @@ fi
 
 # md notes.md -> read rendered markdown in a pager (same as <localleader>p in vim, without opening vim)
 if command -v glow >/dev/null 2>&1; then
-    alias md='glow -p'
+    alias md='PAGER="less -rc~" glow -p -w "$COLUMNS"'
 fi
 
 # md2pdf notes.md [extra pandoc args] -> notes.pdf (needs: brew install pandoc, plus a PDF engine e.g. brew install --cask basictex)
