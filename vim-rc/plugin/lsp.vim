@@ -47,7 +47,7 @@ let g:lsp_settings = {
 \     'workspace_config': {
 \       'ty': {
 \         'diagnosticMode': 'workspace',
-\         'configurationFile': expand('~/.config/ty.toml'),
+\         'configurationFile': expand('~/.config/ty/ty.toml'),
 \         'showSyntaxErrors': v:true,
 \         'inlayHints': {
 \           'variableTypes': v:true,

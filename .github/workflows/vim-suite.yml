@@ -20,14 +20,16 @@ jobs:
         with:
           fetch-depth: 0
       # What vim-suite reads: the Vim config, chkpyt.sh (pytest.vim's runs),
-      # .pdbrc.py (pdb in Vim's terminal), and this workflow
+      # .pdbrc.py (pdb in Vim's terminal), the starship config (the smoke
+      # test's prompt), and this workflow
       - id: diff
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
           if git diff --quiet "$BASE...$HEAD" -- vim-rc .config/shell/bin/chkpyt.sh \
-              .config/shell/dots/.pdbrc.py .github/workflows/vim-suite.yml; then
+              .config/shell/dots/.pdbrc.py config/starship \
+              .github/workflows/vim-suite.yml; then
             echo vim=false >>"$GITHUB_OUTPUT"
           else
             echo vim=true >>"$GITHUB_OUTPUT"
