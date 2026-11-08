@@ -8,9 +8,10 @@
     `HEAD:main`, `--all`, force pushes).
   - `main`: pushing main is allowed too, still only when I ask.
   Never change `agents.push` yourself.
-- Never open a pull request: no `gh pr create`, no `gh api` calls that create
-  one, no links or commands that open one in the browser. A pushed branch is
-  as far as you go; whether it becomes a PR is mine to decide.
+- Open a pull request when I ask, from a pushed branch to the default branch.
+  Asking for a PR counts as asking to push its branch, within what
+  `agents.push` allows. Merging is mine: no `gh pr merge`, no `gh api` calls
+  that merge one.
 - No attribution in commits: no `Co-authored-by:` trailers, no "Generated
   with" lines, no mention of an AI or agent in commit messages.
 - Getting a branch onto main is my call too: use the finish-branch skill.
