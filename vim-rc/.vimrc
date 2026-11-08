@@ -82,30 +82,30 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/fzf.vim'
 " fzf-utils (:FdFiles, :Grep, :RgRaw) adds commands under its own names and
 " redefines none of fzf.vim's, so its order doesn't matter.
-Plug 'roumail/fzf-utils'
-Plug 'roumail/project-detect'
-Plug 'roumail/dispatch-extras'
-Plug 'roumail/pytest.vim'
+Plug 'vimoured/fzf-utils'
+Plug 'vimoured/project-detect'
+Plug 'vimoured/dispatch-extras'
+Plug 'vimoured/pytest.vim'
 Plug 'vimoured/buffer-tools'
-Plug 'roumail/qf-tools'
-Plug 'roumail/text-tools'
-Plug 'roumail/glow-preview'
+Plug 'vimoured/qf-tools'
+Plug 'vimoured/text-tools'
+Plug 'vimoured/glow-preview'
 " Where plugins work and keep their files (saved comments, prompts, saved
 " lists), per repository
-Plug 'roumail/vim-place'
+Plug 'vimoured/vim-place'
 " Drafts (:CommentDraft, :AiDraft, replies) and scratches (:Scratch); :DraftSave
 " writes either to a file
-Plug 'roumail/vim-draft'
+Plug 'vimoured/vim-draft'
 " The lists at the bottom (:PRs, :Threads, :Compares, :BranchCommits,
 " :AiCommentsList), all with the same keys: dd removes, / filters, r
 " refreshes, q closes
-Plug 'roumail/vim-lists'
+Plug 'vimoured/vim-lists'
 " The format review comments are saved in (fugitive-extras' :CommentsSave, and
 " the agent's #agent_comments)
-Plug 'roumail/vim-review'
-Plug 'roumail/fugitive-extras'
-Plug 'roumail/gh-extras'
-Plug 'roumail/vim-prompts'
+Plug 'vimoured/vim-review'
+Plug 'vimoured/fugitive-extras'
+Plug 'vimoured/gh-extras'
+Plug 'vimoured/vim-prompts'
 " requires dependency installation using npm install -g livedown
 " Plug 'shime/vim-livedown'
 " Plug 'drewtempelmeyer/palenight.vim'

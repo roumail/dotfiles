@@ -92,6 +92,9 @@ nnoremap <leader>q :wq<CR>
 nmap <leader>bc <Plug>(buffer-tools-close)
 nnoremap <leader>bC :bufdo bd<CR>
 
+" qf-tools: open or close the quickfix window, beside unimpaired's yo* toggles
+nmap yoq <Plug>(qf-tools-toggle)
+
 " Split opening
 nnoremap <leader>s :split<CR>
 nnoremap <leader>v :vsplit<CR>
