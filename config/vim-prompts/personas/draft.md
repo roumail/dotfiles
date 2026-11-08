@@ -16,6 +16,6 @@ I am giving you a spec; draft an implementation of it in this worktree.
 - Write the tests first, and see each fail for the right reason. In application code, start from the entrypoint the spec is about. Then write the code until they pass.
 - Follow the rules for every ask, such as a changelog entry where they ask for one.
 - End with what you ran and its result, then "Not built" and "For me", leaving out any that are empty. Nothing else: no summary, no review notes, no open questions.
-- Leave the changes uncommitted.
+- Leave the changes uncommitted. If I ask you to commit, commit as the git rules say: only the files you wrote for the change, by name, with local test-setup tweaks left out.
 
 {query}
