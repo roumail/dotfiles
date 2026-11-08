@@ -1,0 +1,50 @@
+name: vim-suite
+
+# Every pull request that changes the Vim config runs vimoured/vim-suite with
+# the dotfiles at its head commit: every plugin's spec against this config,
+# then the smoke test (every plugin Plugged, a real Vim started on a
+# terminal, no errors). The ruleset on main requires the gate job, which
+# passes when the suite passed or had nothing to run for.
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      vim: ${{ steps.diff.outputs.vim }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      # What vim-suite reads: the Vim config, chkpyt.sh (pytest.vim's runs),
+      # .pdbrc.py (pdb in Vim's terminal), and this workflow
+      - id: diff
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git diff --quiet "$BASE...$HEAD" -- vim-rc .config/shell/bin/chkpyt.sh \
+              .config/shell/dots/.pdbrc.py .github/workflows/vim-suite.yml; then
+            echo vim=false >>"$GITHUB_OUTPUT"
+          else
+            echo vim=true >>"$GITHUB_OUTPUT"
+          fi
+          git diff --name-only "$BASE...$HEAD"
+  vim-suite:
+    needs: changes
+    if: needs.changes.outputs.vim == 'true'
+    uses: vimoured/vim-suite/.github/workflows/suite.yml@main
+  gate:
+    needs: [changes, vim-suite]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          CHANGES: ${{ needs.changes.result }}
+          SUITE: ${{ needs.vim-suite.result }}
+        run: |
+          echo "changes: $CHANGES, vim-suite: $SUITE"
+          [ "$CHANGES" = success ] && { [ "$SUITE" = success ] || [ "$SUITE" = skipped ]; }
