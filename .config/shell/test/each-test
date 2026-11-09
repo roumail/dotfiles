@@ -1,0 +1,35 @@
+#!/bin/zsh
+# Tests bin/each in a throwaway directory of repositories, with its own zsh config.
+set -e
+each=${0:A:h:h}/bin/each
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+cd "$tmp"
+mkdir "$tmp/not-a-repository" "$tmp/zdot"
+print 'alias g=git' >"$tmp/zdot/.zshrc"
+export ZDOTDIR=$tmp/zdot
+for name in one two three four; do
+  git init -q "$tmp/$name"
+  git -C "$tmp/$name" config test.name "$name"
+done
+git -C "$tmp/two" config test.only here
+
+check() {
+  [[ $1 == "$2" && $3 == "$4" ]] && return
+  print -r -- "FAILED: expected status $2 and output:"
+  print -r -- "$4"
+  print -r -- "got status $1 and output:"
+  print -r -- "$3"
+  exit 1
+}
+
+out=$("$each" -x three -x four g config --get test.name 2>&1) && st=0 || st=$?
+check $st 0 "$out" $'### one\none\n### two\ntwo'
+
+out=$("$each" -x two -x three -x four printf '%s\n' 'a b' 2>&1) && st=0 || st=$?
+check $st 0 "$out" $'### one\na b'
+
+out=$("$each" -x three -x four g config --get test.only 2>&1) && st=0 || st=$?
+check $st 1 "$out" $'### one\n### two\nhere\nfailed: one'
+
+print 'all passed'

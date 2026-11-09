@@ -1,0 +1,17 @@
+#!/bin/zsh -i
+# Runs a command in every git repository directly under the current directory,
+# your aliases included. Carries on past a failure; names the failures and exits
+# 1 at the end.
+#
+#   each g swd
+#   each -x vim-suite -x fzf-utils g swd
+zparseopts -D x+:=excluded
+failed=()
+for dir in *(/); do
+  [[ -e $dir/.git ]] && (( ! ${excluded[(Ie)$dir]} )) || continue
+  print -r -- "### $dir"
+  ( cd $dir && eval "${(j: :)${(q)@}}" ) || failed+=$dir
+done
+(( $#failed )) || exit 0
+print -r -- "failed: $failed"
+exit 1
