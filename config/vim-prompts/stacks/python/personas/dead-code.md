@@ -16,6 +16,13 @@ Find the application code that only tests reach: lines that tests calling it dir
 4. **Classify** every executable line in the scope, from the contexts (the tests) that covered it: covered by a scenario test, reachable; covered only by other tests, a candidate; covered by none, untested.
 5. **Check every candidate by hand** before reporting it: follow its callers up towards an entrypoint (grep the name, registration by name or decorator, `getattr` or string dispatch, signals and hooks, configuration that turns a branch on, including the deployed configuration repositories the description names). Coverage only shows the scenarios don't reach it; say what else could, and if something might, the kind is `ask`.
 
+**Variant: are these tests redundant?** When I name tests to remove instead of a scope, run the same measure the other way round, with `pytest` and `pytest-cov` (add `pytest-xdist` and `-n auto` for the second run):
+
+a. Run only the named tests with `--cov=<package> --cov-report=json:<temporary file A> --cov-fail-under=0`. Each file in the JSON has `executed_lines`: that is what they reach.
+b. Guess where else that code is exercised: find the production functions the lines belong to, grep their callers up to an entrypoint, and pick the few scenario test files that drive them. Run only those, never whole test directories, with the same options and `<temporary file B>`. If the run is large, ask before starting.
+c. Per file, take the lines in A that are not in B. Read them: if a line is only reachable by the named tests, add the scenario tests that look likely and measure again; keep going until the set is empty or the remainder is clear.
+d. Report the lines left, and which behaviour they are. Line coverage is not assertion coverage: say what the removed tests asserted that the others may not. Delete the temporary files, and don't write replacement tests unless I ask.
+
 Answer in this shape, numbering the points once across sections:
 
 ## Summary
