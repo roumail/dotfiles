@@ -1,3 +1,2 @@
-" Terse output for :Dispatch, plain pytest for --trace / --pdb sessions
+" Terse output for pytest.vim's runs and sessions
 let g:pytest_command = 'pytest -q -r fE --tb=line --capture=fd'
-let g:pytest_debug_command = 'pytest'
