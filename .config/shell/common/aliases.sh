@@ -9,6 +9,7 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias scratch='vim -c Scratch -c only'
 alias e='vim'
+alias d='vim +DiffThis'
 alias g='git'
 alias gs='git status'
 alias ga='git add'
@@ -24,6 +25,25 @@ if command -v notes.sh >/dev/null 2>&1; then
     alias n='notes.sh'
 fi
 
+# dj [duration [label]] -> today's daily journal, $NOTE_DIR/journal/YYYY-MM-DD.md,
+# in vim with Goyo. In wezterm it also pins the tab and starts a timer
+# (default "5m journal"); see DJ_SESSION in .wezterm.lua
+dj() {
+    local dir="${NOTE_DIR:?dj: NOTE_DIR not set}/journal"
+    local file
+    file="$dir/$(date +%F).md"
+    command mkdir -p "$dir" || return
+    [ -e "$file" ] || printf '# %s\n\n' "$(date '+%A %d %B %Y')" > "$file"
+    local wez=
+    if [ -n "${WEZTERM_PANE-}" ] && command -v __wezterm_set_user_var >/dev/null 2>&1; then
+        wez=1
+        __wezterm_set_user_var DJ_SESSION "${*:-5m journal}"
+    fi
+    vim +'normal! G' +Goyo "$file"
+    [ -n "$wez" ] && __wezterm_set_user_var DJ_SESSION ""
+    return 0
+}
+
 if command -v aider >/dev/null 2>&1; then
     alias ad='aider --chat-mode ask'
     alias AD='aider --chat-mode architect'
@@ -31,7 +51,7 @@ fi
 
 # md notes.md -> read rendered markdown in a pager (same as <localleader>p in vim, without opening vim)
 if command -v glow >/dev/null 2>&1; then
-    alias md='glow -p'
+    alias md='PAGER="less -rc~" glow -p -w "$COLUMNS"'
 fi
 
 # md2pdf notes.md [extra pandoc args] -> notes.pdf (needs: brew install pandoc, plus a PDF engine e.g. brew install --cask basictex)

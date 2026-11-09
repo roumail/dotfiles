@@ -1,5 +1,5 @@
 ---
-context: [file, "rule:style", "rule:comments", "rule:testing", "rule:running-tests", "rule:test-setup"]
+context: [here, +style, +comments, +testing, +running-tests, +test-setup?]
 ---
 {rules}
 

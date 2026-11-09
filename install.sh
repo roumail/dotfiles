@@ -123,6 +123,13 @@ install_dotconfig_dirs() {
   mkdir -p "$DOT_CONFIG_DST/wezterm"
   link_tree "$DOT_CONFIG_SRC/wezterm" "$DOT_CONFIG_DST/wezterm"
 
+  link_file "$DOT_CONFIG_SRC/starship/starship.toml" "$DOT_CONFIG_DST/starship.toml"
+  link_file "$DOT_CONFIG_SRC/ty/ty.toml" "$DOT_CONFIG_DST/ty/ty.toml"
+  link_file "$DOT_CONFIG_SRC/opencode/opencode.json" "$DOT_CONFIG_DST/opencode/opencode.json"
+
+  # ty.toml and opencode.json were linked straight into ~/.config from here
+  prune_dangling_links "$SHELL_CONFIG_SRC/dotconfig" "$DOT_CONFIG_DST"
+
   # vim-prompts rules, named by git config (config/agents/README.md#rules);
   # each stack's examples unpacked into local/ first, so they are linked too
   # (config/vim-prompts/stacks/README.md)
@@ -243,13 +250,6 @@ case "$SHELL_NAME" in
     # Add zsh-only links here if needed later
     ;;
 esac
-echo "Symlinking .config files..."
-
-for config in "$SHELL_CONFIG_SRC/dotconfig/"*; do
-  [ -f "$config" ] || continue
-  filename=$(basename "$config")
-  link_file "$config" "$HOME/.config/$filename"
-done
 
 echo ""
 install_dotconfig_dirs

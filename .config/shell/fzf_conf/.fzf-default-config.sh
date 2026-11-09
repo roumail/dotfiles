@@ -1,16 +1,4 @@
 #!/usr/bin/env bash
-# Use fd (https://github.com/sharkdp/fd) for listing path candidates.
-# - The first argument to the function ($1) is the base path to start traversal
-# - See the source code (completion.{bash,zsh}) for the details.
-
-_fzf_compgen_path() {
-  fd --hidden --follow --exclude ".git" . "$1"
-}
-
-# Use fd to generate the list for directory completion
-_fzf_compgen_dir() {
-  fd --type d --hidden --follow --exclude ".git" . "$1"
-}
 
 # Setting fd as the default source for fzf
 # export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
@@ -46,7 +34,7 @@ export FZF_COMPLETION_OPTS='--border --info=inline'
 export FZF_COMPLETION_PATH_OPTS='--walker file,dir,follow,hidden'
 
 # Options for directory completion (e.g. cd **<TAB>)
-export FZF_COMPLETION_DIR_OPTS='--walker dir,follow'
+export FZF_COMPLETION_DIR_OPTS='--no-multi --walker dir,follow,hidden'
 
 # Find a file and edit it using declared editor
 fzf_find_edit() {

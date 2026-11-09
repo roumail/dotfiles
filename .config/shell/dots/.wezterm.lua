@@ -187,16 +187,31 @@ local function apply_tab_colors(window)
   window:set_config_overrides(overrides)
 end
 
-wezterm.on('toggle-tab-colors', function(window, pane)
-  local tab = window:active_tab()
-  if not tab then return end
+local function set_pinned(window, tab, on)
   local id = tostring(tab:tab_id())
   local pinned = {}
   for k, v in pairs(wezterm.GLOBAL[PINNED_KEY] or {}) do pinned[k] = v end
-  pinned[id] = not pinned[id] or nil
+  pinned[id] = on or nil
   wezterm.GLOBAL[PINNED_KEY] = pinned
   apply_tab_colors(window)
-  wez_sb_alert.notify((pinned[id] and "Pinned tab " or "Unpinned tab ") .. tab:get_title())
+end
+
+wezterm.on('toggle-tab-colors', function(window, pane)
+  local tab = window:active_tab()
+  if not tab then return end
+  local on = not is_pinned(tab)
+  set_pinned(window, tab, on)
+  wez_sb_alert.notify((on and "Pinned tab " or "Unpinned tab ") .. tab:get_title())
+end)
+
+-- `dj` (aliases.sh) sets DJ_SESSION to "<duration> [label]": pin the tab
+-- as LEADER m would and start a timer as LEADER T would. It clears the
+-- var on exit, which lands here empty and is ignored.
+wezterm.on('user-var-changed', function(window, pane, name, value)
+  if name ~= 'DJ_SESSION' or value == '' then return end
+  local tab = pane:tab()
+  if tab and not is_pinned(tab) then set_pinned(window, tab, true) end
+  if wez_timer.start then wez_timer.start(window, value) end
 end)
 
 wezterm.on('update-status', function(window, pane)

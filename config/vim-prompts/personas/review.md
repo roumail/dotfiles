@@ -1,5 +1,5 @@
 ---
-context: ["rule:review", "rule:style", "rule:comments", "rule:testing", agent_comments]
+context: [+review, +style, +comments, +testing, agent_comments]
 ---
 {base}
 

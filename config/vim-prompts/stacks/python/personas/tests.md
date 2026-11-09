@@ -1,4 +1,4 @@
 ---
-context: ["rule:python-pytest", "rule:python-venv", "rule:python-local"]
+context: [+python-pytest, +python-venv, +python-local?]
 ---
 {base}
