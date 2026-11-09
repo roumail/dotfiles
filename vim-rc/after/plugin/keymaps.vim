@@ -13,6 +13,7 @@ inoremap jq <Esc>:wq<CR>
 """""""""""""""""""
 " fzf-utils: Vim's own <c-x><c-f> / <c-x><c-l> in the command-line window (q:)
 imap <c-x><c-f> <Plug>(fzf-utils-complete-path)
+imap <c-x><c-d> <Plug>(fzf-utils-complete-dir)
 imap <c-x><c-l> <Plug>(fzf-utils-complete-line)
 " vim-prompts: personas, #sources and flags (<Tab> picks several), in an :AiDraft
 inoremap <expr> <c-x><c-a> fzf_utils#complete#with('prompts#fzf')
