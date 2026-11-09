@@ -32,4 +32,12 @@ check $st 0 "$out" $'### one\na b'
 out=$("$each" -x three -x four g config --get test.only 2>&1) && st=0 || st=$?
 check $st 1 "$out" $'### one\n### two\nhere\nfailed: one'
 
+for flag in -h --help; do
+  out=$("$each" $flag 2>&1) && st=0 || st=$?
+  check $st 0 "$out" $'usage: each [-x repo]... command [args...]\n\nRuns a command in every git repository directly under the current directory.\nYour zsh aliases work. Carries on past a failure, then lists the failures\nand exits 1.\n\n  -x repo     skip this repository; repeat for more\n  -h, --help  show this help\n\n  each g swd\n  each -x vim-suite -x fzf-utils g swd'
+done
+
+out=$("$each" -x two -x three -x four printf '%s\n' -h 2>&1) && st=0 || st=$?
+check $st 0 "$out" $'### one\n-h'
+
 print 'all passed'
