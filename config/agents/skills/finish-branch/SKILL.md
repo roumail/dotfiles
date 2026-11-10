@@ -9,7 +9,8 @@ description: Wrap up work already committed on a git branch other than main, the
 - Landing it on main happens only when the user asks.
 - Pushing main happens only when the user asks and the repo's `agents.push`
   is `main`.
-- Opening a pull request is always the user's.
+- Opening a pull request is always the user's unless they tell you otherwise.
+  Verify before performing this once in the session if opening one is allowed.
 
 ## Steps
 

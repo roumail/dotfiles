@@ -16,5 +16,6 @@ a header per module, a comment per step). Remove the ones that don't earn it:
   code is this way, what it must guarantee, or nothing.
 - **A comment must stay true as the code changes.** If the two could drift
   apart, remove the comment, or move it next to the lines it is about.
-- **CLI entry points, examples and docs are exempt**: their comments are
-  documentation.
+- **CLI entry points, examples and docs in a dedicated docs folder are
+  exempt**: their comments are documentation.
+- README's follow their own style guide.

@@ -34,6 +34,9 @@
     # create and switch
     swc = switch -c
 
+    # back to main/master, fast-forward it, delete merged branches
+    swd = "!bash -c '. \"${SHELL_CONFIG_BASE:-$HOME/.config/shell}/common/git.sh\" && b=$(git_get_default_branch) && git switch \"$b\" && git sd && git dmb'"
+
     # archive a worktree (. for this one): a dated lock, hidden from CTRL-G CTRL-W until ALT-A
     # g wt-archive <worktree> [reason...] / g wt-unarchive [worktree]
     wt-archive = "!f() { [ $# -gt 0 ] || { echo 'usage: git wt-archive <worktree> [reason...]' >&2; return 1; }; cd \"./$GIT_PREFIX\" && w=$1 && shift && git worktree lock --reason \"$(date +%F)${*:+: $*}\" \"$w\"; }; f"

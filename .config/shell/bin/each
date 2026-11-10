@@ -1,0 +1,27 @@
+#!/bin/zsh -i
+zparseopts -D h=help -help=help x+:=excluded
+if (( $#help )); then
+  cat <<'USAGE'
+usage: each [-x repo]... command [args...]
+
+Runs a command in every git repository directly under the current directory.
+Your zsh aliases work. Carries on past a failure, then lists the failures
+and exits 1.
+
+  -x repo     skip this repository; repeat for more
+  -h, --help  show this help
+
+  each g swd
+  each -x vim-suite -x fzf-utils g swd
+USAGE
+  exit 0
+fi
+failed=()
+for dir in *(/); do
+  [[ -e $dir/.git ]] && (( ! ${excluded[(Ie)$dir]} )) || continue
+  print -r -- "### $dir"
+  ( cd $dir && eval "${(j: :)${(q)@}}" ) || failed+=$dir
+done
+(( $#failed )) || exit 0
+print -r -- "failed: $failed"
+exit 1

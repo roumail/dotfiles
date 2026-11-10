@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      # What vim-suite reads: the Vim config, chkpyt.sh (pytest.vim's runs),
+      # What vim-suite reads: the Vim config,
       # .pdbrc.py (pdb in Vim's terminal), the starship config (the smoke
       # test's prompt), and this workflow
       - id: diff
@@ -27,7 +27,7 @@ jobs:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
         run: |
-          if git diff --quiet "$BASE...$HEAD" -- vim-rc .config/shell/bin/chkpyt.sh \
+          if git diff --quiet "$BASE...$HEAD" -- vim-rc \
               .config/shell/dots/.pdbrc.py config/starship \
               .github/workflows/vim-suite.yml; then
             echo vim=false >>"$GITHUB_OUTPUT"

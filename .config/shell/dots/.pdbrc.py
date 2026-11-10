@@ -311,7 +311,7 @@ def _open_diff(self, paths):
     import json
     import shlex
     if os.environ.get("VIM_TERMINAL"):
-        # Inside a vim :terminal (chkpyt.sh via Start!): ask the outer vim to call
+        # Inside a vim :terminal (pytest.vim via Start!): ask the outer vim to call
         # Tapi_PdbDiff (vim-rc/plugin/pdb_diff.vim), see :h terminal-api
         self.stdout.write("\x1b]51;" + json.dumps(["call", "Tapi_PdbDiff", paths]) + "\x07")
         self.stdout.flush()
