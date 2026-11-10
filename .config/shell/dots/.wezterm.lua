@@ -61,7 +61,17 @@ local status_sections = {
   tabline_y = {},
   tabline_z = { "datetime" },
 }
-tabline.setup({sections=status_sections})
+-- The default theme gives the active tab the same colors as the
+-- workspace segment (blue on surface0), so they blend together.
+-- Use Catppuccin Mocha peach on surface1 for the active tab instead.
+tabline.setup({
+  options = {
+    theme_overrides = {
+      tab = { active = { fg = "#fab387", bg = "#45475a" } },
+    },
+  },
+  sections = status_sections,
+})
 tabline.apply_to_config(config)
 
 config.keys = helpers.remove_key(config.keys, "%", "LEADER|SHIFT")
