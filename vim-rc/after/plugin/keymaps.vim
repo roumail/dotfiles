@@ -346,6 +346,13 @@ tnoremap <silent> <Esc>pp <C-w>:q!<CR>
 " ============================================================
 
 cnoremap <C-K> <C-\>e{-> slice(getcmdline(), 0, getcmdpos() - 1)}()<CR>
+" fzf-git pickers, on the shell's CTRL-G <letter> keys. What you pick isn't used.
+" Typing CTRL-G during an incremental search waits for the next key now.
+for [s:key, s:type] in [['f', 'files'], ['b', 'branches'], ['t', 'tags'],
+      \ ['r', 'remotes'], ['h', 'hashes'], ['s', 'stashes'], ['l', 'lreflogs'],
+      \ ['w', 'worktrees'], ['e', 'each_ref']]
+  execute printf('cnoremap <silent> <C-g>%s <Cmd>silent !bash ~/.config/shell/fzf_conf/fzf-git.sh --run %s >/dev/null<CR><Cmd>redraw!<CR>', s:key, s:type)
+endfor
 cnoreabbrev WQ wq
 cnoreabbrev Wq wq
 cnoreabbrev Q q
