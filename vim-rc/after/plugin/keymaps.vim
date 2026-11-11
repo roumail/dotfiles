@@ -43,6 +43,8 @@ nnoremap P [P
 " Copy path:line of the cursor; capitals copy the absolute path
 nnoremap <leader>gl :let @+ = expand('%') . ':' . line('.')<CR>:echo "Path:line copied!"<CR>
 nnoremap <leader>gL :let @+ = expand('%:p') . ':' . line('.')<CR>:echo "Absolute path:line copied!"<CR>
+" Glue the clipboard's lines, as a terminal's scrollback broke them, into one
+nnoremap <leader>gj <Cmd>let @+ = substitute(@+, '\n', '', 'g')<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
 
 " Move the window border right/left/down/up, from whichever window, on the
