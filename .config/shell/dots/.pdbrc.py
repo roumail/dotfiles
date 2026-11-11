@@ -169,6 +169,17 @@ def do_yloc(self, arg):
     _copy_text(loc)
     self.message(loc)
 
+def do_ynode(self, arg):
+    """ynode
+    Copy the pytest node id of the running test, ready for `pytest <id>`."""
+    current = os.environ.get("PYTEST_CURRENT_TEST")
+    if not current:
+        self.error("Not running under pytest")
+        return
+    node = current.rsplit(" ", 1)[0]
+    _copy_text(node)
+    self.message(node)
+
 def do_ylast(self, arg):
     """ylast [n]
     Copy a command you typed at the prompt: the previous one, or n back.
@@ -446,6 +457,7 @@ _COMMANDS = {
     "jsonpank": do_jsonpank,
     "yline": do_yline,
     "yloc": do_yloc,
+    "ynode": do_ynode,
     "ylast": do_ylast,
     "pdiff": do_pdiff,
     "vdiff": do_vdiff,
