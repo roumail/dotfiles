@@ -3,9 +3,11 @@
 # scratch worktree, wiping what's there, and print its path:
 #   cd "$(git wt-review feature-x)"
 # origin/feature-x works too, as fzf-git's CTRL-G CTRL-B inserts it.
-# Worktrees are review, review-2, ... up to WT_REVIEW_SLOTS (4), beside the
-# others in a bare-repo layout, made when first needed. One is busy while a
-# process (a shell, vim) has its cwd inside it, unless it's the one you're in.
+# Worktrees are review, review-2, ... up to WT_REVIEW_SLOTS (4), made when
+# first needed: beside the others in a bare-repo layout, or under
+# .git/wt-review in an ordinary clone, so your own checkout, its branch and
+# any uncommitted changes are never touched. One is busy while a process (a
+# shell, vim) has its cwd inside it, unless it's the one you're in.
 
 set -euo pipefail
 
@@ -13,17 +15,17 @@ set -euo pipefail
 BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
 [ -r "$BASE/common/git.sh" ] && . "$BASE/common/git.sh"
 
-BARE=$(cd "$(git_get_bare_dir)" && pwd)
-if [ "$(git --git-dir="$BARE" rev-parse --is-bare-repository)" != true ]; then
-    echo "Error: $BARE is not a bare repo" >&2
-    exit 1
+COMMON=$(cd "$(git rev-parse --git-common-dir)" && pwd)
+if [ "$(git --git-dir="$COMMON" rev-parse --is-bare-repository)" = true ]; then
+    ROOT=$(dirname "$COMMON")
+else
+    ROOT=$COMMON/wt-review
 fi
-ROOT=$(dirname "$BARE")
 HERE=$(git rev-parse --show-toplevel 2>/dev/null || true)
-BRANCH=${1:-$(git_get_default_branch "$BARE")}
+BRANCH=${1:-$(git_get_default_branch "$COMMON")}
 BRANCH=${BRANCH#origin/}
 
-git --git-dir="$BARE" fetch -q --prune origin
+git --git-dir="$COMMON" fetch -q --prune origin
 
 CWDS=$(lsof -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')
 in_use() {
@@ -50,7 +52,7 @@ if [ -d "$DIR" ]; then
     git -C "$DIR" clean -fdq
     git -C "$DIR" checkout -q --detach "origin/$BRANCH"
 else
-    git --git-dir="$BARE" worktree add -q --detach "$DIR" "origin/$BRANCH" >&2
+    git --git-dir="$COMMON" worktree add -q --detach "$DIR" "origin/$BRANCH" >&2
 fi
 
 echo "$DIR"
