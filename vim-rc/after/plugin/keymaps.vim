@@ -40,10 +40,7 @@ nnoremap p ]p
 " Cursor at beginning of pasted line
 nnoremap P [P
 
-" Copy the current file's path; capitals copy it absolute
-nnoremap <leader>f :let @+ = expand('%')<CR>:echo "Path copied!"<CR>
-nnoremap <leader>F :let @+ = expand('%:p')<CR>:echo "Absolute path copied!"<CR>
-" ... with the line number
+" Copy path:line of the cursor; capitals copy the absolute path
 nnoremap <leader>gl :let @+ = expand('%') . ':' . line('.')<CR>:echo "Path:line copied!"<CR>
 nnoremap <leader>gL :let @+ = expand('%:p') . ':' . line('.')<CR>:echo "Absolute path:line copied!"<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
