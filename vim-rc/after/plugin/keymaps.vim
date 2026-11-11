@@ -40,14 +40,11 @@ nnoremap p ]p
 " Cursor at beginning of pasted line
 nnoremap P [P
 
-" Current line number
-nnoremap <leader>gl :let @+ = expand('%') . ':' . line('.')<CR>:echo "File:line copied!"<CR>
-nnoremap <leader>gL :let @+ =line('.')<CR>:echo "Line number copied!"<CR>
-
-" Current file relative path
-nnoremap <leader>f :let @+ = @%<CR>:echo "Path copied!"<CR>
-" Absolute path
-nnoremap <leader>F :let @+ = expand('%:p')<CR>:echo "Absolute path copied!"<CR>
+" Copy path:line of the cursor; capitals copy the absolute path
+nnoremap <leader>gl :let @+ = expand('%') . ':' . line('.')<CR>:echo "Path:line copied!"<CR>
+nnoremap <leader>gL :let @+ = expand('%:p') . ':' . line('.')<CR>:echo "Absolute path:line copied!"<CR>
+" Glue the clipboard's lines, as a terminal's scrollback broke them, into one
+nnoremap <leader>gj <Cmd>let @+ = substitute(@+, '\n', '', 'g')<CR>
 nnoremap <leader>rl :source $MYVIMRC<CR>
 
 " Move the window border right/left/down/up, from whichever window, on the
@@ -181,10 +178,24 @@ augroup gh_extras_reply_keys
   autocmd BufEnter gh-extras://thread* nmap <buffer> <leader>cc <Plug>(gh-extras-reply)
   autocmd BufEnter gh-extras://thread* nmap <buffer> <leader>cd <Plug>(gh-extras-reply-draft)
 augroup END
-" vim-prompts: ... and to the agent's comment under the cursor in the
-" :AiComments list, or in a comment's thread (:AiReply / :AiReplyDraft). Every
-" quickfix window is qf, so the others (Review's) keep fugitive-extras'. Capitals
-" send to a session (:AiReply! / :AiReplyDraft!) instead of a one-off
+
+" }}}1
+
+"""""""""""""""""""
+" ai {{{1
+"""""""""""""""""""
+
+" vim-prompts: types :Ai / :AiDraft (:'<,'>Ai from visual) to finish
+nmap <leader>aa <Plug>(prompts-ask)
+xmap <leader>aa <Plug>(prompts-ask)
+nmap <leader>ad <Plug>(prompts-draft)
+xmap <leader>ad <Plug>(prompts-draft)
+
+" vim-prompts: git's comment keys (<leader>cc / <leader>cd) reply to the
+" agent's comment under the cursor in the :AiComments list, or in a comment's
+" thread (:AiReply / :AiReplyDraft). Every quickfix window is qf, so the others
+" (Review's) keep fugitive-extras'. Capitals send to a session (:AiReply! /
+" :AiReplyDraft!) instead of a one-off
 augroup prompts_reply_keys
   autocmd!
   autocmd FileType qf nmap <buffer><expr> <leader>cc
@@ -200,18 +211,6 @@ augroup prompts_reply_keys
   autocmd BufEnter ai-thread://* nmap <buffer> <leader>cC <Plug>(prompts-reply-session)
   autocmd BufEnter ai-thread://* nmap <buffer> <leader>cD <Plug>(prompts-reply-draft-session)
 augroup END
-
-" }}}1
-
-"""""""""""""""""""
-" ai {{{1
-"""""""""""""""""""
-
-" vim-prompts: types :Ai / :AiDraft (:'<,'>Ai from visual) to finish
-nmap <leader>aa <Plug>(prompts-ask)
-xmap <leader>aa <Plug>(prompts-ask)
-nmap <leader>ad <Plug>(prompts-draft)
-xmap <leader>ad <Plug>(prompts-draft)
 
 " }}}1
 
@@ -346,6 +345,16 @@ tnoremap <silent> <Esc>pp <C-w>:q!<CR>
 " ============================================================
 
 cnoremap <C-K> <C-\>e{-> slice(getcmdline(), 0, getcmdpos() - 1)}()<CR>
+cnoreabbrev WQ wq
+cnoreabbrev Wq wq
+cnoreabbrev Q q
+cnoreabbrev Qa qa
+cnoreabbrev QA qa
+
+"""""""""""""""""""
+" fzf {{{1
+"""""""""""""""""""
+
 " fzf-git pickers, on the shell's CTRL-G <letter> keys. What you pick isn't used.
 " Typing CTRL-G during an incremental search waits for the next key now.
 function! s:FzfGit(type) abort
@@ -362,10 +371,6 @@ cnoremap <silent> <C-g>s <Cmd>call <SID>FzfGit('stashes')<CR>
 cnoremap <silent> <C-g>l <Cmd>call <SID>FzfGit('lreflogs')<CR>
 cnoremap <silent> <C-g>w <Cmd>call <SID>FzfGit('worktrees')<CR>
 cnoremap <silent> <C-g>e <Cmd>call <SID>FzfGit('each_ref')<CR>
-cnoreabbrev WQ wq
-cnoreabbrev Wq wq
-cnoreabbrev Q q
-cnoreabbrev Qa qa
-cnoreabbrev QA qa
 
+" }}}1
 " }}}
