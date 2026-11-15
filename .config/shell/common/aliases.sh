@@ -26,7 +26,7 @@ if command -v notes.sh >/dev/null 2>&1; then
 fi
 
 # dj [duration [label]] -> today's daily journal, $NOTE_DIR/journal/YYYY-MM-DD.md,
-# in vim with Goyo. In wezterm it also pins the tab and starts a timer
+# in vim with Goyo. In wezterm it also starts a timer
 # (default "5m journal"); see DJ_SESSION in .wezterm.lua
 dj() {
     local dir="${NOTE_DIR:?dj: NOTE_DIR not set}/journal"
