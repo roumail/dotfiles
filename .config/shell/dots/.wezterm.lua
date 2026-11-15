@@ -214,13 +214,11 @@ wezterm.on('toggle-tab-colors', function(window, pane)
   wez_sb_alert.notify((on and "Pinned tab " or "Unpinned tab ") .. tab:get_title())
 end)
 
--- `dj` (aliases.sh) sets DJ_SESSION to "<duration> [label]": pin the tab
--- as LEADER m would and start a timer as LEADER T would. It clears the
--- var on exit, which lands here empty and is ignored.
+-- `dj` (aliases.sh) sets DJ_SESSION to "<duration> [label]": start a
+-- timer as LEADER T would. It clears the var on exit, which lands here
+-- empty and is ignored.
 wezterm.on('user-var-changed', function(window, pane, name, value)
   if name ~= 'DJ_SESSION' or value == '' then return end
-  local tab = pane:tab()
-  if tab and not is_pinned(tab) then set_pinned(window, tab, true) end
   if wez_timer.start then wez_timer.start(window, value) end
 end)
 
