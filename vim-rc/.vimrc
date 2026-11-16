@@ -93,11 +93,11 @@ Plug 'vimoured/glow-preview'
 " Where plugins work and keep their files (saved comments, prompts, saved
 " lists), per repository
 Plug 'vimoured/vim-place'
-" Drafts (:CommentDraft, :AiDraft, replies) and scratches (:Scratch); :DraftSave
-" writes either to a file
+" Drafts: a plugin's (:CommentDraft, :AiDraft, replies) or your own scratch
+" (:Scratch); :DraftSave keeps one as a file, :Drafts lists them
 Plug 'vimoured/vim-draft'
 " The lists at the bottom (:PRs, :Threads, :Compares, :BranchCommits,
-" :AiCommentsList), all with the same keys: dd removes, / filters, r
+" :AiReviews), all with the same keys: dd removes, / filters, r
 " refreshes, q closes
 Plug 'vimoured/vim-lists'
 " The format review comments are saved in (fugitive-extras' :CommentsSave, and
