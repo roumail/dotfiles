@@ -9,4 +9,5 @@ pgadmin-data/
 .vim.local
 .aider*
 
+**/.github/copilot
 **/.claude/settings.local.json
