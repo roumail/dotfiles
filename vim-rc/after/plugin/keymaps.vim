@@ -164,6 +164,10 @@ nmap <leader><tab> <plug>(fzf-maps-n)
 
 " fugitive-extras and gh-extras are used through their commands (:Diff*,
 " :Branch*, :PRs)
+" fugitive's difftool, one diff tab per changed file (no keys yet):
+"   :Git difftool -y            unstaged
+"   :Git difftool -y --cached   staged
+"   :Git difftool -y HEAD       staged and unstaged
 " fugitive-extras: comment on the line / selection, into the 'Review' quickfix
 " list
 nmap <leader>cc <Plug>(fugitive-extras-comment)
