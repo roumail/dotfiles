@@ -80,30 +80,22 @@ fzf_find_edit() {
 
 alias fe='fzf_find_edit'
 
-# fm [dir] [query] -> pick a video under dir (default .) and play it.
-# Lists only video files, shown as "name  dir/" so long paths stay
-# readable; the query matches both. Plays with mpv, else the OS default app.
+# fm [dir] [query] -> find videos under dir (default .) and print the
+# picked paths, one per line. Tab marks several. Lists only video files,
+# shown as "name  dir/" so long paths stay readable; the query matches both.
+#   fm ~/Downloads/test | tools/run_prepare.sh
 fzf_find_movie() {
-    local root=${1:-.} file player
+    local root=${1:-.}
     local exts=(mkv mp4 m4v avi mov wmv webm mpg mpeg ts flv)
     local fd_args=(--type f --follow --exclude .evernote --exclude Library
                    --exclude '*.photoslibrary' --exclude '*.imovielibrary')
     local e
     for e in "${exts[@]}"; do fd_args+=(--extension "$e"); done
 
-    file=$(
-      fd "${fd_args[@]}" --format $'{/}\t{//}/\t{}' . "$root" |
-        fzf --query="$2" --no-multi --select-1 --exit-0 \
+    fd "${fd_args[@]}" --format $'{/}\t{//}/\t{}' . "$root" |
+        fzf --query="$2" --multi --exit-0 \
             --delimiter=$'\t' --with-nth=1,2 --accept-nth=3 \
             --tiebreak=begin,length
-    ) || return
-    [[ -n $file ]] || return
-
-    if command -v mpv >/dev/null 2>&1; then player=mpv
-    elif command -v open >/dev/null 2>&1; then player=open
-    else player=xdg-open
-    fi
-    "$player" "$file"
 }
 
 alias fm='fzf_find_movie'
