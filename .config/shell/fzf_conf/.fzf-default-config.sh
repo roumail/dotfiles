@@ -56,8 +56,14 @@ _fzf_comprun() {
         fzf "$@"
     elif [[ $root == . ]]; then
         FZF_DEFAULT_COMMAND="$_fzf_fd $type --strip-cwd-prefix" fzf "$@"
-    else
+    elif [[ $root == *[{}]* ]]; then
+        # fzf would read braces in the prefix as field expressions
         FZF_DEFAULT_COMMAND="$_fzf_fd $type . $(printf %q "$root")" fzf "$@"
+    else
+        # List paths relative to root so the list doesn't repeat it on every
+        # line; --accept-nth puts it back on what gets inserted
+        FZF_DEFAULT_COMMAND="$_fzf_fd $type --base-directory $(printf %q "$root") --strip-cwd-prefix" \
+            fzf "$@" --delimiter=$'\t' --accept-nth="${root%/}/{1}"
     fi
 }
 
@@ -73,4 +79,32 @@ fzf_find_edit() {
 }
 
 alias fe='fzf_find_edit'
+
+# fm [dir] [query] -> pick a video under dir (default .) and play it.
+# Lists only video files, shown as "name  dir/" so long paths stay
+# readable; the query matches both. Plays with mpv, else the OS default app.
+fzf_find_movie() {
+    local root=${1:-.} file player
+    local exts=(mkv mp4 m4v avi mov wmv webm mpg mpeg ts flv)
+    local fd_args=(--type f --follow --exclude .evernote --exclude Library
+                   --exclude '*.photoslibrary' --exclude '*.imovielibrary')
+    local e
+    for e in "${exts[@]}"; do fd_args+=(--extension "$e"); done
+
+    file=$(
+      fd "${fd_args[@]}" --format $'{/}\t{//}/\t{}' . "$root" |
+        fzf --query="$2" --no-multi --select-1 --exit-0 \
+            --delimiter=$'\t' --with-nth=1,2 --accept-nth=3 \
+            --tiebreak=begin,length
+    ) || return
+    [[ -n $file ]] || return
+
+    if command -v mpv >/dev/null 2>&1; then player=mpv
+    elif command -v open >/dev/null 2>&1; then player=open
+    else player=xdg-open
+    fi
+    "$player" "$file"
+}
+
+alias fm='fzf_find_movie'
 
