@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# slides: start, edit, preview and render Quarto reveal.js decks.
+# The template and theme: config/slides in the dotfiles, linked to
+# ~/.config/slides by install.sh. Works in bash and zsh.
+set -euo pipefail
+
+SLIDES_HOME="${SLIDES_TEMPLATE_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/slides}"
+TEMPLATE="$SLIDES_HOME/template.qmd"
+THEME="$SLIDES_HOME/custom.scss"
+
+usage() {
+  cat <<'EOF'
+Usage: slides <command> [args]
+
+  new <dir>        New deck in <dir>: slides.qmd + custom.scss from the template
+  edit [file]      Open a deck in $EDITOR (vim); no file: pick a .qmd with fzf
+  preview [file]   Live preview in the browser, reloads on every save
+  render [file]    Write the self-contained .html next to the .qmd
+  pdf [file]       Render, then print to PDF with decktape (needs npx)
+  help             Show this help
+
+[file] defaults to the only .qmd in the current directory.
+EOF
+}
+
+die() { printf 'slides: %s\n' "$*" >&2; exit 1; }
+
+need_quarto() {
+  command -v quarto >/dev/null 2>&1 \
+    || die "quarto not found; install it from https://quarto.org/docs/get-started/"
+}
+
+# The deck to work on: the argument, or the single .qmd here
+deck() {
+  if [ -n "${1:-}" ]; then
+    [ -f "$1" ] || die "no such file: $1"
+    printf '%s\n' "$1"
+    return
+  fi
+  local -a found=()
+  local f
+  for f in *.qmd; do
+    [ -f "$f" ] && found+=("$f")
+  done
+  case "${#found[@]}" in
+    1) printf '%s\n' "${found[0]}" ;;
+    0) die "no .qmd here; pass a file or run 'slides new <dir>'" ;;
+    *) die "several .qmd files here; pass one: ${found[*]}" ;;
+  esac
+}
+
+cmd_new() {
+  local dir="${1:-}"
+  [ -n "$dir" ] || die "usage: slides new <dir>"
+  [ -f "$TEMPLATE" ] || die "no template at $TEMPLATE (run the dotfiles' install.sh)"
+  [ -e "$dir/slides.qmd" ] && die "$dir/slides.qmd already exists"
+  mkdir -p "$dir"
+  cp "$TEMPLATE" "$dir/slides.qmd"
+  [ -e "$dir/custom.scss" ] || cp "$THEME" "$dir/custom.scss"
+  printf 'Created %s/slides.qmd and %s/custom.scss\n' "$dir" "$dir"
+  printf 'Next: cd %s && slides edit\n' "$dir"
+}
+
+cmd_edit() {
+  local file
+  if [ -n "${1:-}" ]; then
+    file="$1"
+  elif command -v fzf >/dev/null 2>&1; then
+    file="$( (command -v fd >/dev/null 2>&1 && fd -e qmd || find . -name '*.qmd' -not -path '*/.*') \
+      | fzf --select-1 --exit-0 --prompt 'deck> ' \
+            --preview 'bat --color=always --style=plain {} 2>/dev/null || cat {}')" \
+      || exit 0
+  else
+    file="$(deck)"
+  fi
+  [ -n "$file" ] || exit 0
+  exec "${EDITOR:-vim}" "$file"
+}
+
+cmd_preview() {
+  need_quarto
+  exec quarto preview "$(deck "${1:-}")"
+}
+
+cmd_render() {
+  need_quarto
+  quarto render "$(deck "${1:-}")"
+}
+
+cmd_pdf() {
+  need_quarto
+  command -v npx >/dev/null 2>&1 || die "pdf needs npx (Node.js) for decktape"
+  local file html
+  file="$(deck "${1:-}")"
+  quarto render "$file"
+  html="${file%.qmd}.html"
+  npx --yes decktape reveal "$html" "${file%.qmd}.pdf"
+}
+
+case "${1:-help}" in
+  new) shift; cmd_new "$@" ;;
+  edit) shift; cmd_edit "$@" ;;
+  preview) shift; cmd_preview "$@" ;;
+  render) shift; cmd_render "$@" ;;
+  pdf) shift; cmd_pdf "$@" ;;
+  help|-h|--help) usage ;;
+  *) usage >&2; exit 2 ;;
+esac

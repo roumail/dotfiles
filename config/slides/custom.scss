@@ -1,0 +1,19 @@
+/*-- scss:defaults --*/
+// Variables: https://quarto.org/docs/presentations/revealjs/themes.html#sass-variables
+$font-family-sans-serif: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$presentation-heading-font-weight: 600;
+$presentation-font-size-root: 36px;
+$link-color: #2563eb;
+$presentation-heading-color: #111827;
+$code-block-font-size: 0.7em;
+
+/*-- scss:rules --*/
+.reveal .slide-number {
+  font-size: 0.5em;
+}
+
+// Section title slides (the "# Heading" ones)
+.reveal section.title-slide h1,
+.reveal .slides > section > h1 {
+  letter-spacing: -0.02em;
+}
