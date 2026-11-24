@@ -280,12 +280,7 @@ link_file "$VIM_CONFIG_SRC/.vimrc" "$HOME/.vimrc"
 # Add fzf helpers
 echo ""
 echo "Setting up everything.fzf..."
-mkdir -p "$(dirname "$EVERYTHING_FZF_DIR")"
-if [ ! -d "$EVERYTHING_FZF_DIR/.git" ]; then
-  git clone https://github.com/roumail/everything.fzf "$EVERYTHING_FZF_DIR"
-else
-  git -C "$EVERYTHING_FZF_DIR" pull --ff-only || true
-fi
+git_sync https://github.com/roumail/everything.fzf "$EVERYTHING_FZF_DIR"
 
 mkdir -p "$HOME/.local/bin"
 for tool in docker.fzf pr.fzf rg.fzf; do
