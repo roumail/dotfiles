@@ -25,7 +25,30 @@ slides new 2026-12-lorem    # 2026-12-lorem/slides.qmd + custom.scss
 cd 2026-12-lorem && slides edit
 ```
 
+![slides new, slides edit, then _p, :w and _r in Vim](docs/workflow.gif)
+
+`slides new` makes the deck, `slides edit` opens it in Vim on its first slide.
+`_p` starts `quarto preview` in the pane on the right, and it opens the deck in
+the browser (not in the GIF); each `:w` re-renders and reloads it. `_r` writes
+`slides.html` next to `slides.qmd`: that file is the deck to present or send.
+
+## Where the title slide comes from
+
+From `title:` in the front matter, the block between the `---` lines at the
+top. With `subtitle:`, `author:` and `date:`, Quarto makes the first slide
+from it. Neither the file name nor a `#` heading has anything to do with it:
+
+- The file name only names the output: `slides.qmd` renders to `slides.html`.
+  Every deck can be `slides.qmd`; the folder (`2026-12-lorem`) tells them apart.
+- `# Title` makes a section slide: a heading alone on a slide, to divide the
+  deck into parts. `## Title` makes an ordinary slide.
+
 ## Writing slides: cheat sheet
+
+Each slide of this GIF shows the Markdown on the left and what it makes on the
+right, step by step as a click would show it:
+
+![The cheat sheet, rendered](docs/deck.gif)
 
 | Markdown | Result |
 | --- | --- |
@@ -49,6 +72,12 @@ header (`[moon, custom.scss]`, `[simple, custom.scss]`, …). See
 **PDF:** `slides pdf` uses decktape. Or open the deck in Chrome with
 `?print-pdf` added to the URL and print to PDF
 ([reveal.js PDF export](https://revealjs.com/pdf-export/)).
+
+## The GIFs
+
+`docs/demo/record.sh` records them: `deck.gif` with quarto, Chrome and ffmpeg,
+`workflow.gif` with [VHS](https://github.com/charmbracelet/vhs), tmux and
+quarto-slides.
 
 ## References
 

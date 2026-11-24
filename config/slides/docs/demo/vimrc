@@ -1,0 +1,13 @@
+" For workflow.tape: only quarto-slides and the dotfiles' quarto ftplugin
+" (vim-rc/after/ftplugin/quarto.vim), which binds _p, _r and _o.
+set nocompatible
+let s:dotfiles = expand('<sfile>:p:h:h:h:h:h')
+let s:plugin = empty($DEMO_QUARTO_SLIDES) ? expand('~/.vim/plugged/quarto-slides') : $DEMO_QUARTO_SLIDES
+execute 'set runtimepath=' . s:plugin . ',$VIMRUNTIME,' . s:dotfiles . '/vim-rc/after'
+let maplocalleader = '_'
+let g:quarto_slides_pane_percent = 45
+filetype plugin indent on
+syntax on
+set termguicolors background=dark laststatus=2 noswapfile noshowcmd
+colorscheme habamax
+set statusline=\ %t%m%=_p\ preview\ \ _r\ render\ \ _o\ open\ 
