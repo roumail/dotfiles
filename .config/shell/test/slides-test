@@ -17,9 +17,17 @@ check() {
 }
 
 out=$("$slides" new deck 2>&1) && st=0 || st=$?
-check $st 0 "$out" $'Created deck/slides.qmd and deck/custom.scss\nNext: cd deck && slides edit'
+check $st 0 "$out" $'Created deck/slides.qmd, deck/custom.scss and deck/.gitignore\nNext: cd deck && slides edit'
 
-check 0 0 "$(ls deck)" $'custom.scss\nslides.qmd'
+check 0 0 "$(ls -A deck)" $'.gitignore\ncustom.scss\nslides.qmd'
+
+# quarto's output stays out of git
+check 0 0 "$(<deck/.gitignore)" $'*.html\n*_files/\n.quarto/'
+
+# A .gitignore already there is kept
+mkdir other && print 'notes/' >other/.gitignore
+"$slides" new other >/dev/null
+check 0 0 "$(<other/.gitignore)" 'notes/'
 
 check 0 0 "$(<deck/slides.qmd)" $'---\ntitle: "Lorem ipsum"\nformat:\n  revealjs:\n    theme: [default, custom.scss]\n    embed-resources: true\n---\n\n## Lorem ipsum'
 

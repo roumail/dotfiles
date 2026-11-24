@@ -3,8 +3,10 @@
 reveal.js decks written as Markdown with [Quarto](https://quarto.org): one
 self-contained `.html` per deck, to present, mail or attach.
 
-- `template.qmd`, `custom.scss`: what `slides new` copies into a new deck. The
-  template is bare: a title and one slide to start writing on.
+- `template.qmd`, `custom.scss`: what `slides new` copies into a new deck,
+  along with a `.gitignore` for Quarto's output (`*.html`, `*_files/`,
+  `.quarto/`). The template is bare: a title and one slide to start writing
+  on.
   install.sh links this folder to `~/.config/slides` (`$SLIDES_TEMPLATE_DIR`
   points `slides` elsewhere).
 - `reference.qmd`: a lorem ipsum deck showing the features below (columns,
@@ -21,7 +23,7 @@ Needs quarto: `brew install --cask quarto`. Optional: `npx` (Node.js) for
 `slides pdf`.
 
 ```sh
-slides new 2026-12-lorem    # 2026-12-lorem/slides.qmd + custom.scss
+slides new 2026-12-lorem    # 2026-12-lorem/slides.qmd, custom.scss, .gitignore
 cd 2026-12-lorem && slides edit
 ```
 

@@ -12,7 +12,8 @@ usage() {
   cat <<'EOF'
 Usage: slides <command> [args]
 
-  new <dir>        New deck in <dir>: slides.qmd + custom.scss from the template
+  new <dir>        New deck in <dir>: slides.qmd + custom.scss from the template,
+                   and a .gitignore for quarto's output
   edit [file]      Open a deck in $EDITOR (vim); no file: pick a .qmd with fzf
   preview [file]   Live preview in the browser, reloads on every save
   render [file]    Write the self-contained .html next to the .qmd
@@ -57,7 +58,9 @@ cmd_new() {
   mkdir -p "$dir"
   cp "$TEMPLATE" "$dir/slides.qmd"
   [ -e "$dir/custom.scss" ] || cp "$THEME" "$dir/custom.scss"
-  printf 'Created %s/slides.qmd and %s/custom.scss\n' "$dir" "$dir"
+  # quarto's output: the rendered .html, preview's support files and cache
+  [ -e "$dir/.gitignore" ] || printf '*.html\n*_files/\n.quarto/\n' >"$dir/.gitignore"
+  printf 'Created %s/slides.qmd, %s/custom.scss and %s/.gitignore\n' "$dir" "$dir" "$dir"
   printf 'Next: cd %s && slides edit\n' "$dir"
 }
 
