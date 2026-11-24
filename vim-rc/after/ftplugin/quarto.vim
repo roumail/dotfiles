@@ -2,9 +2,10 @@
 " ftplugin sources the markdown ones, ours included, whose _p is glow's.
 setlocal wrap linebreak textwidth=0
 
-" Start past the front matter; buffer-tools' BufReadPost runs after this and
-" still puts a file back where you left it
-call search('\%^---\n\_.\{-}\n---\n\_s*\zs\S', 'cW')
+if getline(1) ==# '---'
+  call search('^---$', 'W')
+  call search('^.', 'W')
+endif
 
 nmap <buffer> <localleader>p <Plug>(quarto-slides-preview)
 nmap <buffer> <localleader>r <Plug>(quarto-slides-render)
