@@ -151,3 +151,41 @@ prune_dangling_links() {
   esac
 done
 }
+
+# A repo install.sh only uses, never works in: cloned with only its last
+# commit, then kept at origin's with a depth-1 fetch. Old commits are dropped
+# after each update, so the clone stays one commit deep. Local changes are
+# never thrown away: with any, the update is skipped.
+git_sync() {
+  local url="$1" dir="$2" name
+  name="$(basename "$dir")"
+  if [ ! -d "$dir/.git" ]; then
+    mkdir -p "$(dirname "$dir")"
+    if git clone -q --depth 1 "$url" "$dir"; then
+      echo "  ✓ Cloned: $name"
+    else
+      echo "  ✗ Clone failed: $url" >&2
+    fi
+    return 0
+  fi
+  if [ -n "$(git -C "$dir" status --porcelain)" ]; then
+    echo "  ⚠ Local changes, not updated: $dir" >&2
+    return 0
+  fi
+  # Into the tracking branch, not just FETCH_HEAD: gc keeps whatever a ref
+  # still points at, so a stale origin/<branch> would keep the old history
+  local branch
+  branch="$(git -C "$dir" symbolic-ref --short HEAD)" || return 0
+  if ! git -C "$dir" fetch -q --depth 1 origin "+refs/heads/$branch:refs/remotes/origin/$branch"; then
+    echo "  ⚠ Fetch failed, not updated: $name" >&2
+    return 0
+  fi
+  if [ "$(git -C "$dir" rev-parse HEAD)" = "$(git -C "$dir" rev-parse "origin/$branch")" ]; then
+    echo "  = Up to date: $name"
+    return 0
+  fi
+  git -C "$dir" reset -q --hard "origin/$branch"
+  git -C "$dir" reflog expire --expire=now --all
+  git -C "$dir" gc -q --prune=now
+  echo "  ↻ Updated: $name ($(git -C "$dir" log -1 --format=%s))"
+}
