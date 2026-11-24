@@ -90,7 +90,8 @@ Plug 'vimoured/buffer-tools'
 Plug 'vimoured/qf-tools'
 Plug 'vimoured/text-tools'
 Plug 'vimoured/glow-preview'
-" reveal.js decks with Quarto: live preview in a pane, render, open
+" reveal.js decks with Quarto: live preview in the background (:SlidesLog
+" shows its output, in a vim-draft scratch), render, open
 Plug 'vimoured/quarto-slides'
 " Where plugins work and keep their files (saved comments, prompts, saved
 " lists), per repository
