@@ -1,0 +1,150 @@
+---
+title: "Writing slides"
+subtitle: "Each slide: the Markdown on the left, what it makes on the right"
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    embed-resources: true
+    slide-number: true
+    code-line-numbers: false
+    include-in-header:
+      text: "<style>.reveal pre { font-size: 0.75em; } .reveal .slides section { font-size: 1.15em; }</style>"
+---
+
+## `## Title` starts a slide {#slide}
+
+:::: {.columns}
+::: {.column width="58%"}
+```markdown
+## Agenda
+
+- Lorem ipsum
+- Dolor sit amet
+```
+:::
+::: {.column width="42%"}
+**Agenda**
+
+- Lorem ipsum
+- Dolor sit amet
+:::
+::::
+
+## Bullets one at a time {#incremental}
+
+:::: {.columns}
+::: {.column width="58%"}
+```markdown
+::: {.incremental}
+- Lorem ipsum
+- Dolor sit amet
+- Consectetur
+:::
+```
+:::
+::: {.column width="42%"}
+::: {.incremental}
+- Lorem ipsum
+- Dolor sit amet
+- Consectetur
+:::
+:::
+::::
+
+## A pause {#pause}
+
+:::: {.columns}
+::: {.column width="58%"}
+```markdown
+Lorem ipsum.
+
+. . .
+
+Dolor sit amet.
+```
+:::
+::: {.column width="42%"}
+Lorem ipsum.
+
+::: {.fragment}
+Dolor sit amet.
+:::
+:::
+::::
+
+## Columns {#columns}
+
+:::: {.columns}
+::: {.column width="58%"}
+```markdown
+:::: {.columns}
+::: {.column width="50%"}
+Left
+:::
+::: {.column width="50%"}
+Right
+:::
+::::
+```
+:::
+::: {.column width="42%"}
+:::: {.columns}
+::: {.column width="50%" style="background:#e0f2fe;padding:0.5em"}
+Left
+:::
+::: {.column width="50%" style="background:#fde68a;padding:0.5em"}
+Right
+:::
+::::
+:::
+::::
+
+## Highlight code lines, step by step {#code}
+
+:::: {.columns}
+::: {.column width="58%"}
+````markdown
+```{.python
+  code-line-numbers="1|2-3"}
+def f(n):
+    x = n + 1
+    return x * 2
+```
+````
+:::
+::: {.column width="42%"}
+```{.python code-line-numbers="1|2-3"}
+def f(n):
+    x = n + 1
+    return x * 2
+```
+:::
+::::
+
+## Speaker notes and backgrounds {#notes}
+
+:::: {.columns}
+::: {.column width="58%"}
+```markdown
+::: {.notes}
+Only you see this: press s.
+:::
+
+## Hi {background-color="#e0f2fe"}
+```
+:::
+::: {.column width="42%"}
+Notes stay off the slide. `s` opens the speaker view, with the notes, the next
+slide and a timer.
+
+The next slide has a background.
+:::
+::::
+
+::: {.notes}
+Only you see this: press s.
+:::
+
+## Title {#background background-color="#e0f2fe"}
+
+A slide with `{background-color="#e0f2fe"}`.
