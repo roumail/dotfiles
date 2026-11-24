@@ -65,6 +65,19 @@ if [[ $1 == --list ]]; then
         awk -F'\t' -v me="${MINE:+<$(git config user.email)>}" '!me || tolower($1) == tolower(me)' |
         cut -f2- | column -ts$'\t'
     }
+    # Archived branches (git br-archive) live under refs/archive, reason in archive.<b>.reason.
+    # Rows start with "A " where local branches start with "* " or "  ".
+    archived() {
+      awk -F'\t' -v me="${MINE:+<$(git config user.email)>}" '
+        FILENAME == ARGV[1] {
+          k = $0; sub(/ .*/, "", k); sub(/^archive\./, "", k); sub(/\.reason$/, "", k)
+          r = $0; sub(/^[^ ]* /, "", r); reason[k] = r; next
+        }
+        !me || tolower($1) == tolower(me) { r = reason[$2]; print $3 "\t" (r == "" ? "-" : r) "\t" $4 }
+      ' <(git config --get-regexp '^archive\..*\.reason$') \
+        <(git for-each-ref refs/archive --sort=-committerdate --color=$(__fzf_git_color) --format=$'%(authoremail)\t%(refname:lstrip=2)\tA %(color:yellow)%(refname:lstrip=2) %(color:green)(%(committerdate:relative))%(color:reset)\t%(color:blue)%(subject)%(color:reset)') |
+        column -ts$'\t'
+    }
     refs() {
       git for-each-ref "$@" --sort=-creatordate --sort=-HEAD --color=$(__fzf_git_color) --format=$'%(if:equals=refs/remotes)%(refname:rstrip=-2)%(then)%(color:magenta)remote-branch%(else)%(if:equals=refs/heads)%(refname:rstrip=-2)%(then)%(color:brightgreen)branch%(else)%(if:equals=refs/tags)%(refname:rstrip=-2)%(then)%(color:brightcyan)tag%(else)%(if:equals=refs/stash)%(refname:rstrip=-2)%(then)%(color:brightred)stash%(else)%(color:white)%(refname:rstrip=-2)%(end)%(end)%(end)%(end)\t%(color:yellow)%(refname:short) %(color:green)(%(creatordate:relative))\t%(color:blue)%(subject)%(color:reset)' | column -ts$'\t'
     }
@@ -102,14 +115,19 @@ if [[ $1 == --list ]]; then
     }
     case "$1" in
       branches|local-branches)
-        echo 'CTRL-O (open in browser) ╱ ALT-A (local/all) ╱ ALT-M (mine/everyone)'
-        echo 'ALT-H (list commit hashes) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)'
+        echo 'CTRL-O (open in browser) ╱ ALT-A (local/all/archived) ╱ ALT-M (mine/everyone)'
+        echo 'ALT-H (list commit hashes) ╱ ALT-S (archive/unarchive) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)'
         branches
         ;;
       all-branches)
-        echo 'CTRL-O (open in browser) ╱ ALT-ENTER (accept without remote) ╱ ALT-A (local/all) ╱ ALT-M (mine/everyone)'
-        echo 'ALT-H (list commit hashes) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)'
+        echo 'CTRL-O (open in browser) ╱ ALT-ENTER (accept without remote) ╱ ALT-A (local/all/archived) ╱ ALT-M (mine/everyone)'
+        echo 'ALT-H (list commit hashes) ╱ ALT-S (archive/unarchive) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)'
         branches -a
+        ;;
+      archived-branches)
+        echo 'ALT-A (local/all/archived) ╱ ALT-M (mine/everyone)'
+        echo 'ALT-H (list commit hashes) ╱ ALT-S (unarchive)'
+        archived
         ;;
       hashes)
         echo 'CTRL-O (open in browser) ╱ CTRL-D (diff) ╱ CTRL-S (toggle sort)'
@@ -279,6 +297,14 @@ _fzf_git_branches() {
   # CTRL-X asks before forcing an unmerged branch; stty as in _fzf_git_worktrees.
   local list="p=\${FZF_PROMPT%> }; MINE=\${p#\${p%+mine}} bash '$__fzf_git' --list \${p%+mine}-branches"
   local ask="stty echo icanon </dev/tty >/dev/tty 2>/dev/null; read -r a"
+  # A row's ref: "A b" is refs/archive/b, "* b" and "  b" are b.
+  local ref="\$(awk '{ print (/^A / ? \"refs/archive/\" \$2 : (/^\\* / ? \$2 : \$1)) }' <<< {})"
+  # ALT-S archives local rows (one reason for all) and unarchives archived ones.
+  local archive="rows=\$(printf '%s\n' {+} | awk '{ print (/^A / ? \"A \" \$2 : \"- \" (/^\\* / ? \$2 : \$1)) }'); r=
+    if grep -q '^-' <<< \"\$rows\"; then printf 'Archive reason: '; stty echo icanon </dev/tty >/dev/tty 2>/dev/null; read -r r; fi
+    ok=1; while read -r m b; do
+      if [ \"\$m\" = A ]; then git br-archive -u \"\$b\"; else git br-archive \"\$b\" \"\$r\"; fi || ok=
+    done <<< \"\$rows\"; [ -n \"\$ok\" ] || { printf 'Press enter '; $ask; }"
   bash "$__fzf_git" --list branches |
   __fzf_git_fzf=$(declare -f _fzf_git_fzf) _fzf_git_fzf --ansi \
     --border-label '🌲 Branches ' \
@@ -290,14 +316,15 @@ _fzf_git_branches() {
     --no-hscroll \
     --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' \
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list branch {}" \
-    --bind "alt-a:transform-prompt~p=\${FZF_PROMPT%> }; case \$p in all*) echo \"local\${p#all}> \" ;; *) echo \"all\${p#local}> \" ;; esac~+reload:$list" \
+    --bind "alt-a:transform-prompt~p=\${FZF_PROMPT%> }; case \$p in local*) echo \"all\${p#local}> \" ;; all*) echo \"archived\${p#all}> \" ;; *) echo \"local\${p#archived}> \" ;; esac~+reload:$list" \
     --bind "alt-m:transform-prompt~p=\${FZF_PROMPT%> }; case \$p in *+mine) echo \"\${p%+mine}> \" ;; *) echo \"\$p+mine> \" ;; esac~+reload:$list" \
     --bind "ctrl-x:execute~for b in \$(printf '%s\n' {+} | cut -c3- | cut -d' ' -f1); do git show-ref -q --verify \"refs/heads/\$b\" || { echo \"skip \$b: not a local branch\"; continue; }; git branch -d \"\$b\" && continue; printf 'Force delete %s? [y/N] ' \"\$b\"; $ask; [ \"\$a\" = y ] && git branch -D \"\$b\"; done~+reload:$list" \
     --bind "alt-d:execute~git dmb; printf 'Press enter '; $ask~+reload:$list" \
-    --bind "alt-h:become:LIST_OPTS=\$(cut -c3- <<< {} | cut -d' ' -f1) $shell \"$__fzf_git\" --run hashes" \
+    --bind "alt-s:execute~$archive~+reload:$list" \
+    --bind "alt-h:become:LIST_OPTS=$ref $shell \"$__fzf_git\" --run hashes" \
     --bind "alt-enter:become:printf '%s\n' {+} | cut -c3- | sed 's@[^/]*/@@'" \
-    --preview "git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' \$(cut -c3- <<< {} | cut -d' ' -f1) --" "$@" |
-  sed 's/^\* //' | awk '{print $1}' # Slightly modified to work with hashes as well
+    --preview "git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' $ref --" "$@" |
+  awk '/^A / { print "refs/archive/" $2; next } { sub(/^\* /, ""); print $1 }' # Slightly modified to work with hashes and archived branches
 }
 
 _fzf_git_tags() {

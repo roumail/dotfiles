@@ -41,6 +41,10 @@
     # g wt-archive <worktree> [reason...] / g wt-unarchive [worktree]
     wt-archive = "!f() { [ $# -gt 0 ] || { echo 'usage: git wt-archive <worktree> [reason...]' >&2; return 1; }; cd \"./$GIT_PREFIX\" && w=$1 && shift && git worktree lock --reason \"$(date +%F)${*:+: $*}\" \"$w\"; }; f"
     wt-unarchive = "!f() { cd \"./$GIT_PREFIX\" && git worktree unlock \"${1:-.}\"; }; f"
+
+    # archive a branch: moved to refs/archive, hidden from CTRL-G CTRL-B until ALT-A
+    # g br-archive <branch> [reason...] / g br-unarchive <branch> (script in bin/)
+    br-unarchive = br-archive -u
 	ll="!git log --graph --format='%C(yellow)%h%C(red)%d%C(reset) - %C(bold green)(%ar)%C(reset) %s %C(blue)<%an>%C(reset)'"
 
 

@@ -1,0 +1,36 @@
+#!/bin/bash
+# Archive a branch: move refs/heads/<b> to refs/archive/<b>, with a dated reason
+# in git config (archive.<b>.reason). Hidden from `git branch` and CTRL-G CTRL-B
+# until ALT-A; its commits stay reachable, so gc keeps them.
+#
+# git br-archive <branch> [reason...]
+# git br-archive -u <branch>     (unarchive; also `git br-unarchive`)
+
+set -euo pipefail
+
+usage() { echo 'usage: git br-archive <branch> [reason...] | git br-archive -u <branch>' >&2; exit 1; }
+
+if [ "${1:-}" = -u ]; then
+    [ $# -eq 2 ] || usage
+    b=$2
+    git show-ref -q --verify "refs/archive/$b" || { echo "error: no archived branch '$b'" >&2; exit 1; }
+    git show-ref -q --verify "refs/heads/$b" && { echo "error: branch '$b' already exists" >&2; exit 1; }
+    git update-ref "refs/heads/$b" "refs/archive/$b" ""
+    git update-ref -d "refs/archive/$b"
+    git config --remove-section "archive.$b" 2>/dev/null || :
+    echo "Unarchived $b"
+    exit 0
+fi
+
+[ $# -gt 0 ] || usage
+b=$1
+shift
+git show-ref -q --verify "refs/archive/$b" && { echo "error: '$b' is already archived" >&2; exit 1; }
+git show-ref -q --verify "refs/heads/$b" || { echo "error: no local branch '$b'" >&2; exit 1; }
+wt=$(git for-each-ref --format='%(worktreepath)' "refs/heads/$b")
+[ -z "$wt" ] || { echo "error: '$b' is checked out at $wt" >&2; exit 1; }
+
+git update-ref "refs/archive/$b" "refs/heads/$b" ""
+git config "archive.$b.reason" "$(date +%F)${*:+: $*}"
+git update-ref -d "refs/heads/$b"
+echo "Archived $b"
