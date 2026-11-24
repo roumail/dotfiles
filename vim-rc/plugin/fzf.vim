@@ -1,4 +1,12 @@
 " https://github.com/junegunn/fzf/blob/master/README-VIM.md
+
+" A Vim opened from an fzf picker (gll's ENTER, a picker's ALT-E) inherits
+" that picker's FZF_LEGEND, which FZF_DEFAULT_OPTS would show in every fzf
+" here. Plugins pass their own: fzf_utils#legend#options().
+if exists('$FZF_LEGEND')
+  unlet $FZF_LEGEND
+endif
+
 " let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6, 'rounded': v:false ,'yoffset': 1.0 } }
 let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_commits_log_options = '--graph --color=always

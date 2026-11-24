@@ -28,13 +28,14 @@ fzf_git_log() {
   local reload_cmd
   reload_cmd=$(printf '%q ' "${log_cmd[@]}")
 
+  # FZF_LEGEND: the keys, fit to the list by FZF_DEFAULT_OPTS' fzf-legend
   selection=$(
+    FZF_LEGEND='ENTER (difftool) ╱ CTRL-O (Gedit) ╱ CTRL-R (log/rebase order) ╱ ALT-R (refresh) ╱ CTRL-T (stat/patch) ╱ CTRL-Y (copy hashes a,b)' \
     fzf \
     --ansi \
     --no-sort \
     --multi \
     --prompt 'Log(stat)> ' \
-    --header "enter/ctrl-o: Diff| ctrl-r: log/rebase order| alt-r: refresh| ctrl-t: stat/patch| ctrl-y: copy hashes a,b" \
     --preview 'git show --stat --oneline --color=always {1}' \
     --bind "ctrl-y:execute-silent(printf %s \"\$(echo {+1} | tr ' ' ,)\" | $copy_cmd)+abort" \
     --bind 'ctrl-t:transform:
