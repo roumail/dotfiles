@@ -13,9 +13,9 @@ self-contained `.html` per deck, to present, mail or attach.
 - `slides` (`.config/shell/bin/slides`): `new <dir>`, `edit`, `preview`,
   `render`, `pdf`. `slides help` says more.
 - Vim: [vimoured/quarto-slides](https://github.com/vimoured/quarto-slides),
-  bound in `vim-rc/after/ftplugin/quarto.vim`: `_p` toggles the live preview
-  in a pane next to Vim (each `:w` reloads the browser), `_r` renders the
-  `.html`, `_o` opens it.
+  bound in `vim-rc/after/ftplugin/quarto.vim`: `_p` toggles the live preview,
+  which runs in the background (each `:w` reloads the browser; `:SlidesLog`
+  shows its output), `_r` renders the `.html`, `_o` opens it.
 
 Needs quarto: `brew install --cask quarto`. Optional: `npx` (Node.js) for
 `slides pdf`.
@@ -28,8 +28,9 @@ cd 2026-12-lorem && slides edit
 ![slides new, slides edit, then _p, :w and _r in Vim](docs/workflow.gif)
 
 `slides new` makes the deck, `slides edit` opens it in Vim on its first slide.
-`_p` starts `quarto preview` in the pane on the right, and it opens the deck in
-the browser (not in the GIF); each `:w` re-renders and reloads it. `_r` writes
+`_p` starts `quarto preview` in the background (the GIF predates that and
+still shows it in a pane on the right), and it opens the deck in the browser
+(not in the GIF); each `:w` re-renders and reloads it. `_r` writes
 `slides.html` next to `slides.qmd`: that file is the deck to present or send.
 
 ## Where the title slide comes from
