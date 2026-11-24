@@ -15,6 +15,7 @@ DOT_CONFIG_DST="$HOME/.config"
 SHELL_CONFIG_DEST="$DOT_CONFIG_DST/shell"
 USER_SHELL=$(basename "$SHELL")
 EVERYTHING_FZF_DIR="$HOME/.local/share/everything.fzf"
+QUARTO_SLIDES_DIR="${QUARTO_SLIDES_DIR:-$HOME/.local/share/quarto-slides}"
 
 # Links point at the working tree and copies are taken from it, so what is
 # installed is what is committed; --dirty installs uncommitted changes too
@@ -289,6 +290,19 @@ for tool in docker.fzf pr.fzf rg.fzf; do
     echo "  ⚠ Not found in everything.fzf: $tool"
   fi
 done
+
+# slides: reveal.js decks with Quarto (the Vim side is Plug 'vimoured/quarto-slides')
+echo ""
+echo "Setting up quarto-slides..."
+mkdir -p "$(dirname "$QUARTO_SLIDES_DIR")"
+if [ ! -d "$QUARTO_SLIDES_DIR/.git" ]; then
+  git clone https://github.com/roumail/quarto-slides "$QUARTO_SLIDES_DIR"
+else
+  git -C "$QUARTO_SLIDES_DIR" pull --ff-only || true
+fi
+link_file "$QUARTO_SLIDES_DIR/quarto-slides/bin/slides" "$HOME/.local/bin/slides"
+command -v quarto >/dev/null 2>&1 ||
+  echo "  ⚠ quarto not found: brew install --cask quarto (slides needs it)"
 
 echo ""
 echo "Setting up tmux..."
