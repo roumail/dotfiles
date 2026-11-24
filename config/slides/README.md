@@ -3,9 +3,13 @@
 reveal.js decks written as Markdown with [Quarto](https://quarto.org): one
 self-contained `.html` per deck, to present, mail or attach.
 
-- `template.qmd`, `custom.scss`: what `slides new` copies into a new deck.
+- `template.qmd`, `custom.scss`: what `slides new` copies into a new deck. The
+  template is bare: a title and one slide to start writing on.
   install.sh links this folder to `~/.config/slides` (`$SLIDES_TEMPLATE_DIR`
   points `slides` elsewhere).
+- `reference.qmd`: a lorem ipsum deck showing the features below (columns,
+  tabs, fragments, tables, speaker notes), to copy from. `slides new` never
+  copies it; open `~/.config/slides/reference.qmd`.
 - `slides` (`.config/shell/bin/slides`): `new <dir>`, `edit`, `preview`,
   `render`, `pdf`. `slides help` says more.
 - Vim: [vimoured/quarto-slides](https://github.com/vimoured/quarto-slides),

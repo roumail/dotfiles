@@ -1,0 +1,125 @@
+---
+title: "Lorem Ipsum Dolor"
+subtitle: "Consectetur adipiscing elit, sed do eiusmod tempor"
+author: "Your Name"
+date: today
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    embed-resources: true   # one self-contained .html you can mail or attach
+    slide-number: true
+    preview-links: auto
+    scrollable: true
+    incremental: false      # turn on per list with ::: {.incremental}
+    code-line-numbers: true
+    # footer: "Lorem ipsum"
+    # logo: images/logo.png
+    # chalkboard: true      # can't be combined with embed-resources
+---
+
+# Lorem ipsum
+
+## Agenda
+
+::: {.incremental}
+- Lorem ipsum dolor sit amet
+- Consectetur adipiscing elit
+- Sed do eiusmod tempor incididunt
+:::
+
+::: {.notes}
+Speaker notes: press `s` while presenting to open the speaker view.
+:::
+
+## Two columns
+
+:::: {.columns}
+
+::: {.column width="55%"}
+- **Ut enim ad minim:** veniam, quis nostrud exercitation.
+- **Ullamco laboris:** nisi ut aliquip ex ea commodo.
+- **Duis aute irure:** dolor in reprehenderit in voluptate.
+:::
+
+::: {.column width="45%"}
+::: {.callout-tip}
+## Excepteur sint
+
+Occaecat cupidatat non proident, sunt in culpa qui officia deserunt.
+:::
+:::
+
+::::
+
+## Tabs with code
+
+::: {.panel-tabset}
+
+### Python
+
+```{.python code-line-numbers="2-3"}
+def lorem(n: int) -> list[str]:
+    words = ["lorem", "ipsum", "dolor"]
+    return [words[i % len(words)] for i in range(n)]
+```
+
+### Bash
+
+```bash
+for word in lorem ipsum dolor; do
+  printf '%s\n' "$word"
+done
+```
+
+### R
+
+```r
+words <- c("lorem", "ipsum", "dolor")
+paste(rep(words, length.out = 5), collapse = " ")
+```
+
+:::
+
+## Step by step
+
+Lorem ipsum dolor sit amet.
+
+. . .
+
+Consectetur adipiscing elit, sed do eiusmod tempor.
+
+. . .
+
+::: {.fragment .highlight-red}
+Ut labore et dolore magna aliqua.
+:::
+
+## A table
+
+| Lorem     | Ipsum | Dolor |
+|-----------|------:|:-----:|
+| Sit amet  |    12 |   ✓   |
+| Consectur |    34 |   ✗   |
+| Adipiscing|    56 |   ✓   |
+
+: Tempor incididunt ut labore {.striped}
+
+# Section two {background-color="#e0f2fe"}
+
+## Long slide that scrolls
+
+1. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+2. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+3. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+4. Duis aute irure dolor in reprehenderit in voluptate velit esse.
+5. Excepteur sint occaecat cupidatat non proident.
+6. Sunt in culpa qui officia deserunt mollit anim id est laborum.
+7. Curabitur pretium tincidunt lacus, nulla gravida orci.
+8. Integer vitae libero ac risus egestas placerat.
+
+## References
+
+1. [Quarto: reveal.js](https://quarto.org/docs/presentations/revealjs/)
+2. [Quarto: presenting](https://quarto.org/docs/presentations/revealjs/presenting.html)
+3. [Quarto: themes](https://quarto.org/docs/presentations/revealjs/themes.html)
+4. [reveal.js: PDF export](https://revealjs.com/pdf-export/)

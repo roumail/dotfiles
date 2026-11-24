@@ -1,0 +1,26 @@
+#!/bin/zsh
+# Tests bin/slides with the dotfiles' template, in a throwaway directory.
+set -e
+slides=${0:A:h:h}/bin/slides
+export SLIDES_TEMPLATE_DIR=${0:A:h:h:h:h}/config/slides
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+cd "$tmp"
+
+check() {
+  [[ $1 == "$2" && $3 == "$4" ]] && return
+  print -r -- "FAILED: expected status $2 and output:"
+  print -r -- "$4"
+  print -r -- "got status $1 and output:"
+  print -r -- "$3"
+  exit 1
+}
+
+out=$("$slides" new deck 2>&1) && st=0 || st=$?
+check $st 0 "$out" $'Created deck/slides.qmd and deck/custom.scss\nNext: cd deck && slides edit'
+
+check 0 0 "$(ls deck)" $'custom.scss\nslides.qmd'
+
+check 0 0 "$(<deck/slides.qmd)" $'---\ntitle: "Lorem ipsum"\nformat:\n  revealjs:\n    theme: [default, custom.scss]\n    embed-resources: true\n---\n\n## Lorem ipsum'
+
+print 'all passed'
