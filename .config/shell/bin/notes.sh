@@ -311,30 +311,28 @@ header_actions='TAB: mark / ALT-N: new / ALT-C: duplicate / ALT-X: delete / ALT-
 expect_actions='alt-n,alt-c,alt-x,alt-r,alt-s'
 expect_list="ctrl-f,$expect_actions"
 expect_find="ctrl-l,$expect_actions"
-header_wrap=$'\n%s\n\n'
-header_list=$(printf "$header_wrap" "CTRL-F: find / $header_actions")
-header_find=$(printf "$header_wrap" "CTRL-L: list / $header_actions")
+# FZF_LEGEND: the keys, fit to the list by FZF_DEFAULT_OPTS' fzf-legend
+legend_list="CTRL-F: find / $header_actions"
+legend_find="CTRL-L: list / $header_actions"
 list_preview_cmd='bat --color=always --style=grid {1} 2>/dev/null || cat {1}'
 find_preview_cmd='bat --color=always --style=numbers --highlight-line={2} {1} 2>/dev/null || cat {1}'
 
 while true; do
     if [ "$key" = ctrl-l ]; then
-        out=$(list_notes | fzf $opts \
+        out=$(list_notes | FZF_LEGEND=$legend_list fzf $opts \
             --ghost "Query length limited to ${MAX_NOTE_LEN}" \
             --delimiter=$'\t' \
             --with-nth=2.. \
             --accept-nth=1 \
             --prompt="list> " \
             --expect="$expect_list" --query="$query" \
-            --preview "$list_preview_cmd" \
-            --header="$header_list")
+            --preview "$list_preview_cmd")
     else
-        out=$(find_in_notes | fzf $opts \
+        out=$(find_in_notes | FZF_LEGEND=$legend_find fzf $opts \
             --prompt="find> " --expect="$expect_find" \
             --delimiter=':' --nth=3.. --query="$query" \
             --preview "$find_preview_cmd" \
-            --preview-window 'down,+{2}/2' \
-            --header="$header_find")
+            --preview-window 'down,+{2}/2')
     fi
 
     # Exit if fzf was interrupted (ESC / Ctrl-C)

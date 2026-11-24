@@ -9,9 +9,14 @@ export FZF_DEFAULT_COMMAND="$_fzf_fd --type f --strip-cwd-prefix"
 
 # top-down 75%: comes from the bottom
 # --height 75% -
+# Key legends: a caller sets FZF_LEGEND='KEY (what) ╱ KEY (what)' and
+# fzf-legend (shell/bin) wraps it to the list's width, so no key is cut off
+# beside a preview. Without FZF_LEGEND it does nothing and a --header stays.
+# A key that moves or hides the preview chains the same action.
 export FZF_DEFAULT_OPTS='
   --multi --reverse
   --bind ctrl-f:page-down,ctrl-b:page-up
+  --bind "start,load,resize:transform:fzf-legend --action"
 '
 # To apply the command to CTRL-T as well
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"

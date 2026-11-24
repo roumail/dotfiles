@@ -114,37 +114,27 @@ if [[ $1 == --list ]]; then
         sort -t$'\t' -k1,1nr | cut -f2-
     }
     case "$1" in
+      # The key legends are the pickers' FZF_LEGEND, wrapped by fzf-legend,
+      # not header lines here.
       branches|local-branches)
-        echo 'CTRL-O (open in browser) ╱ ALT-A (local/all/archived) ╱ ALT-M (mine/everyone)'
-        echo 'ALT-H (list commit hashes) ╱ ALT-S (archive/unarchive) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)'
         branches
         ;;
       all-branches)
-        echo 'CTRL-O (open in browser) ╱ ALT-ENTER (accept without remote) ╱ ALT-A (local/all/archived) ╱ ALT-M (mine/everyone)'
-        echo 'ALT-H (list commit hashes) ╱ ALT-S (archive/unarchive) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)'
         branches -a
         ;;
       archived-branches)
-        echo 'ALT-A (local/all/archived) ╱ ALT-M (mine/everyone)'
-        echo 'ALT-H (list commit hashes) ╱ ALT-S (unarchive)'
         archived
         ;;
       hashes)
-        echo 'CTRL-O (open in browser) ╱ CTRL-D (diff) ╱ CTRL-S (toggle sort)'
-        echo 'ALT-R (toggle raw mode) ╱ ALT-F (list files) ╱ ALT-A (show all hashes)'
         hashes
         ;;
       all-hashes)
-        echo 'CTRL-O (open in browser) ╱ CTRL-D (diff)'
-        echo 'CTRL-S (toggle sort) ╱ ALT-F (list files)'
         hashes --all
         ;;
       refs)
-        echo 'CTRL-O (open in browser) ╱ ALT-E (examine in editor) ╱ ALT-A (show all refs)'
         refs --exclude='refs/remotes'
         ;;
       all-refs)
-        echo 'CTRL-O (open in browser) ╱ ALT-E (examine in editor)'
         refs
         ;;
       active-worktrees|archived-worktrees|all-worktrees)
@@ -223,6 +213,8 @@ if [[ $__fzf_git_fzf ]]; then
   eval "$__fzf_git_fzf"
 else
   # Redefine this function to change the options
+  # Each picker's key legend is its FZF_LEGEND, which FZF_DEFAULT_OPTS has
+  # fzf-legend fit to the list; a key that moves the preview refits it.
   _fzf_git_fzf() {
     fzf --height 50% --tmux 90%,70% \
       --layout reverse --multi --min-height 20+ --border \
@@ -230,7 +222,7 @@ else
       --border-label-pos 2 \
       --color 'label:blue' \
       --preview-window 'right,50%' --preview-border line \
-      --bind 'ctrl-/:change-preview-window(down,50%|hidden|)' "$@"
+      --bind 'ctrl-/:change-preview-window(down,50%|hidden|)+transform:fzf-legend --action' "$@"
   }
 fi
 
@@ -262,9 +254,9 @@ EOF
       echo :
     ) | sed 's/^/   /'
   ) |
+    FZF_LEGEND='CTRL-O (open in browser) ╱ ALT-E (open in editor)' \
     _fzf_git_fzf -m --ansi --nth 2..,.. \
       --border-label '📁 Files ' \
-      --header 'CTRL-O (open in browser) ╱ ALT-E (open in editor)' \
       --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list file $extract_file_name" \
       --bind "alt-e:execute:${EDITOR:-vim} $extract_file_name" \
       --query "$query" \
@@ -279,9 +271,9 @@ _fzf_git_tree_files() {
   for treeish in "$@"; do
     git diff-tree --no-commit-id --name-only "$treeish" -r
   done | sort -u |
+    FZF_LEGEND='CTRL-O (open in browser) ╱ ALT-E (open in editor)' \
     _fzf_git_fzf -m \
       --border-label "📂 Files in $* " \
-      --header 'CTRL-O (open in browser) ╱ ALT-E (open in editor)' \
       --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list file {}" \
       --bind "alt-e:execute:${EDITOR:-vim} {}" \
       --preview "git -c core.quotePath=false diff --no-ext-diff --color=$(__fzf_git_color .) -- {} | $(__fzf_git_pager); $(__fzf_git_cat) {}"
@@ -306,15 +298,16 @@ _fzf_git_branches() {
       if [ \"\$m\" = A ]; then git br-archive -u \"\$b\"; else git br-archive \"\$b\" \"\$r\"; fi || ok=
     done <<< \"\$rows\"; [ -n \"\$ok\" ] || { printf 'Press enter '; $ask; }"
   bash "$__fzf_git" --list branches |
-  __fzf_git_fzf=$(declare -f _fzf_git_fzf) _fzf_git_fzf --ansi \
+  __fzf_git_fzf=$(declare -f _fzf_git_fzf) \
+  FZF_LEGEND='CTRL-O (open in browser) ╱ ALT-A (local/all/archived) ╱ ALT-M (mine/everyone) ╱ ALT-ENTER (accept without remote) ╱ ALT-H (list commit hashes) ╱ ALT-S (archive/unarchive) ╱ CTRL-X (delete) ╱ ALT-D (delete merged)' \
+  _fzf_git_fzf --ansi \
     --border-label '🌲 Branches ' \
     --prompt 'local> ' \
-    --header-lines 2 \
     --tiebreak begin \
     --preview-window down,border-top,40% \
     --color hl:underline,hl+:underline \
     --no-hscroll \
-    --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' \
+    --bind 'ctrl-/:change-preview-window(down,70%|hidden|)+transform:fzf-legend --action' \
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list branch {}" \
     --bind "alt-a:transform-prompt~p=\${FZF_PROMPT%> }; case \$p in local*) echo \"all\${p#local}> \" ;; all*) echo \"archived\${p#all}> \" ;; *) echo \"local\${p#archived}> \" ;; esac~+reload:$list" \
     --bind "alt-m:transform-prompt~p=\${FZF_PROMPT%> }; case \$p in *+mine) echo \"\${p%+mine}> \" ;; *) echo \"\$p+mine> \" ;; esac~+reload:$list" \
@@ -330,9 +323,9 @@ _fzf_git_branches() {
 _fzf_git_tags() {
   _fzf_git_check || return
   git tag --sort -version:refname |
+  FZF_LEGEND='CTRL-O (open in browser) ╱ ALT-R (toggle raw mode)' \
   _fzf_git_fzf --preview-window right,70% \
     --border-label '📛 Tags ' \
-    --header 'CTRL-O (open in browser)' \
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list tag {}" \
     --bind 'alt-r:toggle-raw' \
     --preview "git show --color=$(__fzf_git_color .) {} | $(__fzf_git_pager)" "$@"
@@ -341,9 +334,9 @@ _fzf_git_tags() {
 _fzf_git_hashes() {
   _fzf_git_check || return
   bash "$__fzf_git" --list hashes |
+  FZF_LEGEND='CTRL-O (open in browser) ╱ CTRL-D (diff) ╱ CTRL-S (toggle sort) ╱ ALT-R (toggle raw mode) ╱ ALT-F (list files) ╱ ALT-A (show all hashes)' \
   _fzf_git_fzf --ansi --no-sort --bind 'ctrl-s:toggle-sort,alt-r:toggle-raw' \
     --border-label '🍡 Hashes ' \
-    --header-lines 2 \
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list commit {}" \
     --bind "ctrl-d:execute:grep -o '[a-f0-9]\{7,\}' <<< {} | head -n 1 | xargs git diff --color=$(__fzf_git_color) > /dev/tty" \
     --bind "alt-a:change-border-label(🍇 All hashes)+reload:bash \"$__fzf_git\" --list all-hashes" \
@@ -372,9 +365,9 @@ _fzf_git_hashes() {
 _fzf_git_remotes() {
   _fzf_git_check || return
   git remote -v | awk '{print $1 "\t" $2}' | uniq |
+  FZF_LEGEND='CTRL-O (open in browser)' \
   _fzf_git_fzf --tac \
     --border-label '📡 Remotes ' \
-    --header 'CTRL-O (open in browser)' \
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list remote {1}" \
     --preview-window right,70% \
     --preview "git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' '{1}/$(git rev-parse --abbrev-ref HEAD)' --" "$@" |
@@ -383,9 +376,10 @@ _fzf_git_remotes() {
 
 _fzf_git_stashes() {
   _fzf_git_check || return
-  git stash list | _fzf_git_fzf \
+  git stash list |
+  FZF_LEGEND='CTRL-X (drop stash) ╱ CTRL-A (apply stash)' \
+  _fzf_git_fzf \
     --border-label '🥡 Stashes ' \
-    --header 'CTRL-X (drop stash)╱ CTRL-A (apply stash)' \
     --bind 'ctrl-x:reload(git stash drop -q {1}; git stash list)' \
     --bind 'ctrl-A:execute(git stash apply {1})' \
     -d: --preview "git show --first-parent --color=$(__fzf_git_color .) {1} | $(__fzf_git_pager)" "$@" |
@@ -403,15 +397,16 @@ _fzf_git_lreflogs() {
 
 _fzf_git_each_ref() {
   _fzf_git_check || return
-  bash "$__fzf_git" --list refs | _fzf_git_fzf --ansi \
+  bash "$__fzf_git" --list refs |
+  FZF_LEGEND='CTRL-O (open in browser) ╱ ALT-E (examine in editor) ╱ ALT-A (show all refs)' \
+  _fzf_git_fzf --ansi \
     --nth 2,2.. \
     --tiebreak begin \
     --border-label '☘️  Each ref ' \
-    --header-lines 1 \
     --preview-window down,border-top,40% \
     --color hl:underline,hl+:underline \
     --no-hscroll \
-    --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' \
+    --bind 'ctrl-/:change-preview-window(down,70%|hidden|)+transform:fzf-legend --action' \
     --bind "ctrl-o:execute-silent:bash \"$__fzf_git\" --list {1} {2}" \
     --bind "alt-e:execute:${EDITOR:-vim} <(git show {2}) < /dev/tty > /dev/tty" \
     --bind "alt-a:change-border-label(🍀 Every ref)+reload:bash \"$__fzf_git\" --list all-refs" \
@@ -424,11 +419,12 @@ _fzf_git_worktrees() {
   # The prompt names the view, so reloads keep showing it.
   # From the CTRL-G widget the terminal is in zle's mode, without echo; ALT-S turns it on for read.
   local list="bash '$__fzf_git' --list \"\${FZF_PROMPT%> }-worktrees\""
-  bash "$__fzf_git" --list active-worktrees | _fzf_git_fzf --ansi \
+  bash "$__fzf_git" --list active-worktrees |
+  FZF_LEGEND='ALT-A (active/archived/all) ╱ ALT-S (archive/unarchive) ╱ CTRL-X (remove worktree)' \
+  _fzf_git_fzf --ansi \
     --border-label '🌴 Worktrees ' \
     --prompt 'active> ' \
     --delimiter '\t' --with-nth 3.. \
-    --header 'ALT-A (active/archived/all) ╱ ALT-S (archive/unarchive) ╱ CTRL-X (remove worktree)' \
     --bind "alt-a:transform:case \$FZF_PROMPT in active*) v=archived ;; archived*) v=all ;; *) v=active ;; esac; echo \"change-prompt(\$v> )+reload:bash '$__fzf_git' --list \$v-worktrees\"" \
     --bind "alt-s:execute~if [ {2} = A ]; then git wt-unarchive {1}; else printf 'Archive reason: '; stty echo icanon </dev/tty >/dev/tty 2>/dev/null; read -r r; git wt-archive {1} \"\$r\"; fi~+reload($list)" \
     --bind "ctrl-x:reload:git worktree remove {1} > /dev/null; $list" \

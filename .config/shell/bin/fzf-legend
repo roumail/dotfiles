@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+# fzf-legend: an fzf key legend that fits the list instead of being cut off.
+#
+# fzf never wraps --header, and beside a right/left preview the header only
+# gets the list's columns, so a one-line legend loses most of its keys. This
+# packs the legend's items into as many rows as the list's width needs, in
+# aligned columns, keys in bold.
+#
+# Set up once, in FZF_DEFAULT_OPTS (fzf_conf/.fzf-default-config.sh):
+#
+#   --bind 'start,load,resize:transform:fzf-legend --action'
+#
+# so a caller only names its keys, in $FZF_LEGEND:
+#
+#   FZF_LEGEND='ALT-A (all) ╱ CTRL-X (remove)' fzf ...
+#
+# Without $FZF_LEGEND, --action prints nothing and fzf keeps its own --header.
+# load is there for callers that bind start themselves (fzf.vim's grep2).
+#
+# fzf has no event for the preview moving or hiding, which changes the list's
+# width too, so a key that does that chains the same action:
+#
+#   --bind 'ctrl-/:change-preview-window(down|hidden|)+transform:fzf-legend --action'
+#
+# The legend comes from the arguments, or from $FZF_LEGEND without any.
+# Items are split on ╱, │, |, " / ", newlines and separate arguments, so an
+# existing --header string works unchanged:
+#
+#   fzf-legend 'C-r (regex) | C-f (fixed) | C-w (word)'
+#   fzf-legend 'ENTER (diff)' 'CTRL-O (open)'
+#
+# Options (in this order):
+#   -w N           width to fit; by default worked out from what fzf exports
+#                  to its commands (FZF_COLUMNS, FZF_PREVIEW_COLUMNS), else
+#                  $COLUMNS / the terminal's
+#   --action       print an fzf action, change-header{...}, for transform:
+#   --print-width  print the width it would use, to check the margins below
+#
+# Written for bash 3.2 (macOS' /bin/bash): no mapfile, no assoc arrays.
+
+width= action= print_width=
+if [ "$1" = -w ]; then width=$2; shift 2; fi
+if [ "$1" = --action ]; then action=1; shift; fi
+if [ "$1" = --print-width ]; then print_width=1; shift; fi
+
+if [ $# -eq 0 ] && [ -z "$print_width" ]; then
+  [ -n "$FZF_LEGEND" ] || exit 0
+  set -- "$FZF_LEGEND"
+fi
+
+# Characters, not bytes, for the ╱ and other non-ASCII in the legends.
+case ${LC_ALL:-${LC_CTYPE:-$LANG}} in
+  *UTF-8*|*utf8*|*UTF8*|*utf-8*) ;;
+  *) export LC_ALL=en_US.UTF-8 ;;
+esac
+
+if [ -z "$width" ]; then
+  if [ -n "$FZF_COLUMNS" ]; then
+    cols=$FZF_COLUMNS
+    pcols=${FZF_PREVIEW_COLUMNS:-0}
+    # A preview narrower than fzf sits beside the list (right or left): the
+    # list gets the rest, less the preview's border and the list's gutter.
+    # One about as wide as fzf is above or below it, or hidden (empty).
+    if [ "$pcols" -gt 0 ] && [ "$pcols" -lt $((cols - 10)) ]; then
+      width=$((cols - pcols - 9))
+    else
+      width=$((cols - 4))
+    fi
+  else
+    width=${COLUMNS:-$(tput cols 2>/dev/null || echo 80)}
+  fi
+fi
+[ "$width" -ge 10 ] 2>/dev/null || width=10
+[ "$print_width" ] && { echo "$width"; exit 0; }
+
+# Split every argument into items.
+items=()
+sep=$'\x1f'
+for arg in "$@"; do
+  s=$arg
+  s=${s//╱/$sep}
+  s=${s//│/$sep}
+  s=${s//|/$sep}
+  s=${s// \/ /$sep}
+  s=${s//$'\n'/$sep}
+  while :; do
+    item=${s%%"$sep"*}
+    item="${item#"${item%%[![:space:]]*}"}"
+    item="${item%"${item##*[![:space:]]}"}"
+    [ -n "$item" ] && items+=("$item")
+    [ "$s" = "${s#*"$sep"}" ] && break
+    s=${s#*"$sep"}
+  done
+done
+n=${#items[@]}
+[ "$n" -gt 0 ] || exit 0
+
+bold=$'\033[1m' reset=$'\033[22m'
+gap=3
+
+# Key in bold: the first word, or what comes before ": ".
+show() {
+  local it=$1 key rest
+  case $it in
+    *': '*) key=${it%%: *}; rest=": ${it#*: }" ;;
+    *' '*)  key=${it%% *};  rest=" ${it#* }" ;;
+    *)      key=$it;        rest= ;;
+  esac
+  printf '%s%s%s%s' "$bold" "$key" "$reset" "$rest"
+}
+
+render() {
+  local total=0 it i c w l sum ncol
+  for it in "${items[@]}"; do total=$((total + ${#it})); done
+  total=$((total + gap * (n - 1)))
+
+  # All of it on one line when it fits.
+  if [ "$total" -le "$width" ]; then
+    i=0
+    for it in "${items[@]}"; do
+      [ $i -gt 0 ] && printf '%*s' $gap ''
+      show "$it"
+      i=$((i + 1))
+    done
+    echo
+    return
+  fi
+
+  # Otherwise the fewest rows whose columns fit: try ncol columns, filled
+  # row by row, each as wide as its widest item, one fewer until it fits.
+  ncol=$n
+  while [ "$ncol" -gt 1 ]; do
+    sum=0 c=0
+    while [ $c -lt $ncol ]; do
+      w=0 i=$c
+      while [ $i -lt $n ]; do
+        l=${#items[$i]}
+        [ "$l" -gt "$w" ] && w=$l
+        i=$((i + ncol))
+      done
+      eval "cw$c=$w"
+      sum=$((sum + w))
+      c=$((c + 1))
+    done
+    sum=$((sum + gap * (ncol - 1)))
+    [ "$sum" -le "$width" ] && break
+    ncol=$((ncol - 1))
+  done
+
+  i=0
+  while [ $i -lt $n ]; do
+    c=$((i % ncol))
+    it=${items[$i]}
+    show "$it"
+    if [ $c -eq $((ncol - 1)) ] || [ $i -eq $((n - 1)) ]; then
+      echo
+    else
+      eval "w=\$cw$c"
+      printf '%*s' $((w - ${#it} + gap)) ''
+    fi
+    i=$((i + 1))
+  done
+}
+
+if [ -z "$action" ]; then
+  render
+  exit 0
+fi
+
+# change-header with the first delimiter pair fzf accepts that the legend
+# doesn't contain ([] is out: the bold escapes use [).
+text=$(render)
+for pair in '{}' '<>' '~~' '!!' '@@' '%%' '^^' ';;'; do
+  open=${pair%?} close=${pair#?}
+  case $text in *"$close"*) continue ;; esac
+  printf 'change-header%s%s%s' "$open" "$text" "$close"
+  exit 0
+done

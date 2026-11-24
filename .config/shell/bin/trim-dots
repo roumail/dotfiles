@@ -90,12 +90,13 @@ case "${1:-}" in
 esac
 
 self="$0"
-selected=$(list | fzf --multi --ansi --reverse --delimiter '\t' --with-nth 1,2 \
-  --border-label ' TRIM DOTS ' \
-  --header 'TAB (mark) │ CTRL-A (mark all) │ ENTER (delete marked) │ CTRL-/ (toggle preview)
+# FZF_LEGEND: the keys, fit to the list by FZF_DEFAULT_OPTS' fzf-legend
+selected=$(list | FZF_LEGEND='TAB (mark) │ CTRL-A (mark all) │ ENTER (delete marked) │ CTRL-/ (toggle preview)
 same = identical to live file │ differs = preview "-" lines exist only in backup' \
+  fzf --multi --ansi --reverse --delimiter '\t' --with-nth 1,2 \
+  --border-label ' TRIM DOTS ' \
   --bind 'ctrl-a:select-all' \
-  --bind 'ctrl-/:change-preview-window(hidden|)' \
+  --bind 'ctrl-/:change-preview-window(hidden|)+transform:fzf-legend --action' \
   --preview-window right,60% \
   --preview "'$self' --preview {3}" |
   cut -f3) || exit 0
