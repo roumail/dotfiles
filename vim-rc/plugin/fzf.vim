@@ -42,7 +42,14 @@ let g:fzf_vim.commits_options = [
       \   . ' esac',
       \ '--bind', 'alt-t:transform-preview-label~case "$FZF_PREVIEW_LABEL" in'
       \   . ' *stat*) echo " patch ";; *) echo " stat ";; esac~+refresh-preview',
-      \ ]
+      \ ] + fzf_utils#legend#fzf_vim('commits', 'A-t (stat/patch)')
+
+" fzf.vim's key footer is cut off beside a preview: fzf-utils' legend, which
+" fzf-legend fits to the list as it does gll's, takes its place. fzf-utils'
+" own commands (:FdFiles, :Grep, :RgRaw) have theirs already.
+for s:name in ['gfiles-diff', 'buffers']
+  let g:fzf_vim[s:name . '_options'] = fzf_utils#legend#fzf_vim(s:name)
+endfor
 
 " Customize fzf colors to match your color scheme
 " - fzf#wrap translates this to a set of `--color` options
