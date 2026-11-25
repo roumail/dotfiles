@@ -197,9 +197,9 @@ xmap <leader>ad <Plug>(prompts-draft)
 
 " vim-prompts: git's comment keys (<leader>cc / <leader>cd) reply to the
 " agent's comment under the cursor in the :AiComments list, or in a comment's
-" thread (:AiReply / :AiReplyDraft). Every quickfix window is qf, so the others
-" (Review's) keep fugitive-extras'. Capitals send to a session (:AiReply! /
-" :AiReplyDraft!) instead of a one-off
+" thread, as a one-off answered into it (:AiReply! / :AiReplyDraft!). Every
+" quickfix window is qf, so the others (Review's) keep fugitive-extras'.
+" Capitals send to a session instead (:AiReply / :AiReplyDraft)
 augroup prompts_reply_keys
   autocmd!
   autocmd FileType qf nmap <buffer><expr> <leader>cc
