@@ -11,6 +11,6 @@ services are needed.
   - `yes`: end-to-end tests may be run, still only when asked.
   Never change `agents.e2e` yourself. If unsure whether a test is end-to-end, treat it as one.
 - Services: start only those `test-setup` lists for the task at hand. If one is missing, stop and tell me which, rather than working around it (skipping the test, mocking the service). If `test-setup` is silent, ask rather than guess.
-- Local tweaks needed to run (a patch, an environment file): apply them as `test-setup` says, and only if they aren't applied already. They are never committed: don't revert them while you still need to run tests, and leave them out when staging (the git rules). If I keep them in a stash, leave the stash alone.
+- Local tweaks needed to run (a patch, an environment file): apply them as `test-setup` says, and only if they aren't applied already. They are never committed: don't revert them while you still need to run tests, and leave them out when staging (the git rules). If I keep them in a stash, the git rules on stashes apply.
 - Don't change test configuration to make a run pass: coverage floors, warnings turned into errors, markers. A persona may lift one for a single run that only measures, and says so.
 - Report what you ran (the command), what passed, and for a failure which assertion failed and why, before proposing a change.
