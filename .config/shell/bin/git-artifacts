@@ -18,11 +18,14 @@ this repository, one per line on stdout as DIR/NAME (or DIR/NAME.zip with -z).
   -r run-id      this run; skips the lookup and -w, -b, -s
   -n name        artifact name or glob; repeat for more (default: all)
   -D dir         download into dir (default: .)
+  -W             download into the worktree root (the directory holding
+                 .bare), replacing earlier copies: a refresh
   -z             keep each artifact as its zip instead of extracting it
   -l             list the run's artifact names instead of downloading
   -h, --help     show this help
 
   git artifacts -w tests.yml -n coverage -z
+  git artifacts -W -n 'coverage-*'
   git artifacts -R owner/api -w ci -n 'coverage-*' -D ~/coverage/api
 USAGE
 }
@@ -33,9 +36,9 @@ BASE="${SHELL_CONFIG_BASE:-$HOME/.config/shell}"
 
 [ "${1:-}" = --help ] && { usage; exit 0; }
 
-repo='' workflow='' branch='' status=success run='' dir=. zip='' list=''
+root='' repo='' workflow='' branch='' status=success run='' dir=. zip='' list=''
 names=()
-while getopts R:w:b:s:r:n:D:zlh opt; do
+while getopts R:w:b:s:r:n:D:Wzlh opt; do
     case $opt in
         R) repo=$OPTARG ;;
         w) workflow=$OPTARG ;;
@@ -44,6 +47,7 @@ while getopts R:w:b:s:r:n:D:zlh opt; do
         r) run=$OPTARG ;;
         n) names+=("$OPTARG") ;;
         D) dir=$OPTARG ;;
+        W) root=1 ;;
         z) zip=1 ;;
         l) list=1 ;;
         h) usage; exit 0 ;;
@@ -102,6 +106,10 @@ if [ -n "$list" ]; then
     exit 0
 fi
 
+if [ -n "$root" ]; then
+    dir=$(dirname "$(git_get_bare_dir)")
+    [ -d "$dir" ] || die "-W needs to run inside a git worktree"
+fi
 mkdir -p "$dir"
 while IFS=$'\t' read -r id name; do
     if [ -n "$zip" ]; then
