@@ -337,7 +337,7 @@ tnoremap <expr> <ScrollWheelUp> bufname() =~# '^!''\=\%(\S*/\)\=claude\>'
 tnoremap <C-w>n <C-w>N
 " In Terminal-Normal it goes back to the job, so it toggles instead of :new
 nnoremap <expr> <C-w>n &buftype ==# 'terminal' ? 'i' : '<C-w>n'
-tnoremap <S-Tab> <C-w>:tabprevious<CR>
+" tnoremap <S-Tab> <C-w>:tabprevious<CR>
 tnoremap <Esc>h <C-w>h
 tnoremap <Esc>j <C-w>j
 tnoremap <Esc>k <C-w>k
